@@ -47,9 +47,12 @@ model User {
   createdAt     DateTime   @default(now()) @map("created_at")
   updatedAt     DateTime   @updatedAt @map("updated_at")
 
-  accounts      Account[]
-  sessions      Session[]
-  registrations Registration[]
+  accounts             Account[]
+  sessions             Session[]
+  registrations        Registration[]
+  seatHolds            SeatHold[]
+  discountRedemptions  DiscountRedemption[]
+  reviewedTransactions PaymentTransaction[]
 
   @@map("users")
 }
@@ -195,10 +198,12 @@ model Event {
   createdAt            DateTime    @default(now()) @map("created_at")
   updatedAt            DateTime    @updatedAt @map("updated_at")
 
-  category      Category       @relation(fields: [categoryId], references: [id])
-  instructor    Instructor     @relation(fields: [instructorId], references: [id])
-  sessions      EventSession[]
-  registrations Registration[]
+  category       Category        @relation(fields: [categoryId], references: [id])
+  instructor     Instructor      @relation(fields: [instructorId], references: [id])
+  sessions       EventSession[]
+  registrations  Registration[]
+  seatHolds      SeatHold[]
+  discountEvents DiscountEvent[]
 
   @@index([status])
   @@index([categoryId])
@@ -286,7 +291,176 @@ model Registration {
   user  User  @relation(fields: [userId], references: [id])
   event Event @relation(fields: [eventId], references: [id])
 
+  seatHold           SeatHold?
+  payment            Payment?
+  discountRedemption DiscountRedemption?
+
   @@unique([userId, eventId])
   @@index([eventId, status])
   @@map("registrations")
+}
+
+// ---------------------------------------------------------------------------
+// Phase 3 — Commerce (Manual bKash/Nagad)
+// Seat holds for paid checkout, coupons, and the manual payment-proof review
+// flow. Paid events do not support waitlisting in the MVP — if capacity is
+// full, checkout is simply blocked; auto-promoting a waitlisted paid
+// registration straight to CONFIRMED without payment would be a bug, and the
+// alternative (a "seat offered, please pay" state) is deferred. See
+// tasklist.md.
+// ---------------------------------------------------------------------------
+
+enum SeatHoldStatus {
+  HELD
+  CONFIRMED
+  EXPIRED
+
+  @@map("seat_hold_status")
+}
+
+// One hold per paid-checkout attempt (1:1 with the Registration it reserves
+// a seat for). Only HELD holds count toward capacity; CONFIRMED/EXPIRED are
+// kept for the seat-utilization/conversion reports in a later phase.
+model SeatHold {
+  id             String         @id @default(cuid())
+  eventId        String         @map("event_id")
+  userId         String         @map("user_id")
+  registrationId String         @unique @map("registration_id")
+  status         SeatHoldStatus @default(HELD)
+  expiresAt      DateTime       @map("expires_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  event        Event        @relation(fields: [eventId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  registration Registration @relation(fields: [registrationId], references: [id])
+
+  @@index([eventId, status])
+  @@index([status, expiresAt])
+  @@map("seat_holds")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+
+  @@map("discount_type")
+}
+
+model Discount {
+  id              String       @id @default(cuid())
+  code            String       @unique
+  type            DiscountType
+  amount          Int
+  startsAt        DateTime?    @map("starts_at")
+  expiresAt       DateTime?    @map("expires_at")
+  maxTotalUsage   Int?         @map("max_total_usage")
+  maxPerUserUsage Int?         @map("max_per_user_usage")
+  minPurchaseBdt  Int          @default(0) @map("min_purchase_bdt")
+  maxDiscountBdt  Int?         @map("max_discount_bdt")
+  active          Boolean      @default(true)
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  // Empty = applies to every Event (sitewide coupon); non-empty scopes the
+  // coupon to just the linked Events.
+  events      DiscountEvent[]
+  redemptions DiscountRedemption[]
+
+  @@map("discounts")
+}
+
+// Empty events[] on the parent Discount means "applies sitewide" — this
+// table only needs rows for coupons scoped to specific Events.
+model DiscountEvent {
+  id         String @id @default(cuid())
+  discountId String @map("discount_id")
+  eventId    String @map("event_id")
+
+  discount Discount @relation(fields: [discountId], references: [id], onDelete: Cascade)
+  event    Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([discountId, eventId])
+  @@map("discount_events")
+}
+
+// One row per successful redemption, used to enforce total/per-user usage
+// caps. Tied 1:1 to the Registration it discounted.
+model DiscountRedemption {
+  id                String   @id @default(cuid())
+  discountId        String   @map("discount_id")
+  userId            String   @map("user_id")
+  registrationId    String   @unique @map("registration_id")
+  discountAmountBdt Int      @map("discount_amount_bdt")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  discount     Discount     @relation(fields: [discountId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  registration Registration @relation(fields: [registrationId], references: [id])
+
+  @@index([discountId, userId])
+  @@map("discount_redemptions")
+}
+
+enum PaymentMethod {
+  BKASH
+  NAGAD
+
+  @@map("payment_method")
+}
+
+enum PaymentStatus {
+  INITIATED
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+  PARTIALLY_REFUNDED
+
+  @@map("payment_status")
+}
+
+// The logical payment record for one Registration. INITIATED until the
+// student submits proof (-> PENDING); admin approve/reject moves it to
+// PAID or FAILED. No gateway involved in the MVP — see docs/security.md §5.
+model Payment {
+  id             String        @id @default(cuid())
+  registrationId String        @unique @map("registration_id")
+  amountBdt      Int           @map("amount_bdt")
+  status         PaymentStatus @default(INITIATED)
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  registration Registration         @relation(fields: [registrationId], references: [id])
+  transactions PaymentTransaction[]
+
+  @@map("payments")
+}
+
+// One row per submitted proof (a student may resubmit after a rejection).
+// trxId is unique per method globally — a real bKash/Nagad transaction ID
+// can never confirm more than one registration (docs/database.md §4).
+model PaymentTransaction {
+  id              String        @id @default(cuid())
+  paymentId       String        @map("payment_id")
+  method          PaymentMethod
+  receivingMsisdn String        @map("receiving_msisdn")
+  senderMsisdn    String        @map("sender_msisdn")
+  trxId           String        @map("trx_id")
+  proofImageUrl   String?       @map("proof_image_url")
+  status          PaymentStatus @default(PENDING)
+  reviewedById    String?       @map("reviewed_by_id")
+  reviewedAt      DateTime?     @map("reviewed_at")
+  reviewNote      String?       @map("review_note")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  payment    Payment @relation(fields: [paymentId], references: [id])
+  reviewedBy User?   @relation(fields: [reviewedById], references: [id])
+
+  @@unique([method, trxId])
+  @@index([paymentId])
+  @@index([status])
+  @@map("payment_transactions")
 }

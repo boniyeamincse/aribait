@@ -68,9 +68,9 @@ export function SessionForm({
     <form action={formAction} className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="title">Session title</Label>
+          <Label htmlFor="session-title">Session title</Label>
           <Input
-            id="title"
+            id="session-title"
             name="title"
             required
             minLength={3}
@@ -78,9 +78,9 @@ export function SessionForm({
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="sequence">Sequence</Label>
+          <Label htmlFor="session-sequence">Sequence</Label>
           <Input
-            id="sequence"
+            id="session-sequence"
             name="sequence"
             type="number"
             min={1}
@@ -91,9 +91,9 @@ export function SessionForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="description">Description / agenda</Label>
+        <Label htmlFor="session-description">Description / agenda</Label>
         <Textarea
-          id="description"
+          id="session-description"
           name="description"
           rows={2}
           defaultValue={defaultValues?.description ?? undefined}
@@ -102,9 +102,9 @@ export function SessionForm({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="startAt">Start</Label>
+          <Label htmlFor="session-startAt">Start</Label>
           <Input
-            id="startAt"
+            id="session-startAt"
             name="startAt"
             type="datetime-local"
             required
@@ -114,9 +114,9 @@ export function SessionForm({
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="endAt">End</Label>
+          <Label htmlFor="session-endAt">End</Label>
           <Input
-            id="endAt"
+            id="session-endAt"
             name="endAt"
             type="datetime-local"
             required
@@ -127,22 +127,22 @@ export function SessionForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="timeZone">Time zone</Label>
+          <Label htmlFor="session-timeZone">Time zone</Label>
           <Input
-            id="timeZone"
+            id="session-timeZone"
             name="timeZone"
             defaultValue={defaultValues?.timeZone ?? "Asia/Dhaka"}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="hostInstructorId">Host</Label>
+          <Label htmlFor="session-hostInstructorId">Host</Label>
           <Select
             name="hostInstructorId"
             defaultValue={defaultValues?.hostInstructorId ?? undefined}
             required
           >
-            <SelectTrigger id="hostInstructorId" className="w-full">
+            <SelectTrigger id="session-hostInstructorId" className="w-full">
               <SelectValue>
                 {(value: string | null) =>
                   instructors.find((i) => i.id === value)?.name ??
@@ -161,13 +161,13 @@ export function SessionForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="platform">Platform</Label>
+          <Label htmlFor="session-platform">Platform</Label>
           <Select
             name="platform"
             defaultValue={defaultValues?.platform}
             required
           >
-            <SelectTrigger id="platform" className="w-full">
+            <SelectTrigger id="session-platform" className="w-full">
               <SelectValue>
                 {(value: string | null) =>
                   value ? PLATFORM_LABELS[value] : "Select platform"
@@ -185,9 +185,9 @@ export function SessionForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="meetingId">Meeting ID</Label>
+          <Label htmlFor="session-meetingId">Meeting ID</Label>
           <Input
-            id="meetingId"
+            id="session-meetingId"
             name="meetingId"
             defaultValue={defaultValues?.meetingId ?? undefined}
           />
@@ -195,9 +195,9 @@ export function SessionForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="meetingUrl">Meeting URL (protected — never shown publicly)</Label>
+        <Label htmlFor="session-meetingUrl">Meeting URL (protected — never shown publicly)</Label>
         <Input
-          id="meetingUrl"
+          id="session-meetingUrl"
           name="meetingUrl"
           type="url"
           defaultValue={defaultValues?.meetingUrl ?? undefined}
@@ -205,9 +205,9 @@ export function SessionForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="meetingPasscode">Passcode</Label>
+        <Label htmlFor="session-meetingPasscode">Passcode</Label>
         <Input
-          id="meetingPasscode"
+          id="session-meetingPasscode"
           name="meetingPasscode"
           defaultValue={defaultValues?.meetingPasscode ?? undefined}
         />

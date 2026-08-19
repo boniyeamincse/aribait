@@ -2,18 +2,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/db/client";
 
 export default async function AdminOverviewPage() {
-  const [totalStudents, activeEvents, upcomingSessions, confirmedRegistrations] =
-    await Promise.all([
-      prisma.user.count({ where: { role: "STUDENT" } }),
-      prisma.event.count({ where: { status: "PUBLISHED" } }),
-      prisma.eventSession.count({
-        where: {
-          startAt: { gte: new Date() },
-          status: { in: ["SCHEDULED", "JOIN_OPEN", "LIVE", "RESCHEDULED"] },
-        },
-      }),
-      prisma.registration.count({ where: { status: "CONFIRMED" } }),
-    ]);
+  const [
+    totalStudents,
+    activeEvents,
+    upcomingSessions,
+    confirmedRegistrations,
+    pendingPayments,
+  ] = await Promise.all([
+    prisma.user.count({ where: { role: "STUDENT" } }),
+    prisma.event.count({ where: { status: "PUBLISHED" } }),
+    prisma.eventSession.count({
+      where: {
+        startAt: { gte: new Date() },
+        status: { in: ["SCHEDULED", "JOIN_OPEN", "LIVE", "RESCHEDULED"] },
+      },
+    }),
+    prisma.registration.count({ where: { status: "CONFIRMED" } }),
+    prisma.paymentTransaction.count({ where: { status: "PENDING" } }),
+  ]);
 
   const overviewCards = [
     { label: "Total students", value: totalStudents },
@@ -21,7 +27,7 @@ export default async function AdminOverviewPage() {
     { label: "Upcoming Sessions", value: upcomingSessions },
     { label: "Confirmed registrations", value: confirmedRegistrations },
     { label: "Available seats", value: "—" },
-    { label: "Pending payments", value: 0 },
+    { label: "Pending payments", value: pendingPayments },
   ];
 
   return (

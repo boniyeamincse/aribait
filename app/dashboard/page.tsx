@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/permissions";
 export default async function DashboardOverviewPage() {
   const user = await requireUser();
 
-  const [enrolledEvents, upcomingSessions, completedEvents] =
+  const [enrolledEvents, upcomingSessions, completedEvents, pendingPayments] =
     await Promise.all([
       prisma.registration.count({
         where: { userId: user.id, status: "CONFIRMED" },
@@ -22,6 +22,12 @@ export default async function DashboardOverviewPage() {
       prisma.registration.count({
         where: { userId: user.id, status: "COMPLETED" },
       }),
+      prisma.payment.count({
+        where: {
+          registration: { userId: user.id },
+          status: { in: ["INITIATED", "PENDING", "FAILED"] },
+        },
+      }),
     ]);
 
   const overviewCards = [
@@ -30,7 +36,7 @@ export default async function DashboardOverviewPage() {
     { label: "Completed Events", value: completedEvents },
     { label: "Certificates", value: 0 },
     { label: "Unread notifications", value: 0 },
-    { label: "Pending payments", value: 0 },
+    { label: "Pending payments", value: pendingPayments },
   ];
 
   return (

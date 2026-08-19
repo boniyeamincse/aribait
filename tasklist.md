@@ -55,20 +55,43 @@ would be unused scaffolding.
 
 ## Phase 3 — Commerce (Manual bKash/Nagad)
 
-- [ ] `seat_holds` table + state machine (`AVAILABLE → HELD → CONFIRMED` / `EXPIRED`) — moved from Phase 2, see note there
-- [ ] Cron: `expire-seat-holds` — moved from Phase 2, see note there
-- [ ] `discounts`, `discount_events`, `discount_redemptions` tables
-- [ ] Admin coupon CRUD
-- [ ] `validateCoupon` action — active/window/usage caps/eligibility/min purchase, payable never negative
-- [ ] `payments`, `payment_transactions` tables with manual-proof fields (`method`, `receiving_msisdn`, `sender_msisdn`, `trx_id` unique per method, `proof_image_url`, `reviewed_by`, `reviewed_at`, `review_note`) per `docs/database.md` §2.8
-- [ ] `startPaidCheckout` action — hold seat, compute payable amount, show bKash/Nagad number `01914638653` + amount
-- [ ] Student payment-proof submission UI + `submitManualPaymentProof` action
-- [ ] Admin Payments queue UI (pending manual submissions)
-- [ ] `approveManualPayment` action — atomic payment+registration confirm, receipt, notification, audit log
-- [ ] `rejectManualPayment` action — mark failed, notify with reason, allow resubmission, audit log
-- [ ] Immutable price/discount snapshot on registration at checkout time
-- [ ] Registration and payment snapshot never mutated by later Event price changes
-- [ ] Receipts (view/download)
+- [x] `seat_holds` table + state machine (`HELD → CONFIRMED` / `EXPIRED`) — moved from Phase 2, see note there
+- [x] Cron: `expire-seat-holds` — protected by `CRON_SECRET`; cascades to `EXPIRED` registration + `CANCELLED` payment
+- [x] `discounts`, `discount_events`, `discount_redemptions` tables
+- [x] Admin coupon CRUD (create + deactivate; sitewide by default, scoped by attaching to specific Events from the Event edit page)
+- [x] `validateCoupon` — active/window/usage caps/eligibility/min purchase, payable never negative (`lib/discounts/validate.ts`)
+- [x] `payments`, `payment_transactions` tables with manual-proof fields, `trx_id` unique per method
+- [x] `startPaidCheckout` action — hold seat, compute payable amount, show bKash/Nagad number + amount; reuses the registration row on retry after expiry/cancellation
+- [x] Student payment-proof submission UI + `submitManualPaymentProof` action — resubmission after rejection reuses the same TrxID row rather than creating a duplicate
+- [x] Admin Payments queue UI (pending manual submissions)
+- [x] `approveManualPayment` action — atomic payment+registration+seat-hold confirm; receipt appears on `/dashboard/payments/[id]`
+- [x] `rejectManualPayment` action — mark failed with a reason shown to the student, allows resubmission
+- [x] Immutable price/discount snapshot on registration at checkout time
+- [x] Registration and payment snapshot never mutated by later Event price changes (snapshots copied once, never re-derived)
+- [x] Receipts — in-app view only (`/dashboard/payments/[id]`); PDF download not built (not required by `idea.md`'s MVP wording)
+
+Not built: audit-log entries for approve/reject (deferred to Phase 5's
+`audit_logs` table per the original plan — `PaymentTransaction.reviewedById/
+reviewedAt/reviewNote` already carries the accountability trail in the
+meantime) and notifications on approve/reject/waitlist (Phase 4). Paid-event
+waitlisting was scoped out entirely — see the note in `prisma/schema.prisma`
+above the `SeatHold` model.
+
+Verified end-to-end in the browser: admin created a sitewide 10% coupon and
+a capacity-1 paid Event; a student checked out with the coupon (৳500 → ৳450),
+submitted a bKash proof, and a second student was correctly blocked by the
+seat hold even though the confirmed-registration count still read 0/1; admin
+approved it, registration flipped to CONFIRMED and the event showed full;
+a separate reject → resubmit-with-same-TrxID → approve cycle worked on a
+second Event; manually expiring a seat hold and hitting the cron endpoint
+(401 without `CRON_SECRET`, 200 with it) correctly cascaded the registration
+to EXPIRED and payment to CANCELLED, and the student could then start a
+fresh checkout that reused the same registration row (no duplicate, no
+unique-constraint error). Also fixed a real bug found along the way: the
+admin Event-edit page rendered `EventForm` and `SessionForm` together, and
+both used bare ids like `id="title"`/`id="startAt"` — duplicate DOM ids that
+could mislabel real users' Tab/label-click focus, not just an automation
+artifact. `SessionForm`'s ids are now prefixed (`session-title`, etc).
 
 ## Phase 4 — Live Delivery
 

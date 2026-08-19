@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatBdt } from "@/lib/utils";
 
 import { RegisterButton } from "./register-button";
+import { PayButton } from "./pay-button";
 
 const EVENT_TYPE_LABELS: Record<string, string> = {
   LIVE_CLASS: "Live class",
@@ -30,6 +31,7 @@ export default async function EventDetailPage({
   const existingRegistration = session?.user
     ? await prisma.registration.findUnique({
         where: { userId_eventId: { userId: session.user.id, eventId: event.id } },
+        include: { payment: true },
       })
     : null;
 
@@ -41,6 +43,10 @@ export default async function EventDetailPage({
 
   const confirmedCount = event._count.registrations;
   const isFull = event.capacity !== null && confirmedCount >= event.capacity;
+  const canRegisterAgain =
+    !existingRegistration ||
+    existingRegistration.status === "CANCELLED" ||
+    existingRegistration.status === "EXPIRED";
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -99,16 +105,32 @@ export default async function EventDetailPage({
           />
         )}
 
-        {session?.user && existingRegistration && (
-          <Badge variant="secondary">
-            {existingRegistration.status === "CONFIRMED" && "You're registered"}
-            {existingRegistration.status === "WAITLISTED" && "You're waitlisted"}
-            {existingRegistration.status === "CANCELLED" && "Registration cancelled"}
-          </Badge>
-        )}
+        {session?.user &&
+          existingRegistration &&
+          (existingRegistration.status === "CONFIRMED" ||
+            existingRegistration.status === "WAITLISTED") && (
+            <Badge variant="secondary">
+              {existingRegistration.status === "CONFIRMED"
+                ? "You're registered"
+                : "You're waitlisted"}
+            </Badge>
+          )}
 
         {session?.user &&
-          !existingRegistration &&
+          existingRegistration?.status === "PENDING_PAYMENT" &&
+          existingRegistration.payment && (
+            <Button
+              variant="outline"
+              render={
+                <Link href={`/dashboard/payments/${existingRegistration.payment.id}`}>
+                  Continue checkout
+                </Link>
+              }
+            />
+          )}
+
+        {session?.user &&
+          canRegisterAgain &&
           event.status === "CANCELLED" && (
             <p className="text-sm text-destructive">
               This Event has been cancelled.
@@ -116,7 +138,7 @@ export default async function EventDetailPage({
           )}
 
         {session?.user &&
-          !existingRegistration &&
+          canRegisterAgain &&
           event.status !== "CANCELLED" &&
           !registrationOpen && (
             <p className="text-sm text-muted-foreground">
@@ -125,24 +147,26 @@ export default async function EventDetailPage({
           )}
 
         {session?.user &&
-          !existingRegistration &&
+          canRegisterAgain &&
           event.status !== "CANCELLED" &&
           registrationOpen &&
           event.priceBdt === 0 && <RegisterButton eventId={event.id} />}
 
         {session?.user &&
-          !existingRegistration &&
+          canRegisterAgain &&
           event.status !== "CANCELLED" &&
           registrationOpen &&
-          event.priceBdt > 0 && (
-            <p className="text-sm text-muted-foreground">
-              Paid registration (bKash/Nagad) lands in Phase 3.
-            </p>
-          )}
+          event.priceBdt > 0 &&
+          !isFull && <PayButton eventId={event.id} />}
 
-        {isFull && (
+        {isFull && event.priceBdt === 0 && (
           <span className="text-sm text-muted-foreground">
             Full — new registrations join the waitlist
+          </span>
+        )}
+        {isFull && event.priceBdt > 0 && canRegisterAgain && (
+          <span className="text-sm text-muted-foreground">
+            This Event is full.
           </span>
         )}
       </div>

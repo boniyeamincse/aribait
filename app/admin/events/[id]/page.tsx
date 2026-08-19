@@ -16,6 +16,7 @@ import { formatBdt } from "@/lib/utils";
 
 import { EventForm } from "../event-form";
 import { SessionForm } from "./session-form";
+import { AttachCouponForm } from "./attach-coupon-form";
 
 export default async function AdminEventDetailPage({
   params,
@@ -27,6 +28,7 @@ export default async function AdminEventDetailPage({
       where: { id },
       include: {
         sessions: { orderBy: { sequence: "asc" } },
+        discountEvents: { include: { discount: true } },
         _count: { select: { registrations: true } },
       },
     }),
@@ -185,6 +187,28 @@ export default async function AdminEventDetailPage({
           />
         </div>
       </div>
+
+      {event.priceBdt > 0 && (
+        <>
+          <Separator />
+          <div className="flex flex-col gap-4">
+            <h2 className="text-lg font-medium">Coupons</h2>
+            <div className="flex flex-wrap gap-2">
+              {event.discountEvents.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No coupons attached to this Event.
+                </p>
+              )}
+              {event.discountEvents.map((de) => (
+                <Badge key={de.id} variant="secondary">
+                  {de.discount.code}
+                </Badge>
+              ))}
+            </div>
+            <AttachCouponForm eventId={event.id} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
