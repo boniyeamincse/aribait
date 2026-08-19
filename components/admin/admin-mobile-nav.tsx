@@ -1,48 +1,48 @@
 "use client";
 
 import { useState } from "react";
+import { AdminNav } from "./admin-nav";
+import { Menu, X } from "lucide-react";
 
-import { AdminNav } from "@/components/admin/admin-nav";
-
-export function AdminMobileNav({
-  pendingPaymentsCount = 0,
-}: {
-  pendingPaymentsCount?: number;
-}) {
+export function AdminMobileNav() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <button
-        aria-label="Toggle admin navigation menu"
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white md:hidden"
+        type="button"
+        className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+        onClick={() => setOpen(true)}
+        aria-label="Open navigation menu"
       >
-        {open ? (
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        )}
+        <Menu size={18} />
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-40 md:hidden">
+        <>
+          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm md:hidden"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-72 overflow-y-auto border-r border-slate-800 bg-slate-950 pt-16 shadow-xl">
-            <AdminNav
-              pendingPaymentsCount={pendingPaymentsCount}
-              onNavigate={() => setOpen(false)}
-            />
+          {/* Drawer */}
+          <div className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-950 shadow-2xl border-r border-slate-800 md:hidden">
+            <div className="flex h-16 items-center justify-between px-6 border-b border-slate-800">
+              <span className="font-semibold text-white tracking-tight">Menu</span>
+              <button
+                type="button"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-slate-800 hover:text-white"
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <AdminNav onNavigate={() => setOpen(false)} />
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );
