@@ -58,6 +58,7 @@ export function EventForm({
     registrationClosesAt: Date | null;
     startAt: Date;
     endAt: Date;
+    featured: boolean;
     termsAndRefundPolicy: string | null;
     classSchedule: string | null;
   };

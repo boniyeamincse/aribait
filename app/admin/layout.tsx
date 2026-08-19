@@ -14,6 +14,7 @@ import { TopBarNotifications } from "@/components/admin/top-bar-notifications";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -64,31 +65,33 @@ export default async function AdminLayout({
 
           {/* Admin profile and logout */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900 shadow-md ring-offset-2 transition-all hover:ring-2 hover:ring-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300">
-                {initials}
-              </button>
-            </DropdownMenuTrigger>
+            <DropdownMenuTrigger
+              render={
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900 shadow-md ring-offset-2 transition-all hover:ring-2 hover:ring-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300">
+                  {initials}
+                </button>
+              }
+            />
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="flex flex-col">
-                <span className="text-sm font-medium text-slate-900">{user.name ?? "Admin"}</span>
-                <span className="text-xs font-normal text-slate-500">{user.email}</span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/dashboard/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/admin/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <form action={logout} className="w-full">
-                  <button type="submit" className="w-full text-left text-destructive">
-                    Log out
-                  </button>
-                </form>
-              </DropdownMenuItem>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="flex flex-col">
+                  <span className="text-sm font-medium text-slate-900">{user.name ?? "Admin"}</span>
+                  <span className="text-xs font-normal text-slate-500">{user.email}</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href="/dashboard/profile">Profile</Link>} />
+                <DropdownMenuItem render={<Link href="/admin/settings">Settings</Link>} />
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  render={
+                    <form action={logout} className="w-full">
+                      <button type="submit" className="w-full text-left text-destructive">
+                        Log out
+                      </button>
+                    </form>
+                  }
+                />
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
