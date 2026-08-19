@@ -14,8 +14,8 @@ import { formatBdt } from "@/lib/utils";
 
 function ReportCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-      <h3 className="mb-3 text-sm font-semibold text-slate-300">{title}</h3>
+    <section className="rounded-2xl border border-slate-200 bg-white p-5">
+      <h3 className="mb-3 text-sm font-semibold text-slate-700">{title}</h3>
       {children}
     </section>
   );
@@ -32,11 +32,11 @@ function ReportList({
     return <p className="text-sm text-slate-600">{emptyMessage}</p>;
   }
   return (
-    <div className="divide-y divide-slate-800/50 text-sm">
+    <div className="divide-y divide-slate-200/50 text-sm">
       {rows.map((row) => (
         <div key={row.key} className="flex items-center justify-between gap-4 py-2">
-          <span className="font-medium text-white">{row.label}</span>
-          <span className="text-slate-400">{row.value}</span>
+          <span className="font-medium text-slate-900">{row.label}</span>
+          <span className="text-slate-600">{row.value}</span>
         </div>
       ))}
     </div>
@@ -105,7 +105,7 @@ export default async function AdminReportsPage() {
           </ReportCard>
 
           <ReportCard title="Certificate Issuance">
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-slate-900">
               {certificates.issued} <span className="text-sm font-normal text-slate-500">issued</span>
             </p>
             <p className="text-sm text-slate-500">{certificates.revoked} revoked</p>
@@ -128,14 +128,14 @@ export default async function AdminReportsPage() {
           </ReportCard>
 
           <ReportCard title="Free vs Paid Enrollment">
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-slate-900">
               {pricingSplit.free} <span className="text-sm font-normal text-slate-500">free</span>
             </p>
             <p className="text-sm text-slate-500">{pricingSplit.paid} paid confirmed registrations</p>
           </ReportCard>
 
           <ReportCard title="Payment Success / Failure">
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-slate-700">
               {paymentRates.paid} paid · {paymentRates.failed} failed · {paymentRates.pending} pending
             </p>
           </ReportCard>

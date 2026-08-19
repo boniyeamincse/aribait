@@ -94,7 +94,7 @@ export function AdminNav({
   const badgeValues: Record<string, number> = { pendingPayments: pendingPaymentsCount };
 
   return (
-    <nav className="flex w-64 shrink-0 flex-col gap-5 overflow-y-auto border-r border-slate-800 bg-slate-950 p-4">
+    <nav className="flex w-64 shrink-0 flex-col gap-5 overflow-y-auto border-r border-slate-200 bg-slate-50 p-4">
       {NAV_GROUPS.map((group, i) => (
         <div key={group.label ?? `group-${i}`} className="flex flex-col gap-0.5">
           {group.label && (
@@ -116,13 +116,13 @@ export function AdminNav({
                 onClick={onNavigate}
                 className={
                   isActive
-                    ? "flex items-center gap-3 rounded-lg border border-violet-500/20 bg-gradient-to-r from-violet-500/15 to-cyan-500/10 px-3 py-2.5 text-sm font-medium text-white"
-                    : "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-500 transition-colors hover:bg-slate-800/60 hover:text-slate-200"
+                    ? "flex items-center gap-3 rounded-lg border border-green-500/20 bg-gradient-to-r from-green-500/15 to-blue-500/10 px-3 py-2.5 text-sm font-medium text-slate-900"
+                    : "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-500 transition-colors hover:bg-slate-100/60 hover:text-slate-800"
                 }
               >
                 <Icon
                   size={16}
-                  className={isActive ? "text-violet-400" : "text-slate-600"}
+                  className={isActive ? "text-green-400" : "text-slate-600"}
                   strokeWidth={isActive ? 2 : 1.75}
                 />
                 <span className="flex-1">{item.label}</span>

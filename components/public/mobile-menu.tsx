@@ -19,7 +19,7 @@ export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
         aria-label="Toggle navigation menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white sm:hidden"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:hidden"
       >
         {open ? (
           /* X icon */
@@ -37,7 +37,7 @@ export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
       {/* Dropdown menu */}
       {open && (
         <div
-          className="absolute left-0 right-0 top-full z-50 border-b border-slate-800 bg-slate-950 px-4 pb-4 pt-2 shadow-xl sm:hidden"
+          className="absolute left-0 right-0 top-full z-50 border-b border-slate-200 bg-slate-50 px-4 pb-4 pt-2 shadow-xl sm:hidden"
           onClick={() => setOpen(false)}
         >
           <nav className="flex flex-col gap-1">
@@ -49,26 +49,26 @@ export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-lg px-3 py-2.5 text-sm text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                className="rounded-lg px-3 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
               >
                 {item.label}
               </Link>
             ))}
 
-            <div className="my-2 h-px bg-slate-800" />
+            <div className="my-2 h-px bg-slate-100" />
 
             {isLoggedIn ? (
               <>
                 <Link
                   href={isAdmin ? "/admin" : "/dashboard"}
-                  className="rounded-lg px-3 py-2.5 text-sm text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                  className="rounded-lg px-3 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                 >
                   Dashboard
                 </Link>
                 <form action="/api/auth/signout" method="POST">
                   <button
                     type="submit"
-                    className="w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                    className="w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                   >
                     Log out
                   </button>
@@ -78,13 +78,13 @@ export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
               <>
                 <Link
                   href="/login"
-                  className="rounded-lg px-3 py-2.5 text-sm text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                  className="rounded-lg px-3 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
-                  className="mt-1 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:from-cyan-400 hover:to-violet-500"
+                  className="mt-1 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-4 py-2.5 text-sm font-semibold text-slate-900 transition-all hover:from-blue-400 hover:to-green-500"
                 >
                   Register Free
                 </Link>

@@ -28,8 +28,8 @@ import { requireAdmin } from "@/lib/permissions";
 import { formatBdtAmount } from "@/lib/utils";
 
 const SESSION_STATUS_COLORS: Record<string, string> = {
-  SCHEDULED: "bg-slate-500/15 text-slate-400 border-slate-500/30",
-  JOIN_OPEN: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  SCHEDULED: "bg-slate-500/15 text-slate-600 border-slate-500/30",
+  JOIN_OPEN: "bg-blue-500/15 text-blue-400 border-blue-500/30",
   LIVE: "bg-red-500/15 text-red-400 border-red-500/30",
   COMPLETED: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   CANCELLED: "bg-red-500/15 text-red-400 border-red-500/30",
@@ -39,7 +39,7 @@ const SESSION_STATUS_COLORS: Record<string, string> = {
 const URGENCY_BORDER: Record<string, string> = {
   high: "border-l-red-500",
   medium: "border-l-amber-500",
-  low: "border-l-cyan-500",
+  low: "border-l-blue-500",
 };
 
 function timeInDhaka(date: Date) {
@@ -129,7 +129,7 @@ export default async function AdminOverviewPage() {
         {kpiCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="rounded-2xl border border-slate-800 bg-slate-900 p-5 flex flex-col justify-between">
+            <div key={card.label} className="rounded-2xl border border-slate-200 bg-white p-5 flex flex-col justify-between">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">
                   {card.label}
@@ -137,8 +137,8 @@ export default async function AdminOverviewPage() {
                 <Icon size={16} className="text-slate-600" />
               </div>
               <div>
-                <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">{card.value}</p>
-                <Link href={card.href} className="mt-3 flex items-center gap-1 text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors">
+                <p className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">{card.value}</p>
+                <Link href={card.href} className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
                   View details <span aria-hidden="true">&rarr;</span>
                 </Link>
               </div>
@@ -149,9 +149,9 @@ export default async function AdminOverviewPage() {
 
       {/* Action required */}
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-white">Action Required</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Action Required</h2>
         {actionItems.length === 0 ? (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-sm text-slate-500 flex items-center gap-3">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-500 flex items-center gap-3">
             <CheckCircle size={18} className="text-emerald-500" />
             Nothing needs attention right now.
           </div>
@@ -161,11 +161,11 @@ export default async function AdminOverviewPage() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-start gap-3 rounded-xl border border-slate-800 border-l-4 bg-slate-900 p-4 text-sm text-slate-300 transition-colors hover:bg-slate-800/60 shadow-sm ${URGENCY_BORDER[item.urgency]}`}
+                className={`flex items-start gap-3 rounded-xl border border-slate-200 border-l-4 bg-white p-4 text-sm text-slate-700 transition-colors hover:bg-slate-100/60 shadow-sm ${URGENCY_BORDER[item.urgency]}`}
               >
                 <AlertCircle size={18} className="mt-0.5 shrink-0 text-slate-500" />
                 <span className="flex-1">{item.label}</span>
-                <span className="text-cyan-400">&rarr;</span>
+                <span className="text-blue-400">&rarr;</span>
               </Link>
             ))}
           </div>
@@ -174,7 +174,7 @@ export default async function AdminOverviewPage() {
 
       {/* Today's sessions */}
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-white">Today&apos;s Sessions</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Today&apos;s Sessions</h2>
         <AdminTable
           emptyMessage="No sessions scheduled for today."
           rowKey={(s) => s.id}
@@ -186,7 +186,7 @@ export default async function AdminOverviewPage() {
               label: "Session",
               render: (s) => (
                 <div className="flex flex-col gap-1">
-                  <Link href={`/admin/events/${s.eventId}`} className="text-white hover:underline font-medium">
+                  <Link href={`/admin/events/${s.eventId}`} className="text-slate-900 hover:underline font-medium">
                     {s.title}
                   </Link>
                   {!s.hasMeetingLink && <span className="text-[10px] uppercase tracking-wider font-semibold text-amber-400">Missing link</span>}
@@ -207,7 +207,7 @@ export default async function AdminOverviewPage() {
 
       {/* Upcoming 7-day timeline */}
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-white">Upcoming Sessions (next 7 days)</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Upcoming Sessions (next 7 days)</h2>
         <AdminTable
           emptyMessage="Nothing scheduled in the next 7 days."
           rowKey={(s) => s.id}
@@ -219,7 +219,7 @@ export default async function AdminOverviewPage() {
               label: "Session",
               render: (s) => (
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-white font-medium">{s.title}</span>
+                  <span className="text-slate-900 font-medium">{s.title}</span>
                   <span className="text-xs text-slate-500">{s.eventTitle}</span>
                 </div>
               ),
@@ -247,7 +247,7 @@ export default async function AdminOverviewPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-slate-500">
             Registration Trend (30 days)
           </h2>
@@ -256,14 +256,14 @@ export default async function AdminOverviewPage() {
               <div
                 key={d.date}
                 title={`${d.date}: ${d.count}`}
-                className="flex-1 rounded-t bg-gradient-to-t from-cyan-500 to-violet-500 hover:opacity-80 transition-opacity"
+                className="flex-1 rounded-t bg-gradient-to-t from-blue-500 to-green-500 hover:opacity-80 transition-opacity"
                 style={{ height: `${Math.max(4, (d.count / maxRegistrationCount) * 100)}%` }}
               />
             ))}
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-slate-500">
             Revenue Trend
           </h2>
@@ -272,7 +272,7 @@ export default async function AdminOverviewPage() {
               <div key={d.label} className="flex flex-1 flex-col justify-end items-center gap-2 h-full">
                 <div
                   title={formatBdtAmount(d.revenueBdt)}
-                  className="w-full rounded-t bg-gradient-to-t from-cyan-500 to-violet-500 hover:opacity-80 transition-opacity"
+                  className="w-full rounded-t bg-gradient-to-t from-blue-500 to-green-500 hover:opacity-80 transition-opacity"
                   style={{ height: `${Math.max(4, (d.revenueBdt / maxRevenue) * 100)}%` }}
                 />
                 <span className="text-xs text-slate-500 font-medium">{d.label}</span>
@@ -284,14 +284,14 @@ export default async function AdminOverviewPage() {
 
       {/* Recent activity */}
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-white">Recent Activity</h2>
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 divide-y divide-slate-800/50">
+        <h2 className="text-lg font-semibold text-slate-900">Recent Activity</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white divide-y divide-slate-200/50">
           {recentActivity.length === 0 ? (
             <p className="p-5 text-sm text-slate-600">No recent activity.</p>
           ) : (
             recentActivity.map((item, i) => (
               <div key={i} className="flex items-start gap-4 px-5 py-4 text-sm">
-                <span className="flex-1 text-slate-300 leading-relaxed">{item.text}</span>
+                <span className="flex-1 text-slate-700 leading-relaxed">{item.text}</span>
                 <span className="whitespace-nowrap text-xs text-slate-500 font-medium">
                   {dateTimeInDhaka(item.at)}
                 </span>

@@ -5,7 +5,7 @@ const HOW_IT_WORKS = [
     description:
       "Browse live classes, training programs, workshops, and webinars. Filter by category, date, or price.",
     icon: "🔍",
-    color: "from-cyan-500 to-cyan-600",
+    color: "from-blue-500 to-blue-600",
   },
   {
     step: "02",
@@ -13,7 +13,7 @@ const HOW_IT_WORKS = [
     description:
       "Instantly register for free events or complete a simple bKash/Nagad payment for paid programs.",
     icon: "✅",
-    color: "from-violet-500 to-violet-600",
+    color: "from-green-500 to-green-600",
   },
   {
     step: "03",
@@ -35,16 +35,16 @@ const HOW_IT_WORKS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="bg-slate-950 py-20">
+    <section className="bg-slate-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-cyan-400">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-400">
             How It Works
           </p>
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
             From registration to certificate
           </h2>
-          <p className="mt-3 text-slate-400">
+          <p className="mt-3 text-slate-600">
             A simple, seamless experience designed for Bangladeshi learners.
           </p>
         </div>
@@ -69,8 +69,8 @@ export function HowItWorksSection() {
                 Step {item.step}
               </span>
 
-              <h3 className="mb-2 text-lg font-bold text-white">{item.title}</h3>
-              <p className="text-sm leading-relaxed text-slate-400">
+              <h3 className="mb-2 text-lg font-bold text-slate-900">{item.title}</h3>
+              <p className="text-sm leading-relaxed text-slate-600">
                 {item.description}
               </p>
             </div>

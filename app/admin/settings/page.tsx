@@ -71,7 +71,7 @@ export default async function AdminSettingsPage(
       />
 
       {/* Tab navigation */}
-      <div className="flex flex-wrap gap-1 rounded-2xl border border-slate-800 bg-slate-900 p-2">
+      <div className="flex flex-wrap gap-1 rounded-2xl border border-slate-200 bg-white p-2">
         {TABS.map((t) => {
           const Icon = t.icon;
           const isActive = t.id === tab;
@@ -81,8 +81,8 @@ export default async function AdminSettingsPage(
               href={`/admin/settings?tab=${t.id}`}
               className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-gradient-to-r from-violet-500/20 to-cyan-500/10 text-white border border-violet-500/20"
-                  : "text-slate-500 hover:bg-slate-800 hover:text-slate-300"
+                  ? "bg-gradient-to-r from-green-500/20 to-blue-500/10 text-slate-900 border border-green-500/20"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
               }`}
             >
               <Icon size={14} strokeWidth={isActive ? 2 : 1.5} />
@@ -97,13 +97,13 @@ export default async function AdminSettingsPage(
         {(() => {
           const Icon = activeTab.icon;
           return (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/10 border border-violet-500/20">
-              <Icon size={18} className="text-violet-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500/20 to-blue-500/10 border border-green-500/20">
+              <Icon size={18} className="text-green-400" />
             </div>
           );
         })()}
         <div>
-          <h2 className="text-lg font-semibold text-white">{activeTab.label}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{activeTab.label}</h2>
         </div>
       </div>
 
@@ -184,7 +184,7 @@ export default async function AdminSettingsPage(
             <strong>Automated payment gateways</strong> (SSLCommerz, ShurjoPay, 
             Stripe) are planned for a future phase. The payment adapter 
             abstraction in{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs text-blue-400">
               lib/payments/
             </code>{" "}
             is designed to accept a real gateway without changing the 
@@ -222,9 +222,9 @@ export default async function AdminSettingsPage(
             ].map((p) => (
               <div
                 key={p.name}
-                className="rounded-xl border border-slate-800 bg-slate-900 p-4"
+                className="rounded-xl border border-slate-200 bg-white p-4"
               >
-                <p className="font-semibold text-white">{p.name}</p>
+                <p className="font-semibold text-slate-900">{p.name}</p>
                 <p className="mt-1 text-xs text-slate-500">{p.status}</p>
                 <span className="mt-2 inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
                   Phase 2+
@@ -240,7 +240,7 @@ export default async function AdminSettingsPage(
           <InfoCard>
             Certificate template design and custom numbering format are fixed 
             for the MVP. The certificate number uses a{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs text-blue-400">
               CERT-YYYYMM-XXXXXX
             </code>{" "}
             pattern with a random QR verification token. Template customization 
@@ -254,9 +254,9 @@ export default async function AdminSettingsPage(
               { label: "Download", value: "PDF via /dashboard/certificates/[id]/download" },
               { label: "Public PII", value: "Name + Event title only" },
             ].map((row) => (
-              <div key={row.label} className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+              <div key={row.label} className="rounded-xl border border-slate-200 bg-white p-4">
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-600">{row.label}</p>
-                <p className="mt-1 text-sm text-slate-300">{row.value}</p>
+                <p className="mt-1 text-sm text-slate-700">{row.value}</p>
               </div>
             ))}
           </div>
@@ -273,13 +273,13 @@ export default async function AdminSettingsPage(
 
       {tab === "admins" && (
         <SettingsSection description="Active admin accounts. Full role-based permissions are planned for Phase 6.">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 border border-violet-500/20">
-                <Users size={18} className="text-violet-400" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/10 border border-green-500/20">
+                <Users size={18} className="text-green-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">{adminCount}</p>
+                <p className="text-2xl font-bold text-slate-900">{adminCount}</p>
                 <p className="text-sm text-slate-500">
                   Admin account{adminCount === 1 ? "" : "s"} active
                 </p>
@@ -289,12 +289,12 @@ export default async function AdminSettingsPage(
               Every admin account currently has full access. Granular roles 
               (Event Manager, Finance Admin, Support Admin, Viewer) are planned 
               per{" "}
-              <span className="text-slate-400">idea.md §18</span>.
+              <span className="text-slate-600">idea.md §18</span>.
             </p>
           </div>
           <InfoCard>
             To promote a student to admin or revoke access, update the{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs text-blue-400">
               role
             </code>{" "}
             field directly in the database until the Admin User Management UI 
@@ -316,10 +316,10 @@ export default async function AdminSettingsPage(
               { label: "Rate Limiting", value: "Not implemented — planned", status: "pending" },
               { label: "IP Allowlist (Admin)", value: "Not implemented — planned", status: "pending" },
             ].map((row) => (
-              <div key={row.label} className="flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4">
+              <div key={row.label} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
                 <span className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${row.status === "ok" ? "bg-emerald-400" : "bg-amber-400"}`} />
                 <div>
-                  <p className="text-sm font-medium text-slate-200">{row.label}</p>
+                  <p className="text-sm font-medium text-slate-800">{row.label}</p>
                   <p className="text-xs text-slate-500">{row.value}</p>
                 </div>
               </div>
@@ -344,12 +344,12 @@ export default async function AdminSettingsPage(
                 emerald: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
                 amber:   "bg-amber-500/15 text-amber-400 border-amber-500/30",
                 blue:    "bg-blue-500/15 text-blue-400 border-blue-500/30",
-                slate:   "bg-slate-700/15 text-slate-500 border-slate-700/30",
+                slate:   "bg-slate-200/15 text-slate-500 border-slate-300/30",
               };
               return (
-                <div key={item.name} className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+                <div key={item.name} className="rounded-xl border border-slate-200 bg-white p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-white">{item.name}</p>
+                    <p className="font-semibold text-slate-900">{item.name}</p>
                     <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${colorMap[item.color]}`}>
                       {item.status}
                     </span>
@@ -394,7 +394,7 @@ function SettingsSection({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-slate-400">{description}</p>
+      <p className="text-sm text-slate-600">{description}</p>
       {children}
     </div>
   );
@@ -402,7 +402,7 @@ function SettingsSection({
 
 function InfoCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="max-w-2xl rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm text-slate-400 leading-relaxed">
+    <div className="max-w-2xl rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 leading-relaxed">
       {children}
     </div>
   );
@@ -410,7 +410,7 @@ function InfoCard({ children }: { children: React.ReactNode }) {
 
 function HintCard({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
-    <div className="flex max-w-2xl items-start gap-3 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 text-sm text-cyan-300">
+    <div className="flex max-w-2xl items-start gap-3 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-sm text-blue-300">
       <span className="text-lg">{icon}</span>
       <p>{children}</p>
     </div>

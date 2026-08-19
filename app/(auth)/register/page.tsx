@@ -12,14 +12,14 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-col gap-6">
       {/* Card */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl shadow-black/30">
+      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-black/30">
         {/* Header */}
         <div className="mb-6 text-center">
-          <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-violet-600 text-xl shadow-lg shadow-cyan-500/20">
+          <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-green-600 text-xl shadow-lg shadow-blue-500/20">
             🎓
           </div>
-          <h1 className="text-2xl font-bold text-white">Create your account</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
+          <p className="mt-1 text-sm text-slate-600">
             Register as a student to browse and join Events.
           </p>
         </div>
@@ -32,7 +32,7 @@ export default function RegisterPage() {
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
+          className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
         >
           Log in
         </Link>

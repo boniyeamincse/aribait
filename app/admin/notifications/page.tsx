@@ -13,15 +13,15 @@ export default async function AdminNotificationsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Notifications</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
+        <p className="text-sm text-slate-600">
           Last {notifications.length} in-app notifications sent to students, most recent first.
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <table className="w-full text-sm">
-          <thead className="border-b border-slate-800 text-xs uppercase tracking-widest text-slate-500">
+          <thead className="border-b border-slate-200 text-xs uppercase tracking-widest text-slate-500">
             <tr>
               <th className="px-4 py-3 text-left">Recipient</th>
               <th className="px-4 py-3 text-left">Type</th>
@@ -40,13 +40,13 @@ export default async function AdminNotificationsPage() {
               </tr>
             ) : (
               notifications.map((n) => (
-                <tr key={n.id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                  <td className="px-4 py-3 text-slate-300">
+                <tr key={n.id} className="border-b border-slate-200/50 hover:bg-slate-100/30">
+                  <td className="px-4 py-3 text-slate-700">
                     {n.user.name ?? n.user.email}
                   </td>
-                  <td className="px-4 py-3 text-slate-400">{n.type.replace(/_/g, " ")}</td>
-                  <td className="px-4 py-3 text-slate-300">{n.title}</td>
-                  <td className="px-4 py-3 text-slate-400">{n.event?.title ?? "—"}</td>
+                  <td className="px-4 py-3 text-slate-600">{n.type.replace(/_/g, " ")}</td>
+                  <td className="px-4 py-3 text-slate-700">{n.title}</td>
+                  <td className="px-4 py-3 text-slate-600">{n.event?.title ?? "—"}</td>
                   <td className="px-4 py-3 text-slate-500">
                     {n.createdAt.toLocaleString("en-US", { timeZone: "Asia/Dhaka" })}
                   </td>
@@ -56,7 +56,7 @@ export default async function AdminNotificationsPage() {
                         Read
                       </span>
                     ) : (
-                      <span className="rounded-full border border-slate-500/30 bg-slate-500/15 px-2.5 py-0.5 text-xs font-semibold text-slate-400">
+                      <span className="rounded-full border border-slate-500/30 bg-slate-500/15 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
                         Unread
                       </span>
                     )}

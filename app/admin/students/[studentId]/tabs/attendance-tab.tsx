@@ -5,7 +5,7 @@ const STATUS_COLORS: Record<string, string> = {
   PRESENT: "text-emerald-400",
   LATE: "text-amber-400",
   ABSENT: "text-red-400",
-  EXCUSED: "text-slate-400",
+  EXCUSED: "text-slate-600",
 };
 
 export async function AttendanceTab({ userId }: { userId: string }) {

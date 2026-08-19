@@ -11,7 +11,7 @@ export function AdminMobileNav() {
     <>
       <button
         type="button"
-        className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+        className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
         onClick={() => setOpen(true)}
         aria-label="Open navigation menu"
       >
@@ -22,16 +22,16 @@ export function AdminMobileNav() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-50 bg-slate-50/80 backdrop-blur-sm md:hidden"
             onClick={() => setOpen(false)}
           />
           {/* Drawer */}
-          <div className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-950 shadow-2xl border-r border-slate-800 md:hidden">
-            <div className="flex h-16 items-center justify-between px-6 border-b border-slate-800">
-              <span className="font-semibold text-white tracking-tight">Menu</span>
+          <div className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-50 shadow-2xl border-r border-slate-200 md:hidden">
+            <div className="flex h-16 items-center justify-between px-6 border-b border-slate-200">
+              <span className="font-semibold text-slate-900 tracking-tight">Menu</span>
               <button
                 type="button"
-                className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
               >

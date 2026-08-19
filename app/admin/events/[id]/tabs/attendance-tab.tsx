@@ -16,7 +16,7 @@ export async function AttendanceTab({ eventId }: { eventId: string }) {
           key: "session",
           label: "Session",
           render: (s) => (
-            <span className="font-medium text-white">
+            <span className="font-medium text-slate-900">
               {s.sequence}. {s.title}
             </span>
           ),
@@ -37,7 +37,7 @@ export async function AttendanceTab({ eventId }: { eventId: string }) {
           key: "action",
           label: "",
           render: (s) => (
-            <Link href={`/admin/attendance/${s.id}`} className="text-xs text-cyan-400 hover:underline">
+            <Link href={`/admin/attendance/${s.id}`} className="text-xs text-blue-400 hover:underline">
               Take attendance →
             </Link>
           ),

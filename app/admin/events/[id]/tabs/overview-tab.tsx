@@ -67,7 +67,7 @@ export function OverviewTab({
       </div>
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium text-white">Edit Event</h2>
+        <h2 className="text-lg font-medium text-slate-900">Edit Event</h2>
         <EventForm
           action={updateEvent.bind(null, event.id)}
           categories={categories}
@@ -101,7 +101,7 @@ export function OverviewTab({
         <>
           <Separator />
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium text-white">Coupons</h2>
+            <h2 className="text-lg font-medium text-slate-900">Coupons</h2>
             <div className="flex flex-wrap gap-2">
               {event.discountEvents.length === 0 && (
                 <p className="text-sm text-slate-500">No coupons attached to this Event.</p>
@@ -120,15 +120,15 @@ export function OverviewTab({
       <Separator />
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium text-white">Resources</h2>
-        <div className="divide-y divide-slate-800 rounded-lg border border-slate-800">
+        <h2 className="text-lg font-medium text-slate-900">Resources</h2>
+        <div className="divide-y divide-slate-200 rounded-lg border border-slate-200">
           {event.resources.length === 0 && (
             <p className="p-4 text-sm text-slate-500">No resources attached to this Event.</p>
           )}
           {event.resources.map((resource) => (
             <div key={resource.id} className="flex items-center justify-between gap-4 p-3 text-sm">
               <div>
-                <p className="font-medium text-white">{resource.title}</p>
+                <p className="font-medium text-slate-900">{resource.title}</p>
                 <p className="truncate text-slate-500">{resource.url}</p>
               </div>
               <RemoveResourceButton resourceId={resource.id} />
@@ -141,15 +141,15 @@ export function OverviewTab({
       <Separator />
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium text-white">Reviews</h2>
-        <div className="divide-y divide-slate-800 rounded-lg border border-slate-800">
+        <h2 className="text-lg font-medium text-slate-900">Reviews</h2>
+        <div className="divide-y divide-slate-200 rounded-lg border border-slate-200">
           {event.reviews.length === 0 && (
             <p className="p-4 text-sm text-slate-500">No reviews submitted yet.</p>
           )}
           {event.reviews.map((review) => (
             <div key={review.id} className="flex items-center justify-between gap-4 p-3 text-sm">
               <div>
-                <p className="font-medium text-white">
+                <p className="font-medium text-slate-900">
                   {review.user.name} — {review.rating}/5
                 </p>
                 {review.comment && <p className="text-slate-500">{review.comment}</p>}
@@ -163,7 +163,7 @@ export function OverviewTab({
       <Separator />
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium text-white">Announcements</h2>
+        <h2 className="text-lg font-medium text-slate-900">Announcements</h2>
         <p className="text-sm text-slate-500">
           Sends an in-app + email notification to every confirmed and waitlisted registrant.
         </p>

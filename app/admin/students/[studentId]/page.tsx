@@ -44,8 +44,8 @@ export default async function AdminStudentDetailPage(
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">{student.name ?? student.email}</h1>
-        <p className="text-sm text-slate-400">{student.email}</p>
+        <h1 className="text-2xl font-bold text-slate-900">{student.name ?? student.email}</h1>
+        <p className="text-sm text-slate-600">{student.email}</p>
       </div>
 
       <TabBar tabs={TABS} active={tab} baseHref={`/admin/students/${studentId}`} />

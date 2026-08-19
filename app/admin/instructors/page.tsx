@@ -19,13 +19,13 @@ export default async function AdminInstructorsPage() {
         description="Manage instructor profiles, contact information, and social links." 
       />
       
-      <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-        <h2 className="mb-4 text-sm font-semibold text-white">Add New Instructor</h2>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="mb-4 text-sm font-semibold text-slate-900">Add New Instructor</h2>
         <InstructorForm />
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-white">Instructor Directory</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Instructor Directory</h2>
         <AdminTable
           rowKey={(i) => i.id}
           rows={instructors}
@@ -36,7 +36,7 @@ export default async function AdminInstructorsPage() {
               label: "Name",
               render: (i) => (
                 <div>
-                  <p className="font-medium text-white">{i.name}</p>
+                  <p className="font-medium text-slate-900">{i.name}</p>
                   {i.title && <p className="text-xs text-slate-500">{i.title}</p>}
                 </div>
               ),
@@ -45,14 +45,14 @@ export default async function AdminInstructorsPage() {
               key: "contact",
               label: "Contact",
               render: (i) => (
-                <div className="flex flex-col gap-1 text-xs text-slate-400">
+                <div className="flex flex-col gap-1 text-xs text-slate-600">
                   {i.email && (
-                    <span className="flex items-center gap-1.5 hover:text-cyan-400">
+                    <span className="flex items-center gap-1.5 hover:text-blue-400">
                       <Mail size={12} /> {i.email}
                     </span>
                   )}
                   {i.phone && (
-                    <span className="flex items-center gap-1.5 hover:text-cyan-400">
+                    <span className="flex items-center gap-1.5 hover:text-blue-400">
                       <Phone size={12} /> {i.phone}
                     </span>
                   )}
@@ -65,7 +65,7 @@ export default async function AdminInstructorsPage() {
               label: "Company",
               render: (i) =>
                 i.company ? (
-                  <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                  <span className="flex items-center gap-1.5 text-xs text-slate-600">
                     <Building2 size={12} /> {i.company}
                   </span>
                 ) : (
@@ -78,22 +78,22 @@ export default async function AdminInstructorsPage() {
               render: (i) => (
                 <div className="flex items-center gap-2 text-slate-500">
                   {i.website && (
-                    <a href={i.website} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="Website">
+                    <a href={i.website} target="_blank" rel="noreferrer" className="hover:text-blue-400" title="Website">
                       <Globe size={14} />
                     </a>
                   )}
                   {i.linkedinUrl && (
-                    <a href={i.linkedinUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="LinkedIn">
+                    <a href={i.linkedinUrl} target="_blank" rel="noreferrer" className="hover:text-blue-400" title="LinkedIn">
                       <Briefcase size={14} />
                     </a>
                   )}
                   {i.githubUrl && (
-                    <a href={i.githubUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="GitHub">
+                    <a href={i.githubUrl} target="_blank" rel="noreferrer" className="hover:text-blue-400" title="GitHub">
                       <Code2 size={14} />
                     </a>
                   )}
                   {i.twitterUrl && (
-                    <a href={i.twitterUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="Twitter/X">
+                    <a href={i.twitterUrl} target="_blank" rel="noreferrer" className="hover:text-blue-400" title="Twitter/X">
                       <MessageSquare size={14} />
                     </a>
                   )}
@@ -105,7 +105,7 @@ export default async function AdminInstructorsPage() {
               key: "events",
               label: "Events",
               render: (i) => (
-                <span className="text-slate-300">
+                <span className="text-slate-700">
                   {i._count.events} Event{i._count.events === 1 ? "" : "s"}
                 </span>
               ),

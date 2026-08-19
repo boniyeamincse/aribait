@@ -19,7 +19,7 @@ export function TabBar({
   paramName?: string;
 }) {
   return (
-    <div className="flex gap-2 overflow-x-auto border-b border-slate-800 pb-px scrollbar-hide">
+    <div className="flex gap-2 overflow-x-auto border-b border-slate-200 pb-px scrollbar-hide">
       {tabs.map((tab) => {
         const isActive = tab.id === active;
         const Icon = tab.icon;
@@ -30,14 +30,14 @@ export function TabBar({
             href={`${baseHref}?${paramName}=${tab.id}`}
             className={
               isActive
-                ? "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-cyan-400 px-4 py-2.5 text-sm font-medium whitespace-nowrap text-white bg-slate-800/20"
-                : "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-4 py-2.5 text-sm whitespace-nowrap text-slate-500 hover:text-slate-300 hover:bg-slate-800/10 transition-colors"
+                ? "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-blue-400 px-4 py-2.5 text-sm font-medium whitespace-nowrap text-slate-900 bg-slate-100/20"
+                : "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-4 py-2.5 text-sm whitespace-nowrap text-slate-500 hover:text-slate-700 hover:bg-slate-100/10 transition-colors"
             }
           >
             {Icon && (
               <Icon 
                 size={16} 
-                className={isActive ? "text-cyan-400" : "text-slate-500"} 
+                className={isActive ? "text-blue-400" : "text-slate-500"} 
                 strokeWidth={isActive ? 2 : 1.75}
               />
             )}

@@ -31,7 +31,7 @@ export async function NotificationsTab({ eventId }: { eventId: string }) {
                 Read
               </span>
             ) : (
-              <span className="rounded-full border border-slate-500/30 bg-slate-500/15 px-2.5 py-0.5 text-xs font-semibold text-slate-400">
+              <span className="rounded-full border border-slate-500/30 bg-slate-500/15 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
                 Unread
               </span>
             ),

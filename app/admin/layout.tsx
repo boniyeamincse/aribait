@@ -22,9 +22,9 @@ export default async function AdminLayout({
     .toUpperCase();
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-950">
+    <div className="flex min-h-screen flex-col bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-800 bg-slate-950/80 px-4 py-3 backdrop-blur-md sm:px-6">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-4 py-3 backdrop-blur-md sm:px-6">
         <div className="flex items-center gap-3">
           {/* Mobile hamburger */}
           <AdminMobileNav />
@@ -39,7 +39,7 @@ export default async function AdminLayout({
             />
           </Link>
           {/* Admin badge */}
-          <span className="hidden rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-violet-400 sm:block">
+          <span className="hidden rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-green-400 sm:block">
             Admin
           </span>
         </div>
@@ -47,11 +47,11 @@ export default async function AdminLayout({
         <div className="flex items-center gap-4">
           {/* Greeting + time */}
           <div className="hidden flex-col items-end sm:flex">
-            <span className="text-xs font-medium text-white">{user.name ?? "Admin"}</span>
+            <span className="text-xs font-medium text-slate-900">{user.name ?? "Admin"}</span>
             <span className="text-xs text-slate-500">{user.email}</span>
           </div>
           {/* Avatar */}
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-600 text-xs font-bold text-white shadow-md">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900 shadow-md">
             {initials}
           </div>
           <form action={logout}>
@@ -59,7 +59,7 @@ export default async function AdminLayout({
               type="submit"
               variant="outline"
               size="sm"
-              className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white text-xs"
+              className="border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 text-xs"
             >
               Log out
             </Button>
@@ -74,7 +74,7 @@ export default async function AdminLayout({
           <AdminNav />
         </aside>
         {/* Main */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 text-white">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 text-slate-900">
           {children}
         </main>
       </div>

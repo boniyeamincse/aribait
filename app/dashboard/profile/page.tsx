@@ -26,37 +26,37 @@ export default async function ProfilePage() {
     ACTIVE: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
     PENDING: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
     SUSPENDED: "bg-red-500/15 text-red-400 border-red-500/30",
-    DEACTIVATED: "bg-slate-500/15 text-slate-400 border-slate-500/30",
+    DEACTIVATED: "bg-slate-500/15 text-slate-600 border-slate-500/30",
   };
 
   const statusColor =
     STATUS_COLORS[user.status as string] ??
-    "bg-slate-500/15 text-slate-400 border-slate-500/30";
+    "bg-slate-500/15 text-slate-600 border-slate-500/30";
 
   return (
     <div className="flex flex-col gap-8">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
           My Profile
         </h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="mt-1 text-sm text-slate-600">
           View and manage your account information.
         </p>
       </div>
 
       {/* Profile card */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
           {/* Avatar */}
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-violet-600 text-2xl font-bold text-white shadow-lg shadow-cyan-500/20">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-green-600 text-2xl font-bold text-slate-900 shadow-lg shadow-blue-500/20">
             {initials}
           </div>
 
           {/* Info */}
           <div className="flex flex-1 flex-col gap-1 text-center sm:text-left">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-slate-900">
                 {user.name ?? "—"}
               </h2>
               <span
@@ -65,19 +65,19 @@ export default async function ProfilePage() {
                 {user.status}
               </span>
             </div>
-            <p className="text-sm text-slate-400">{user.email}</p>
+            <p className="text-sm text-slate-600">{user.email}</p>
             <p className="mt-1 text-xs text-slate-600">
               Role:{" "}
-              <span className="font-medium text-slate-400">
+              <span className="font-medium text-slate-600">
                 {user.role === "ADMIN" ? "Administrator" : "Student"}
               </span>
             </p>
           </div>
 
           {/* Quick stats */}
-          <div className="flex gap-6 rounded-xl border border-slate-800 bg-slate-950 px-6 py-4">
+          <div className="flex gap-6 rounded-xl border border-slate-200 bg-slate-50 px-6 py-4">
             <div className="flex flex-col items-center gap-0.5">
-              <span className="text-2xl font-bold text-white">
+              <span className="text-2xl font-bold text-slate-900">
                 {totalRegistrations}
               </span>
               <span className="text-xs text-slate-500">Registrations</span>
@@ -89,8 +89,8 @@ export default async function ProfilePage() {
       {/* Details grid */}
       <div className="grid gap-6 sm:grid-cols-2">
         {/* Account information */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-cyan-400">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-blue-400">
             <span>👤</span> Account Information
           </h3>
           <dl className="flex flex-col gap-4">
@@ -104,15 +104,15 @@ export default async function ProfilePage() {
                 <dt className="text-xs font-medium uppercase tracking-wider text-slate-600">
                   {label}
                 </dt>
-                <dd className="text-sm font-medium text-slate-200">{value}</dd>
+                <dd className="text-sm font-medium text-slate-800">{value}</dd>
               </div>
             ))}
           </dl>
         </div>
 
         {/* Security */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-violet-400">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-green-400">
             <span>🔐</span> Security
           </h3>
           <div className="flex flex-col gap-4">
@@ -120,7 +120,7 @@ export default async function ProfilePage() {
               <span className="text-xs font-medium uppercase tracking-wider text-slate-600">
                 Password
               </span>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-slate-600">
                 ••••••••••••
               </span>
             </div>
@@ -130,7 +130,7 @@ export default async function ProfilePage() {
               </span>
               <span className="text-sm text-slate-500">Not enabled</span>
             </div>
-            <div className="mt-2 rounded-lg border border-slate-800 bg-slate-950 p-3 text-xs text-slate-500">
+            <div className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
               💡 Contact support to update your name, email, or password.
             </div>
           </div>
@@ -138,7 +138,7 @@ export default async function ProfilePage() {
       </div>
 
       {/* Platform info */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-emerald-400">
           <span>📋</span> Platform
         </h3>
@@ -162,11 +162,11 @@ export default async function ProfilePage() {
           ].map((item) => (
             <div
               key={item.label}
-              className="flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-950 p-4"
+              className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
             >
               <span className="text-2xl">{item.icon}</span>
               <div>
-                <p className="text-sm font-semibold text-white">{item.label}</p>
+                <p className="text-sm font-semibold text-slate-900">{item.label}</p>
                 <p className="text-xs text-slate-500">{item.desc}</p>
               </div>
             </div>

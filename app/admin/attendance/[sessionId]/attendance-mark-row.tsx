@@ -8,7 +8,7 @@ const OPTIONS = [
   { value: "PRESENT", label: "Present", activeClass: "border-emerald-500/40 bg-emerald-500/20 text-emerald-400" },
   { value: "LATE", label: "Late", activeClass: "border-amber-500/40 bg-amber-500/20 text-amber-400" },
   { value: "ABSENT", label: "Absent", activeClass: "border-red-500/40 bg-red-500/20 text-red-400" },
-  { value: "EXCUSED", label: "Excused", activeClass: "border-slate-500/40 bg-slate-500/20 text-slate-300" },
+  { value: "EXCUSED", label: "Excused", activeClass: "border-slate-500/40 bg-slate-500/20 text-slate-700" },
 ] as const;
 
 export function AttendanceMarkRow({
@@ -37,7 +37,7 @@ export function AttendanceMarkRow({
               })
             }
             className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-              isActive ? option.activeClass : "border-slate-700 text-slate-500 hover:bg-slate-800"
+              isActive ? option.activeClass : "border-slate-300 text-slate-500 hover:bg-slate-100"
             }`}
           >
             {option.label}

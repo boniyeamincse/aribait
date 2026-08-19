@@ -30,7 +30,7 @@ export default async function AdminAttendancePage() {
             key: "session",
             label: "Session",
             render: (s) => (
-              <Link href={`/admin/attendance/${s.id}`} className="font-medium text-white hover:underline">
+              <Link href={`/admin/attendance/${s.id}`} className="font-medium text-slate-900 hover:underline">
                 {s.event.title} — {s.title}
               </Link>
             ),

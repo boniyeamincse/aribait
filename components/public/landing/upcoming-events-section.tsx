@@ -19,28 +19,28 @@ const TYPE_LABELS: Record<string, string> = {
 const TAG_COLORS: Record<string, string> = {
   HOT: "bg-orange-500/15 text-orange-400 border-orange-500/30",
   NEW: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  FREE: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  FREE: "bg-blue-500/15 text-blue-400 border-blue-500/30",
 };
 
 export async function UpcomingEventsSection() {
   const events = await listUpcomingEventsForLanding(3);
 
   return (
-    <section className="bg-slate-950 py-20">
+    <section className="bg-slate-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         {/* Section header */}
         <div className="mb-12 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-cyan-400">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-400">
               Upcoming Events
             </p>
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
               Start learning this month
             </h2>
           </div>
           <Link
             href="/events"
-            className="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-transparent px-4 py-2 text-sm text-slate-300 transition-all hover:bg-slate-800 hover:text-white"
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-transparent px-4 py-2 text-sm text-slate-700 transition-all hover:bg-slate-100 hover:text-slate-900"
           >
             View all events →
           </Link>
@@ -61,12 +61,12 @@ export async function UpcomingEventsSection() {
                   href={`/events/${event.slug}`}
                   className="group block"
                 >
-                  <Card className="h-full border-slate-800 bg-slate-900 transition-all duration-300 group-hover:-translate-y-1 group-hover:border-cyan-500/50 group-hover:shadow-xl group-hover:shadow-cyan-500/10">
+                  <Card className="h-full border-slate-200 bg-white transition-all duration-300 group-hover:-translate-y-1 group-hover:border-blue-500/50 group-hover:shadow-xl group-hover:shadow-blue-500/10">
                     <CardHeader className="pb-3">
                       <div className="mb-2 flex items-center justify-between gap-2">
                         <Badge
                           variant="outline"
-                          className="border-slate-700 text-slate-400"
+                          className="border-slate-300 text-slate-600"
                         >
                           {TYPE_LABELS[event.type] ?? event.type}
                         </Badge>
@@ -76,12 +76,12 @@ export async function UpcomingEventsSection() {
                           {tag}
                         </span>
                       </div>
-                      <CardTitle className="text-lg text-white group-hover:text-cyan-300 transition-colors">
+                      <CardTitle className="text-lg text-slate-900 group-hover:text-blue-300 transition-colors">
                         {event.title}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-3">
-                      <p className="line-clamp-2 text-sm text-slate-400">
+                      <p className="line-clamp-2 text-sm text-slate-600">
                         {event.shortDescription}
                       </p>
                       <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -94,14 +94,14 @@ export async function UpcomingEventsSection() {
                           {event._count.sessions === 1 ? "" : "s"}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between border-t border-slate-800 pt-3">
+                      <div className="flex items-center justify-between border-t border-slate-200 pt-3">
                         <span className="text-xs text-slate-500">
                           {event.startAt.toLocaleString("en-GB", {
                             dateStyle: "medium",
                             timeStyle: "short",
                           })}
                         </span>
-                        <span className="text-sm font-bold text-cyan-400">
+                        <span className="text-sm font-bold text-blue-400">
                           {event.priceBdt === 0
                             ? "Free"
                             : `৳${event.priceBdt.toLocaleString()}`}

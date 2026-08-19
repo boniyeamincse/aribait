@@ -9,14 +9,14 @@ import type { EventStatus } from "@/lib/generated/prisma/client";
 import { formatBdt } from "@/lib/utils";
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: "bg-slate-500/15 text-slate-400 border-slate-500/30",
+  DRAFT: "bg-slate-500/15 text-slate-600 border-slate-500/30",
   PUBLISHED: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  REGISTRATION_OPEN: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  REGISTRATION_OPEN: "bg-blue-500/15 text-blue-400 border-blue-500/30",
   REGISTRATION_CLOSED: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  ONGOING: "bg-violet-500/15 text-violet-400 border-violet-500/30",
+  ONGOING: "bg-green-500/15 text-green-400 border-green-500/30",
   COMPLETED: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   CANCELLED: "bg-red-500/15 text-red-400 border-red-500/30",
-  ARCHIVED: "bg-slate-700/15 text-slate-600 border-slate-700/30",
+  ARCHIVED: "bg-slate-200/15 text-slate-600 border-slate-300/30",
 };
 
 const STATUS_OPTIONS = Object.keys(STATUS_COLORS) as EventStatus[];
@@ -52,18 +52,18 @@ export default async function AdminEventsPage(props: PageProps<"/admin/events">)
         actions={<Button render={<Link href="/admin/events/new">Create Event</Link>} nativeButton={false} />}
       />
 
-      <form className="flex flex-wrap gap-3 rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <form className="flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white p-4">
         <input
           type="text"
           name="q"
           defaultValue={query}
           placeholder="Search events…"
-          className="min-w-48 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-500 focus:outline-none"
+          className="min-w-48 flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
         />
         <select
           name="status"
           defaultValue={validStatus ?? ""}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
         >
           <option value="">All statuses</option>
           {STATUS_OPTIONS.map((s) => (
@@ -74,7 +74,7 @@ export default async function AdminEventsPage(props: PageProps<"/admin/events">)
         </select>
         <button
           type="submit"
-          className="rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-400 hover:to-violet-500"
+          className="rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-4 py-2 text-sm font-semibold text-slate-900 hover:from-blue-400 hover:to-green-500"
         >
           Filter
         </button>
@@ -89,7 +89,7 @@ export default async function AdminEventsPage(props: PageProps<"/admin/events">)
             key: "title",
             label: "Event",
             render: (event) => (
-              <Link href={`/admin/events/${event.id}`} className="font-medium text-white hover:underline">
+              <Link href={`/admin/events/${event.id}`} className="font-medium text-slate-900 hover:underline">
                 {event.title}
                 <span className="block text-xs font-normal text-slate-500">
                   {event.category.name} · {event.instructor.name}
@@ -120,7 +120,7 @@ export default async function AdminEventsPage(props: PageProps<"/admin/events">)
             key: "actions",
             label: "",
             render: (event) => (
-              <Link href={`/admin/events/${event.id}`} className="text-xs text-cyan-400 hover:underline">
+              <Link href={`/admin/events/${event.id}`} className="text-xs text-blue-400 hover:underline">
                 Manage →
               </Link>
             ),

@@ -53,7 +53,7 @@ const FIELD_KEYS = [
 ] as const satisfies readonly (keyof Settings)[];
 
 function inputClass() {
-  return "w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none";
+  return "w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none";
 }
 
 function hiddenValue(value: string | number | boolean | null) {
@@ -72,22 +72,22 @@ export function SettingsForm({
   const isVisible = (key: keyof Settings) => visible.includes(key);
 
   return (
-    <form action={action} className="flex max-w-lg flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900 p-6">
+    <form action={action} className="flex max-w-lg flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6">
       {isVisible("siteName") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Site name</span>
+          <span className="text-slate-600">Site name</span>
           <input name="siteName" defaultValue={settings.siteName} className={inputClass()} required />
         </label>
       )}
       {isVisible("defaultTimeZone") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Default time zone</span>
+          <span className="text-slate-600">Default time zone</span>
           <input name="defaultTimeZone" defaultValue={settings.defaultTimeZone} className={inputClass()} required />
         </label>
       )}
       {isVisible("currency") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Currency</span>
+          <span className="text-slate-600">Currency</span>
           <input name="currency" defaultValue={settings.currency} className={inputClass()} required />
         </label>
       )}
@@ -97,14 +97,14 @@ export function SettingsForm({
             type="checkbox"
             name="maintenanceMode"
             defaultChecked={settings.maintenanceMode}
-            className="size-4 rounded border-slate-700 bg-slate-950"
+            className="size-4 rounded border-slate-300 bg-slate-50"
           />
-          <span className="text-slate-300">Maintenance mode</span>
+          <span className="text-slate-700">Maintenance mode</span>
         </label>
       )}
       {isVisible("seatHoldMinutes") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Seat hold duration (minutes)</span>
+          <span className="text-slate-600">Seat hold duration (minutes)</span>
           <input
             type="number"
             name="seatHoldMinutes"
@@ -118,7 +118,7 @@ export function SettingsForm({
       )}
       {isVisible("joinWindowBeforeMinutes") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Join window opens before start (minutes)</span>
+          <span className="text-slate-600">Join window opens before start (minutes)</span>
           <input
             type="number"
             name="joinWindowBeforeMinutes"
@@ -132,7 +132,7 @@ export function SettingsForm({
       )}
       {isVisible("joinWindowAfterMinutes") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Join window closes after end (minutes)</span>
+          <span className="text-slate-600">Join window closes after end (minutes)</span>
           <input
             type="number"
             name="joinWindowAfterMinutes"
@@ -146,7 +146,7 @@ export function SettingsForm({
       )}
       {isVisible("bkashNagadReceivingMsisdn") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">bKash/Nagad receiving number</span>
+          <span className="text-slate-600">bKash/Nagad receiving number</span>
           <input
             name="bkashNagadReceivingMsisdn"
             defaultValue={settings.bkashNagadReceivingMsisdn}
@@ -157,7 +157,7 @@ export function SettingsForm({
       )}
       {isVisible("contactEmail") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Contact email</span>
+          <span className="text-slate-600">Contact email</span>
           <input
             type="email"
             name="contactEmail"
@@ -169,7 +169,7 @@ export function SettingsForm({
       )}
       {isVisible("contactPhone") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Contact phone</span>
+          <span className="text-slate-600">Contact phone</span>
           <input
             name="contactPhone"
             defaultValue={settings.contactPhone ?? ""}
@@ -180,7 +180,7 @@ export function SettingsForm({
       )}
       {isVisible("facebookUrl") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Facebook URL</span>
+          <span className="text-slate-600">Facebook URL</span>
           <input
             type="url"
             name="facebookUrl"
@@ -192,7 +192,7 @@ export function SettingsForm({
       )}
       {isVisible("linkedinUrl") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">LinkedIn URL</span>
+          <span className="text-slate-600">LinkedIn URL</span>
           <input
             type="url"
             name="linkedinUrl"
@@ -204,7 +204,7 @@ export function SettingsForm({
       )}
       {isVisible("emailFromName") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Email sender name</span>
+          <span className="text-slate-600">Email sender name</span>
           <input
             name="emailFromName"
             defaultValue={settings.emailFromName ?? ""}
@@ -215,7 +215,7 @@ export function SettingsForm({
       )}
       {isVisible("emailFromAddress") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Email sender address</span>
+          <span className="text-slate-600">Email sender address</span>
           <input
             type="email"
             name="emailFromAddress"
@@ -227,11 +227,11 @@ export function SettingsForm({
       )}
       
       {isVisible("smtpHost") && (
-        <div className="mt-4 flex flex-col gap-4 border-t border-slate-800 pt-4">
-          <h3 className="font-medium text-white">SMTP Configuration</h3>
+        <div className="mt-4 flex flex-col gap-4 border-t border-slate-200 pt-4">
+          <h3 className="font-medium text-slate-900">SMTP Configuration</h3>
           
           <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-slate-400">SMTP Host</span>
+            <span className="text-slate-600">SMTP Host</span>
             <input
               name="smtpHost"
               defaultValue={settings.smtpHost ?? ""}
@@ -241,7 +241,7 @@ export function SettingsForm({
           </label>
           
           <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-slate-400">SMTP Port</span>
+            <span className="text-slate-600">SMTP Port</span>
             <input
               type="number"
               name="smtpPort"
@@ -252,7 +252,7 @@ export function SettingsForm({
           </label>
           
           <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-slate-400">SMTP Username</span>
+            <span className="text-slate-600">SMTP Username</span>
             <input
               name="smtpUser"
               defaultValue={settings.smtpUser ?? ""}
@@ -262,7 +262,7 @@ export function SettingsForm({
           </label>
           
           <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-slate-400">SMTP Password</span>
+            <span className="text-slate-600">SMTP Password</span>
             <input
               type="password"
               name="smtpPassword"
@@ -276,7 +276,7 @@ export function SettingsForm({
 
       {isVisible("termsContent") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Terms of service — shown at /terms</span>
+          <span className="text-slate-600">Terms of service — shown at /terms</span>
           <textarea
             name="termsContent"
             defaultValue={settings.termsContent ?? ""}
@@ -287,7 +287,7 @@ export function SettingsForm({
       )}
       {isVisible("privacyContent") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Privacy policy — shown at /privacy</span>
+          <span className="text-slate-600">Privacy policy — shown at /privacy</span>
           <textarea
             name="privacyContent"
             defaultValue={settings.privacyContent ?? ""}
@@ -298,7 +298,7 @@ export function SettingsForm({
       )}
       {isVisible("refundContent") && (
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-slate-400">Refund policy — shown at /refund-policy</span>
+          <span className="text-slate-600">Refund policy — shown at /refund-policy</span>
           <textarea
             name="refundContent"
             defaultValue={settings.refundContent ?? ""}
@@ -322,7 +322,7 @@ export function SettingsForm({
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-400 hover:to-violet-500 disabled:opacity-50"
+        className="self-start rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-4 py-2 text-sm font-semibold text-slate-900 hover:from-blue-400 hover:to-green-500 disabled:opacity-50"
       >
         {pending ? "Saving…" : "Save changes"}
       </button>

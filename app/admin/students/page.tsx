@@ -10,7 +10,7 @@ const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   ACTIVE: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   SUSPENDED: "bg-red-500/15 text-red-400 border-red-500/30",
-  DEACTIVATED: "bg-slate-500/15 text-slate-400 border-slate-500/30",
+  DEACTIVATED: "bg-slate-500/15 text-slate-600 border-slate-500/30",
 };
 
 export default async function AdminStudentsPage(props: PageProps<"/admin/students">) {
@@ -37,17 +37,17 @@ export default async function AdminStudentsPage(props: PageProps<"/admin/student
     <div className="flex flex-col gap-6">
       <AdminPageHeader title="Students" description="Everyone registered as a student on Ariba IT." />
 
-      <form className="flex flex-wrap gap-3 rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <form className="flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white p-4">
         <input
           type="text"
           name="q"
           defaultValue={query}
           placeholder="Search by name or email…"
-          className="min-w-48 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-500 focus:outline-none"
+          className="min-w-48 flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
         />
         <button
           type="submit"
-          className="rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-400 hover:to-violet-500"
+          className="rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-4 py-2 text-sm font-semibold text-slate-900 hover:from-blue-400 hover:to-green-500"
         >
           Search
         </button>
@@ -62,7 +62,7 @@ export default async function AdminStudentsPage(props: PageProps<"/admin/student
             key: "name",
             label: "Name",
             render: (s) => (
-              <Link href={`/admin/students/${s.id}`} className="font-medium text-white hover:underline">
+              <Link href={`/admin/students/${s.id}`} className="font-medium text-slate-900 hover:underline">
                 {s.name ?? "—"}
                 <span className="block text-xs font-normal text-slate-500">{s.email}</span>
               </Link>

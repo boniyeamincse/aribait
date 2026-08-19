@@ -11,7 +11,7 @@ export function MarkAllPresentButton({ eventSessionId }: { eventSessionId: strin
   if (confirming) {
     return (
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-slate-400">Mark every confirmed student present?</span>
+        <span className="text-slate-600">Mark every confirmed student present?</span>
         <button
           type="button"
           disabled={pending}
@@ -28,7 +28,7 @@ export function MarkAllPresentButton({ eventSessionId }: { eventSessionId: strin
         <button
           type="button"
           onClick={() => setConfirming(false)}
-          className="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-400 hover:bg-slate-800"
+          className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-100"
         >
           Cancel
         </button>

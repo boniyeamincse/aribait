@@ -32,8 +32,8 @@ export function DashboardNav({ mobile = false }: { mobile?: boolean }) {
               href={item.href}
               className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
                 isActive
-                  ? "bg-gradient-to-r from-cyan-500/20 to-violet-500/10 text-white border border-cyan-500/30"
-                  : "text-slate-500 hover:bg-slate-800 hover:text-slate-200"
+                  ? "bg-gradient-to-r from-blue-500/20 to-green-500/10 text-slate-900 border border-blue-500/30"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
               }`}
             >
               <span>{item.icon}</span>
@@ -47,7 +47,7 @@ export function DashboardNav({ mobile = false }: { mobile?: boolean }) {
 
   // Vertical sidebar for desktop
   return (
-    <nav className="flex w-56 shrink-0 flex-col gap-1 border-r border-slate-800 bg-slate-950 p-4">
+    <nav className="flex w-56 shrink-0 flex-col gap-1 border-r border-slate-200 bg-slate-50 p-4">
       {NAV_ITEMS.map((item) => {
         const isActive =
           item.href === "/dashboard"
@@ -59,8 +59,8 @@ export function DashboardNav({ mobile = false }: { mobile?: boolean }) {
             href={item.href}
             className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 ${
               isActive
-                ? "bg-gradient-to-r from-cyan-500/15 to-violet-500/10 text-white border border-cyan-500/20"
-                : "text-slate-500 hover:bg-slate-800 hover:text-slate-200"
+                ? "bg-gradient-to-r from-blue-500/15 to-green-500/10 text-slate-900 border border-blue-500/20"
+                : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
             }`}
           >
             <span className="text-base">{item.icon}</span>

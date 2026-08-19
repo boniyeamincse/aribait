@@ -12,7 +12,7 @@ export async function SiteHeader() {
   const isAdmin = session?.user?.role === "ADMIN";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-slate-50/80 backdrop-blur-md">
       <div className="flex items-center justify-between px-4 py-3 sm:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -28,13 +28,13 @@ export async function SiteHeader() {
 
         {/* Desktop nav — hidden on mobile */}
         <nav className="hidden sm:flex items-center gap-5 text-sm">
-          <Link href="/events" className="text-slate-400 transition-colors hover:text-white">
+          <Link href="/events" className="text-slate-600 transition-colors hover:text-slate-900">
             Events
           </Link>
-          <Link href="/training" className="text-slate-400 transition-colors hover:text-white">
+          <Link href="/training" className="text-slate-600 transition-colors hover:text-slate-900">
             Training
           </Link>
-          <Link href="/schedule" className="text-slate-400 transition-colors hover:text-white">
+          <Link href="/schedule" className="text-slate-600 transition-colors hover:text-slate-900">
             Schedule
           </Link>
 
@@ -42,7 +42,7 @@ export async function SiteHeader() {
             <>
               <Link
                 href={isAdmin ? "/admin" : "/dashboard"}
-                className="text-slate-400 transition-colors hover:text-white"
+                className="text-slate-600 transition-colors hover:text-slate-900"
               >
                 Dashboard
               </Link>
@@ -51,7 +51,7 @@ export async function SiteHeader() {
                   type="submit"
                   variant="outline"
                   size="sm"
-                  className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+                  className="border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                 >
                   Log out
                 </Button>
@@ -59,12 +59,12 @@ export async function SiteHeader() {
             </>
           ) : (
             <>
-              <Link href="/login" className="text-slate-400 transition-colors hover:text-white">
+              <Link href="/login" className="text-slate-600 transition-colors hover:text-slate-900">
                 Log in
               </Link>
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-3 py-1.5 text-sm font-medium text-white transition-all hover:from-cyan-400 hover:to-violet-500"
+                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-3 py-1.5 text-sm font-medium text-slate-900 transition-all hover:from-blue-400 hover:to-green-500"
               >
                 Register
               </Link>

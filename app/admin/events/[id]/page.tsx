@@ -63,13 +63,13 @@ export default async function AdminEventDetailPage(
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">{event.title}</h1>
-          <p className="text-sm text-slate-400">
+          <h1 className="text-2xl font-bold text-slate-900">{event.title}</h1>
+          <p className="text-sm text-slate-600">
             /events/{event.slug} · {formatBdt(event.priceBdt)} · {event._count.registrations} registration
             {event._count.registrations === 1 ? "" : "s"}
           </p>
         </div>
-        <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2.5 py-1 text-xs font-semibold text-violet-400">
+        <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
           {event.status.replace(/_/g, " ")}
         </span>
       </div>

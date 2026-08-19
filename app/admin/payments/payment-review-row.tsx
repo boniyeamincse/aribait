@@ -42,7 +42,7 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
           rows={2}
           required
           minLength={5}
-          className="w-64 border-slate-700 bg-slate-950 text-white placeholder:text-slate-600"
+          className="w-64 border-slate-300 bg-slate-50 text-slate-900 placeholder:text-slate-600"
         />
         {rejectState?.ok === false && (
           <p className="text-sm text-red-400">{rejectState.error}</p>
@@ -58,7 +58,7 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
           <button
             type="button"
             onClick={() => setRejecting(false)}
-            className="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-400 hover:bg-slate-800"
+            className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-100"
           >
             Back
           </button>

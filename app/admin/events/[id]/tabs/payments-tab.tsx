@@ -6,13 +6,13 @@ import { getEventPaymentTransactions } from "@/lib/admin/event-detail";
 import { formatBdt } from "@/lib/utils";
 
 const STATUS_COLORS: Record<string, string> = {
-  INITIATED: "bg-slate-500/15 text-slate-400 border-slate-500/30",
+  INITIATED: "bg-slate-500/15 text-slate-600 border-slate-500/30",
   PENDING: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   PAID: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   FAILED: "bg-red-500/15 text-red-400 border-red-500/30",
-  CANCELLED: "bg-slate-500/15 text-slate-400 border-slate-500/30",
-  REFUNDED: "bg-violet-500/15 text-violet-400 border-violet-500/30",
-  PARTIALLY_REFUNDED: "bg-violet-500/15 text-violet-400 border-violet-500/30",
+  CANCELLED: "bg-slate-500/15 text-slate-600 border-slate-500/30",
+  REFUNDED: "bg-green-500/15 text-green-400 border-green-500/30",
+  PARTIALLY_REFUNDED: "bg-green-500/15 text-green-400 border-green-500/30",
 };
 
 export async function PaymentsTab({ eventId }: { eventId: string }) {
@@ -22,7 +22,7 @@ export async function PaymentsTab({ eventId }: { eventId: string }) {
   return (
     <div className="flex flex-col gap-3">
       {hasPending && (
-        <Link href="/admin/payments" className="self-start text-xs text-cyan-400 hover:underline">
+        <Link href="/admin/payments" className="self-start text-xs text-blue-400 hover:underline">
           Review pending payments →
         </Link>
       )}
@@ -36,7 +36,7 @@ export async function PaymentsTab({ eventId }: { eventId: string }) {
             label: "Student",
             render: (t) => (
               <div>
-                <p className="font-medium text-white">
+                <p className="font-medium text-slate-900">
                   {t.payment.registration.user.name ?? t.payment.registration.user.email}
                 </p>
                 <p className="text-xs text-slate-500">{t.payment.registration.user.email}</p>

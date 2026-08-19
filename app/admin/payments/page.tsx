@@ -39,7 +39,7 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
     <div className="flex flex-col gap-6">
       <AdminPageHeader title="Payments" description="Manual bKash/Nagad submissions and their review status." />
 
-      <div className="flex gap-2 overflow-x-auto border-b border-slate-800 pb-px scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto border-b border-slate-200 pb-px scrollbar-hide">
         {TABS.map((tab) => {
           const isActive = tab.label === activeTab.label;
           const Icon = tab.icon;
@@ -49,11 +49,11 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
               href={tab.status ? `/admin/payments?status=${tab.status}` : "/admin/payments?status=ALL"}
               className={
                 isActive
-                  ? "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-cyan-400 px-4 py-2.5 text-sm font-medium text-white bg-slate-800/20"
-                  : "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-4 py-2.5 text-sm text-slate-500 hover:text-slate-300 hover:bg-slate-800/10 transition-colors"
+                  ? "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-blue-400 px-4 py-2.5 text-sm font-medium text-slate-900 bg-slate-100/20"
+                  : "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-4 py-2.5 text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-100/10 transition-colors"
               }
             >
-              <Icon size={16} className={isActive ? "text-cyan-400" : "text-slate-500"} strokeWidth={isActive ? 2 : 1.75} />
+              <Icon size={16} className={isActive ? "text-blue-400" : "text-slate-500"} strokeWidth={isActive ? 2 : 1.75} />
               {tab.label}
             </Link>
           );
@@ -72,7 +72,7 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
             label: "Student",
             render: (tx) => (
               <div>
-                <p className="font-medium text-white">
+                <p className="font-medium text-slate-900">
                   {tx.payment.registration.user.name ?? tx.payment.registration.user.email}
                 </p>
                 <p className="text-xs text-slate-500">{tx.payment.registration.user.email}</p>
@@ -111,7 +111,7 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
                   <img
                     src={tx.proofImageUrl}
                     alt="Payment proof"
-                    className="h-12 w-12 rounded-md border border-slate-700 object-cover"
+                    className="h-12 w-12 rounded-md border border-slate-300 object-cover"
                   />
                 </a>
               ) : (
@@ -126,7 +126,7 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
                 <PaymentReviewRow transactionId={tx.id} />
               ) : (
                 <span
-                  className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${STATUS_COLORS[tx.status] ?? "bg-slate-500/15 text-slate-400 border-slate-500/30"}`}
+                  className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${STATUS_COLORS[tx.status] ?? "bg-slate-500/15 text-slate-600 border-slate-500/30"}`}
                 >
                   {tx.status}
                 </span>
