@@ -47,6 +47,16 @@ export default async function EventDetailPage({
     !existingRegistration ||
     existingRegistration.status === "CANCELLED" ||
     existingRegistration.status === "EXPIRED";
+  const hasAccess =
+    existingRegistration?.status === "CONFIRMED" ||
+    existingRegistration?.status === "COMPLETED";
+
+  const resources = hasAccess
+    ? await prisma.eventResource.findMany({
+        where: { eventId: event.id },
+        orderBy: { createdAt: "asc" },
+      })
+    : [];
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -217,6 +227,26 @@ export default async function EventDetailPage({
           ))}
         </div>
       </div>
+
+      {hasAccess && resources.length > 0 && (
+        <>
+          <Separator className="my-8" />
+          <div>
+            <h2 className="text-lg font-medium">Resources</h2>
+            <div className="mt-4 divide-y rounded-lg border">
+              {resources.map((resource) => (
+                <Link
+                  key={resource.id}
+                  href={`/dashboard/resources/${resource.id}/view`}
+                  className="block p-4 text-sm underline-offset-4 hover:bg-accent hover:underline"
+                >
+                  {resource.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {event.termsAndRefundPolicy && (
         <div className="mt-8">

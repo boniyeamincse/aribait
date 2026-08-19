@@ -11,6 +11,7 @@ export default async function DashboardOverviewPage() {
     completedEvents,
     pendingPayments,
     unreadNotifications,
+    certificates,
   ] = await Promise.all([
     prisma.registration.count({
       where: { userId: user.id, status: "CONFIRMED" },
@@ -36,13 +37,16 @@ export default async function DashboardOverviewPage() {
     prisma.notification.count({
       where: { userId: user.id, readAt: null },
     }),
+    prisma.certificate.count({
+      where: { registration: { userId: user.id }, status: "ISSUED" },
+    }),
   ]);
 
   const overviewCards = [
     { label: "Enrolled Events", value: enrolledEvents },
     { label: "Upcoming Sessions", value: upcomingSessions },
     { label: "Completed Events", value: completedEvents },
-    { label: "Certificates", value: 0 },
+    { label: "Certificates", value: certificates },
     { label: "Unread notifications", value: unreadNotifications },
     { label: "Pending payments", value: pendingPayments },
   ];

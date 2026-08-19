@@ -19,6 +19,7 @@ import { EventForm } from "../event-form";
 import { SessionForm } from "./session-form";
 import { AttachCouponForm } from "./attach-coupon-form";
 import { AnnouncementForm } from "./announcement-form";
+import { RemoveResourceButton, ResourceForm } from "./resource-form";
 
 export default async function AdminEventDetailPage({
   params,
@@ -31,6 +32,7 @@ export default async function AdminEventDetailPage({
       include: {
         sessions: { orderBy: { sequence: "asc" } },
         discountEvents: { include: { discount: true } },
+        resources: { orderBy: { createdAt: "asc" } },
         _count: { select: { registrations: true } },
       },
     }),
@@ -218,6 +220,32 @@ export default async function AdminEventDetailPage({
           </div>
         </>
       )}
+
+      <Separator />
+
+      <div className="flex flex-col gap-4">
+        <h2 className="text-lg font-medium">Resources</h2>
+        <div className="divide-y rounded-lg border">
+          {event.resources.length === 0 && (
+            <p className="p-4 text-sm text-muted-foreground">
+              No resources attached to this Event.
+            </p>
+          )}
+          {event.resources.map((resource) => (
+            <div
+              key={resource.id}
+              className="flex items-center justify-between gap-4 p-3 text-sm"
+            >
+              <div>
+                <p className="font-medium">{resource.title}</p>
+                <p className="truncate text-muted-foreground">{resource.url}</p>
+              </div>
+              <RemoveResourceButton resourceId={resource.id} />
+            </div>
+          ))}
+        </div>
+        <ResourceForm eventId={event.id} />
+      </div>
 
       <Separator />
 
