@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { redirect } from "next/navigation";
+
 import { requireUser } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
 import { Button } from "@/components/ui/button";
@@ -12,6 +14,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
+  if (user.role === "ADMIN") {
+    redirect("/admin");
+  }
 
   const initials = (user.name ?? user.email ?? "?")
     .split(" ")
