@@ -1,6 +1,20 @@
 import Link from "next/link";
+import {
+  GraduationCap,
+  CalendarDays,
+  MonitorPlay,
+  Clock,
+  ClipboardList,
+  Users,
+  CreditCard,
+  CheckCircle,
+  AlertCircle,
+  LucideIcon,
+} from "lucide-react";
 
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { StatusBadge } from "@/components/admin/status-badge";
+import { AdminTable } from "@/components/admin/admin-table";
 import {
   getActionRequired,
   getKpis,
@@ -36,26 +50,46 @@ function timeInDhaka(date: Date) {
   });
 }
 
+function dateTimeInDhaka(date: Date) {
+  return date.toLocaleString("en-US", {
+    timeZone: "Asia/Dhaka",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export default async function AdminOverviewPage() {
   const user = await requireAdmin();
 
-  const [kpis, actionItems, todaysSessions, upcomingSessions, registrationTrend, revenueTrend, recentActivity] =
-    await Promise.all([
-      getKpis(),
-      getActionRequired(),
-      getTodaysSessions(),
-      getUpcomingSessions(),
-      getRegistrationTrend(),
-      getRevenueTrend(),
-      getRecentActivity(),
-    ]);
+  const [
+    kpis,
+    actionItems,
+    todaysSessions,
+    upcomingSessions,
+    registrationTrend,
+    revenueTrend,
+    recentActivity,
+  ] = await Promise.all([
+    getKpis(),
+    getActionRequired(),
+    getTodaysSessions(),
+    getUpcomingSessions(),
+    getRegistrationTrend(),
+    getRevenueTrend(),
+    getRecentActivity(),
+  ]);
 
   const dhakaHour = Number(
-    new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Dhaka", hour: "numeric", hourCycle: "h23" }).format(
-      new Date(),
-    ),
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Dhaka",
+      hour: "numeric",
+      hourCycle: "h23",
+    }).format(new Date()),
   );
-  const greeting = dhakaHour < 12 ? "Good morning" : dhakaHour < 17 ? "Good afternoon" : "Good evening";
+  const greeting =
+    dhakaHour < 12 ? "Good morning" : dhakaHour < 17 ? "Good afternoon" : "Good evening";
   const todayLabel = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Dhaka",
     weekday: "long",
@@ -64,18 +98,19 @@ export default async function AdminOverviewPage() {
     day: "numeric",
   }).format(new Date());
 
-  const kpiCards = [
-    { label: "Total Students", value: kpis.totalStudents, href: "/admin/students" },
-    { label: "Active Events", value: kpis.activeEvents, href: "/admin/events" },
-    { label: "Today's Sessions", value: kpis.todaysSessionsCount, href: "/admin/sessions" },
-    { label: "Upcoming Sessions", value: kpis.upcomingSessionsCount, href: "/admin/sessions" },
-    { label: "Confirmed Registrations", value: kpis.confirmedRegistrations, href: "/admin/registrations" },
-    { label: "Seats Available", value: kpis.availableSeats, href: "/admin/events" },
-    { label: "Monthly Revenue", value: formatBdtAmount(kpis.monthlyRevenueBdt), href: "/admin/reports" },
+  const kpiCards: { label: string; value: string | number; href: string; icon: LucideIcon }[] = [
+    { label: "Total Students", value: kpis.totalStudents, href: "/admin/students", icon: GraduationCap },
+    { label: "Active Events", value: kpis.activeEvents, href: "/admin/events", icon: CalendarDays },
+    { label: "Today's Sessions", value: kpis.todaysSessionsCount, href: "/admin/sessions", icon: MonitorPlay },
+    { label: "Upcoming Sessions", value: kpis.upcomingSessionsCount, href: "/admin/sessions", icon: Clock },
+    { label: "Confirmed Registrations", value: kpis.confirmedRegistrations, href: "/admin/registrations", icon: ClipboardList },
+    { label: "Seats Available", value: kpis.availableSeats, href: "/admin/events", icon: Users },
+    { label: "Monthly Revenue", value: formatBdtAmount(kpis.monthlyRevenueBdt), href: "/admin/reports", icon: CreditCard },
     {
       label: "Payment Success Rate",
       value: kpis.paymentSuccessRatePct === null ? "—" : `${kpis.paymentSuccessRatePct}%`,
       href: "/admin/payments",
+      icon: CheckCircle,
     },
   ];
 
@@ -84,43 +119,53 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-2xl font-bold text-white">
-          {greeting}, {user.name ?? "Admin"}
-        </h1>
-        <p className="text-sm text-slate-400">{todayLabel} · Asia/Dhaka</p>
-      </div>
+      <AdminPageHeader
+        title={`${greeting}, ${user.name ?? "Admin"}`}
+        description={`${todayLabel} · Asia/Dhaka`}
+      />
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {kpiCards.map((card) => (
-          <div key={card.label} className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">{card.label}</p>
-            <p className="mt-2 text-2xl font-bold text-white sm:text-3xl">{card.value}</p>
-            <Link href={card.href} className="mt-3 inline-block text-xs text-cyan-400 hover:underline">
-              View details →
-            </Link>
-          </div>
-        ))}
+        {kpiCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} className="rounded-2xl border border-slate-800 bg-slate-900 p-5 flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                  {card.label}
+                </span>
+                <Icon size={16} className="text-slate-600" />
+              </div>
+              <div>
+                <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">{card.value}</p>
+                <Link href={card.href} className="mt-3 flex items-center gap-1 text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors">
+                  View details <span aria-hidden="true">&rarr;</span>
+                </Link>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Action required */}
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-white">Action Required</h2>
         {actionItems.length === 0 ? (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-sm text-slate-500">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-sm text-slate-500 flex items-center gap-3">
+            <CheckCircle size={18} className="text-emerald-500" />
             Nothing needs attention right now.
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {actionItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl border border-slate-800 border-l-4 bg-slate-900 px-4 py-3 text-sm text-slate-300 transition-colors hover:bg-slate-800/60 ${URGENCY_BORDER[item.urgency]}`}
+                className={`flex items-start gap-3 rounded-xl border border-slate-800 border-l-4 bg-slate-900 p-4 text-sm text-slate-300 transition-colors hover:bg-slate-800/60 shadow-sm ${URGENCY_BORDER[item.urgency]}`}
               >
+                <AlertCircle size={18} className="mt-0.5 shrink-0 text-slate-500" />
                 <span className="flex-1">{item.label}</span>
-                <span className="text-cyan-400">→</span>
+                <span className="text-cyan-400">&rarr;</span>
               </Link>
             ))}
           </div>
@@ -130,119 +175,88 @@ export default async function AdminOverviewPage() {
       {/* Today's sessions */}
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-white">Today&apos;s Sessions</h2>
-        <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
-          <table className="w-full text-sm">
-            <thead className="border-b border-slate-800 text-xs uppercase tracking-widest text-slate-500">
-              <tr>
-                <th className="px-4 py-3 text-left">Time</th>
-                <th className="px-4 py-3 text-left">Session</th>
-                <th className="px-4 py-3 text-left">Event</th>
-                <th className="px-4 py-3 text-left">Platform</th>
-                <th className="px-4 py-3 text-right">Students</th>
-                <th className="px-4 py-3 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {todaysSessions.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-600">
-                    No sessions scheduled for today.
-                  </td>
-                </tr>
-              ) : (
-                todaysSessions.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                    <td className="px-4 py-3 text-slate-300">{timeInDhaka(s.startAt)}</td>
-                    <td className="px-4 py-3 text-white">
-                      <Link href={`/admin/events/${s.eventId}`} className="hover:underline">
-                        {s.title}
-                      </Link>
-                      {!s.hasMeetingLink && (
-                        <span className="ml-2 text-xs text-amber-400">missing link</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-slate-400">{s.eventTitle}</td>
-                    <td className="px-4 py-3 text-slate-400">{s.platform.replace(/_/g, " ")}</td>
-                    <td className="px-4 py-3 text-right text-slate-300">{s.confirmedStudents}</td>
-                    <td className="px-4 py-3">
-                      <StatusBadge status={s.status} map={SESSION_STATUS_COLORS} />
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <AdminTable
+          emptyMessage="No sessions scheduled for today."
+          rowKey={(s) => s.id}
+          rows={todaysSessions}
+          columns={[
+            { key: "time", label: "Time", render: (s) => timeInDhaka(s.startAt) },
+            {
+              key: "session",
+              label: "Session",
+              render: (s) => (
+                <div className="flex flex-col gap-1">
+                  <Link href={`/admin/events/${s.eventId}`} className="text-white hover:underline font-medium">
+                    {s.title}
+                  </Link>
+                  {!s.hasMeetingLink && <span className="text-[10px] uppercase tracking-wider font-semibold text-amber-400">Missing link</span>}
+                </div>
+              ),
+            },
+            { key: "event", label: "Event", render: (s) => s.eventTitle },
+            { key: "platform", label: "Platform", render: (s) => s.platform.replace(/_/g, " ") },
+            { key: "students", label: "Students", render: (s) => s.confirmedStudents },
+            {
+              key: "status",
+              label: "Status",
+              render: (s) => <StatusBadge status={s.status} map={SESSION_STATUS_COLORS} />,
+            },
+          ]}
+        />
       </section>
 
       {/* Upcoming 7-day timeline */}
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-white">Upcoming Sessions (next 7 days)</h2>
-        <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
-          <table className="w-full text-sm">
-            <thead className="border-b border-slate-800 text-xs uppercase tracking-widest text-slate-500">
-              <tr>
-                <th className="px-4 py-3 text-left">Date/Time</th>
-                <th className="px-4 py-3 text-left">Session</th>
-                <th className="px-4 py-3 text-left">Instructor</th>
-                <th className="px-4 py-3 text-right">Students</th>
-                <th className="px-4 py-3 text-left">Meeting</th>
-                <th className="px-4 py-3 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {upcomingSessions.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-600">
-                    Nothing scheduled in the next 7 days.
-                  </td>
-                </tr>
-              ) : (
-                upcomingSessions.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                    <td className="px-4 py-3 text-slate-300">
-                      {s.startAt.toLocaleString("en-US", {
-                        timeZone: "Asia/Dhaka",
-                        month: "short",
-                        day: "numeric",
-                        hour: "numeric",
-                        minute: "2-digit",
-                      })}
-                    </td>
-                    <td className="px-4 py-3 text-white">
-                      {s.title}
-                      <span className="block text-xs text-slate-500">{s.eventTitle}</span>
-                    </td>
-                    <td className="px-4 py-3 text-slate-400">{s.instructorName}</td>
-                    <td className="px-4 py-3 text-right text-slate-300">{s.confirmedStudents}</td>
-                    <td className="px-4 py-3">
-                      {s.hasMeetingLink ? (
-                        <span className="text-emerald-400">configured</span>
-                      ) : (
-                        <span className="text-amber-400">missing</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <StatusBadge status={s.status} map={SESSION_STATUS_COLORS} />
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <AdminTable
+          emptyMessage="Nothing scheduled in the next 7 days."
+          rowKey={(s) => s.id}
+          rows={upcomingSessions}
+          columns={[
+            { key: "time", label: "Date/Time", render: (s) => dateTimeInDhaka(s.startAt) },
+            {
+              key: "session",
+              label: "Session",
+              render: (s) => (
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-white font-medium">{s.title}</span>
+                  <span className="text-xs text-slate-500">{s.eventTitle}</span>
+                </div>
+              ),
+            },
+            { key: "instructor", label: "Instructor", render: (s) => s.instructorName },
+            { key: "students", label: "Students", render: (s) => s.confirmedStudents },
+            {
+              key: "meeting",
+              label: "Meeting",
+              render: (s) =>
+                s.hasMeetingLink ? (
+                  <span className="text-emerald-400 text-sm">configured</span>
+                ) : (
+                  <span className="text-amber-400 text-sm">missing</span>
+                ),
+            },
+            {
+              key: "status",
+              label: "Status",
+              render: (s) => <StatusBadge status={s.status} map={SESSION_STATUS_COLORS} />,
+            },
+          ]}
+        />
       </section>
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-          <h2 className="mb-4 text-sm font-semibold text-slate-300">Registration Trend (30 days)</h2>
+          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-slate-500">
+            Registration Trend (30 days)
+          </h2>
           <div className="flex h-32 items-end gap-[3px]">
             {registrationTrend.map((d) => (
               <div
                 key={d.date}
                 title={`${d.date}: ${d.count}`}
-                className="flex-1 rounded-t bg-gradient-to-t from-cyan-500 to-violet-500"
+                className="flex-1 rounded-t bg-gradient-to-t from-cyan-500 to-violet-500 hover:opacity-80 transition-opacity"
                 style={{ height: `${Math.max(4, (d.count / maxRegistrationCount) * 100)}%` }}
               />
             ))}
@@ -250,17 +264,18 @@ export default async function AdminOverviewPage() {
         </section>
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-          <h2 className="mb-4 text-sm font-semibold text-slate-300">Revenue Trend</h2>
-          <div className="flex items-end gap-4">
+          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-slate-500">
+            Revenue Trend
+          </h2>
+          <div className="flex items-end gap-4 h-32">
             {revenueTrend.map((d) => (
-              <div key={d.label} className="flex flex-1 flex-col items-center gap-2">
+              <div key={d.label} className="flex flex-1 flex-col justify-end items-center gap-2 h-full">
                 <div
                   title={formatBdtAmount(d.revenueBdt)}
-                  className="w-full rounded-t bg-gradient-to-t from-cyan-500 to-violet-500"
-                  style={{ height: `${Math.max(4, (d.revenueBdt / maxRevenue) * 96)}px` }}
+                  className="w-full rounded-t bg-gradient-to-t from-cyan-500 to-violet-500 hover:opacity-80 transition-opacity"
+                  style={{ height: `${Math.max(4, (d.revenueBdt / maxRevenue) * 100)}%` }}
                 />
-                <span className="text-xs text-slate-500">{d.label}</span>
-                <span className="text-xs font-semibold text-slate-300">{formatBdtAmount(d.revenueBdt)}</span>
+                <span className="text-xs text-slate-500 font-medium">{d.label}</span>
               </div>
             ))}
           </div>
@@ -275,10 +290,10 @@ export default async function AdminOverviewPage() {
             <p className="p-5 text-sm text-slate-600">No recent activity.</p>
           ) : (
             recentActivity.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 px-4 py-3 text-sm">
-                <span className="flex-1 text-slate-300">{item.text}</span>
-                <span className="whitespace-nowrap text-xs text-slate-600">
-                  {item.at.toLocaleString("en-US", { timeZone: "Asia/Dhaka", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              <div key={i} className="flex items-start gap-4 px-5 py-4 text-sm">
+                <span className="flex-1 text-slate-300 leading-relaxed">{item.text}</span>
+                <span className="whitespace-nowrap text-xs text-slate-500 font-medium">
+                  {dateTimeInDhaka(item.at)}
                 </span>
               </div>
             ))
