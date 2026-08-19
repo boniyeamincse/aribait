@@ -42,6 +42,7 @@ export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
         >
           <nav className="flex flex-col gap-1">
             {[
+              { href: "/", label: "Home" },
               { href: "/events", label: "Events" },
               { href: "/training", label: "Training" },
               { href: "/schedule", label: "Schedule" },

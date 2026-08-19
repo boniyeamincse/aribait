@@ -28,6 +28,9 @@ export async function SiteHeader() {
 
         {/* Desktop nav — hidden on mobile */}
         <nav className="hidden sm:flex items-center gap-5 text-sm">
+          <Link href="/" className="text-slate-600 transition-colors hover:text-slate-900">
+            Home
+          </Link>
           <Link href="/events" className="text-slate-600 transition-colors hover:text-slate-900">
             Events
           </Link>

@@ -19,6 +19,104 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   SEMINAR: "Seminar",
 };
 
+type EventForCta = { id: string; slug: string; status: string; priceBdt: number };
+type ExistingRegistrationForCta = {
+  status: string;
+  payment: { id: string } | null;
+} | null;
+
+function BookingActions({
+  event,
+  isLoggedIn,
+  existingRegistration,
+  registrationOpen,
+  canRegisterAgain,
+  isFull,
+}: {
+  event: EventForCta;
+  isLoggedIn: boolean;
+  existingRegistration: ExistingRegistrationForCta;
+  registrationOpen: boolean;
+  canRegisterAgain: boolean;
+  isFull: boolean;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-4">
+      {!isLoggedIn && (
+        <Button
+          render={
+            <Link href={`/login?callbackUrl=/events/${event.slug}`}>
+              Log in to register
+            </Link>
+          }
+        />
+      )}
+
+      {isLoggedIn &&
+        existingRegistration &&
+        (existingRegistration.status === "CONFIRMED" ||
+          existingRegistration.status === "WAITLISTED") && (
+          <>
+            <Badge variant="secondary">
+              {existingRegistration.status === "CONFIRMED"
+                ? "You're registered"
+                : "You're waitlisted"}
+            </Badge>
+            {existingRegistration.status === "CONFIRMED" && (
+              <Button
+                variant="outline"
+                render={<Link href={`/dashboard/events/${event.id}`}>View Event in Dashboard</Link>}
+              />
+            )}
+          </>
+        )}
+
+      {isLoggedIn &&
+        existingRegistration?.status === "PENDING_PAYMENT" &&
+        existingRegistration.payment && (
+          <Button
+            variant="outline"
+            render={
+              <Link href={`/dashboard/payments/${existingRegistration.payment.id}`}>
+                Continue checkout
+              </Link>
+            }
+          />
+        )}
+
+      {isLoggedIn && canRegisterAgain && event.status === "CANCELLED" && (
+        <p className="text-sm text-destructive">This Event has been cancelled.</p>
+      )}
+
+      {isLoggedIn && canRegisterAgain && event.status !== "CANCELLED" && !registrationOpen && (
+        <p className="text-sm text-muted-foreground">Registration is not currently open.</p>
+      )}
+
+      {isLoggedIn &&
+        canRegisterAgain &&
+        event.status !== "CANCELLED" &&
+        registrationOpen &&
+        event.priceBdt === 0 && <RegisterButton eventId={event.id} />}
+
+      {isLoggedIn &&
+        canRegisterAgain &&
+        event.status !== "CANCELLED" &&
+        registrationOpen &&
+        event.priceBdt > 0 &&
+        !isFull && <PayButton eventId={event.id} />}
+
+      {isFull && event.priceBdt === 0 && (
+        <span className="text-sm text-muted-foreground">
+          Full — new registrations join the waitlist
+        </span>
+      )}
+      {isFull && event.priceBdt > 0 && canRegisterAgain && (
+        <span className="text-sm text-muted-foreground">This Event is full.</span>
+      )}
+    </div>
+  );
+}
+
 export default async function EventDetailPage({
   params,
 }: PageProps<"/events/[slug]">) {
@@ -117,7 +215,7 @@ export default async function EventDetailPage({
         )}
       </div>
 
-      <div className="mt-6 flex items-center gap-4">
+      <div className="mt-6 flex flex-wrap items-center gap-4">
         <span className="flex items-baseline gap-2">
           <span className="text-2xl font-semibold">{formatBdt(event.priceBdt)}</span>
           {event.compareAtPriceBdt !== null && event.compareAtPriceBdt > event.priceBdt && (
@@ -127,88 +225,14 @@ export default async function EventDetailPage({
           )}
         </span>
 
-        {!session?.user && (
-          <Button
-            render={
-              <Link href={`/login?callbackUrl=/events/${event.slug}`}>
-                Log in to register
-              </Link>
-            }
-          />
-        )}
-
-        {session?.user &&
-          existingRegistration &&
-          (existingRegistration.status === "CONFIRMED" ||
-            existingRegistration.status === "WAITLISTED") && (
-            <>
-              <Badge variant="secondary">
-                {existingRegistration.status === "CONFIRMED"
-                  ? "You're registered"
-                  : "You're waitlisted"}
-              </Badge>
-              {existingRegistration.status === "CONFIRMED" && (
-                <Button
-                  variant="outline"
-                  render={<Link href={`/dashboard/events/${event.id}`}>View Event in Dashboard</Link>}
-                />
-              )}
-            </>
-          )}
-
-        {session?.user &&
-          existingRegistration?.status === "PENDING_PAYMENT" &&
-          existingRegistration.payment && (
-            <Button
-              variant="outline"
-              render={
-                <Link href={`/dashboard/payments/${existingRegistration.payment.id}`}>
-                  Continue checkout
-                </Link>
-              }
-            />
-          )}
-
-        {session?.user &&
-          canRegisterAgain &&
-          event.status === "CANCELLED" && (
-            <p className="text-sm text-destructive">
-              This Event has been cancelled.
-            </p>
-          )}
-
-        {session?.user &&
-          canRegisterAgain &&
-          event.status !== "CANCELLED" &&
-          !registrationOpen && (
-            <p className="text-sm text-muted-foreground">
-              Registration is not currently open.
-            </p>
-          )}
-
-        {session?.user &&
-          canRegisterAgain &&
-          event.status !== "CANCELLED" &&
-          registrationOpen &&
-          event.priceBdt === 0 && <RegisterButton eventId={event.id} />}
-
-        {session?.user &&
-          canRegisterAgain &&
-          event.status !== "CANCELLED" &&
-          registrationOpen &&
-          event.priceBdt > 0 &&
-          !isFull && <PayButton eventId={event.id} />}
-
-        {isFull && event.priceBdt === 0 && (
-          <span className="text-sm text-muted-foreground">
-            Full — new registrations join the waitlist
-          </span>
-        )}
-        {isFull && event.priceBdt > 0 && canRegisterAgain && (
-          <span className="text-sm text-muted-foreground">
-            This Event is full.
-          </span>
-        )}
+        <BookingActions
+          event={event}
+          isLoggedIn={!!session?.user}
+          existingRegistration={existingRegistration}
+          registrationOpen={registrationOpen}
+          canRegisterAgain={canRegisterAgain}
+          isFull={isFull}
+        />
       </div>
 
       <Separator className="my-8" />
@@ -218,11 +242,65 @@ export default async function EventDetailPage({
         <p className="mt-2 whitespace-pre-line">{event.description}</p>
       </div>
 
-      {event.learningObjectives && (
-        <div className="mt-6">
-          <h2 className="text-lg font-medium">What you&apos;ll learn</h2>
-          <p className="mt-2 whitespace-pre-line">{event.learningObjectives}</p>
+      <Separator className="my-8" />
+
+      <div>
+        <h2 className="text-lg font-medium">Sessions</h2>
+        <div className="mt-4 divide-y rounded-lg border">
+          {event.sessions.map((eventSession) =>
+            eventSession.description ? (
+              <details key={eventSession.id} className="group p-4 text-sm">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 marker:content-none">
+                  <div>
+                    <p className="font-medium">
+                      {eventSession.sequence}. {eventSession.title}
+                      <span className="ml-2 text-xs text-muted-foreground group-open:hidden">(see agenda)</span>
+                    </p>
+                    <p className="text-muted-foreground">
+                      {eventSession.hostInstructor?.name} · {eventSession.platform}
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-muted-foreground">
+                    {eventSession.startAt.toLocaleString("en-GB", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </p>
+                </summary>
+                <p className="mt-3 whitespace-pre-line border-t pt-3 text-muted-foreground">
+                  {eventSession.description}
+                </p>
+              </details>
+            ) : (
+              <div key={eventSession.id} className="flex items-center justify-between gap-4 p-4 text-sm">
+                <div>
+                  <p className="font-medium">
+                    {eventSession.sequence}. {eventSession.title}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {eventSession.hostInstructor?.name} · {eventSession.platform}
+                  </p>
+                </div>
+                <p className="shrink-0 text-muted-foreground">
+                  {eventSession.startAt.toLocaleString("en-GB", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </p>
+              </div>
+            ),
+          )}
         </div>
+      </div>
+
+      {event.learningObjectives && (
+        <>
+          <Separator className="my-8" />
+          <div>
+            <h2 className="text-lg font-medium">What you&apos;ll learn</h2>
+            <p className="mt-2 whitespace-pre-line">{event.learningObjectives}</p>
+          </div>
+        </>
       )}
 
       {event.prerequisites && (
@@ -234,27 +312,17 @@ export default async function EventDetailPage({
 
       <Separator className="my-8" />
 
-      <div>
-        <h2 className="text-lg font-medium">Sessions</h2>
-        <div className="mt-4 divide-y rounded-lg border">
-          {event.sessions.map((eventSession) => (
-            <div key={eventSession.id} className="flex items-center justify-between gap-4 p-4 text-sm">
-              <div>
-                <p className="font-medium">
-                  {eventSession.sequence}. {eventSession.title}
-                </p>
-                <p className="text-muted-foreground">
-                  {eventSession.hostInstructor?.name} · {eventSession.platform}
-                </p>
-              </div>
-              <p className="text-muted-foreground">
-                {eventSession.startAt.toLocaleString("en-GB", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
-              </p>
-            </div>
-          ))}
+      <div className="rounded-lg border bg-accent/30 p-6">
+        <h2 className="text-lg font-medium">Ready to join?</h2>
+        <div className="mt-4">
+          <BookingActions
+            event={event}
+            isLoggedIn={!!session?.user}
+            existingRegistration={existingRegistration}
+            registrationOpen={registrationOpen}
+            canRegisterAgain={canRegisterAgain}
+            isFull={isFull}
+          />
         </div>
       </div>
 
