@@ -29,6 +29,7 @@ export default async function AdminEditSessionPage({
           variant="outline"
           size="sm"
           render={<Link href={`/admin/events/${id}`}>Back to Event</Link>}
+          nativeButton={false}
         />
       </div>
 

@@ -8,8 +8,40 @@ import {
   getRegistrationsByEvent,
   getRevenueByEvent,
 } from "@/lib/reports/queries";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { formatBdt } from "@/lib/utils";
+
+function ReportCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+      <h3 className="mb-3 text-sm font-semibold text-slate-300">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function ReportList({
+  rows,
+  emptyMessage,
+}: {
+  rows: { key: string; label: string; value: string }[];
+  emptyMessage: string;
+}) {
+  if (rows.length === 0) {
+    return <p className="text-sm text-slate-600">{emptyMessage}</p>;
+  }
+  return (
+    <div className="divide-y divide-slate-800/50 text-sm">
+      {rows.map((row) => (
+        <div key={row.key} className="flex items-center justify-between gap-4 py-2">
+          <span className="font-medium text-white">{row.label}</span>
+          <span className="text-slate-400">{row.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default async function AdminReportsPage() {
   const [
@@ -34,123 +66,108 @@ export default async function AdminReportsPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Reports</h1>
-        <Button
-          size="sm"
-          variant="outline"
-          render={<a href="/api/admin/reports/registrations-csv">Export registrations CSV</a>}
-        />
+      <AdminPageHeader
+        title="Reports"
+        description="Operational, financial and student reporting across the platform."
+        actions={
+          <Button
+            size="sm"
+            variant="outline"
+            render={<a href="/api/admin/reports/registrations-csv">Export registrations CSV</a>}
+            nativeButton={false}
+          />
+        }
+      />
+
+      <div className="flex flex-col gap-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Operational</h2>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <ReportCard title="Registrations by Event">
+            <ReportList
+              emptyMessage="No Events yet."
+              rows={registrationsByEvent.map((row) => ({
+                key: row.eventId,
+                label: row.title,
+                value: `${row.confirmed} confirmed · ${row.waitlisted} waitlisted · ${row.completed} completed · ${row.cancelled} cancelled`,
+              }))}
+            />
+          </ReportCard>
+
+          <ReportCard title="Attendance and Completion">
+            <ReportList
+              emptyMessage="No completed Events yet."
+              rows={attendanceCompletion.map((row) => ({
+                key: row.title,
+                label: row.title,
+                value: `${row.completionRatePct}% completed · ${row.attendanceRatePct}% attended`,
+              }))}
+            />
+          </ReportCard>
+
+          <ReportCard title="Certificate Issuance">
+            <p className="text-2xl font-bold text-white">
+              {certificates.issued} <span className="text-sm font-normal text-slate-500">issued</span>
+            </p>
+            <p className="text-sm text-slate-500">{certificates.revoked} revoked</p>
+          </ReportCard>
+        </div>
       </div>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Registrations by Event</h2>
-        <div className="divide-y rounded-lg border text-sm">
-          {registrationsByEvent.length === 0 && (
-            <p className="p-4 text-muted-foreground">No Events yet.</p>
-          )}
-          {registrationsByEvent.map((row) => (
-            <div key={row.eventId} className="flex items-center justify-between gap-4 p-3">
-              <span className="font-medium">{row.title}</span>
-              <span className="text-muted-foreground">
-                {row.confirmed} confirmed · {row.waitlisted} waitlisted ·{" "}
-                {row.completed} completed · {row.cancelled} cancelled
-              </span>
-            </div>
-          ))}
+      <div className="flex flex-col gap-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Financial</h2>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <ReportCard title="Revenue by Event">
+            <ReportList
+              emptyMessage="No paid payments yet."
+              rows={revenueByEvent.map((row) => ({
+                key: row.title,
+                label: row.title,
+                value: `${formatBdt(row.revenueBdt)} · ${row.count} payment${row.count === 1 ? "" : "s"}`,
+              }))}
+            />
+          </ReportCard>
+
+          <ReportCard title="Free vs Paid Enrollment">
+            <p className="text-2xl font-bold text-white">
+              {pricingSplit.free} <span className="text-sm font-normal text-slate-500">free</span>
+            </p>
+            <p className="text-sm text-slate-500">{pricingSplit.paid} paid confirmed registrations</p>
+          </ReportCard>
+
+          <ReportCard title="Payment Success / Failure">
+            <p className="text-sm text-slate-300">
+              {paymentRates.paid} paid · {paymentRates.failed} failed · {paymentRates.pending} pending
+            </p>
+          </ReportCard>
+
+          <ReportCard title="Discount Usage">
+            <ReportList
+              emptyMessage="No coupons created yet."
+              rows={discountUsage.map((row) => ({
+                key: row.code,
+                label: row.code,
+                value: `${row.redemptions} used · ${formatBdt(row.totalDiscountBdt)} given`,
+              }))}
+            />
+          </ReportCard>
         </div>
-      </section>
+      </div>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Free vs Paid Enrollment</h2>
-        <p className="text-sm text-muted-foreground">
-          {pricingSplit.free} free · {pricingSplit.paid} paid confirmed registrations
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Revenue by Event</h2>
-        <div className="divide-y rounded-lg border text-sm">
-          {revenueByEvent.length === 0 && (
-            <p className="p-4 text-muted-foreground">No paid payments yet.</p>
-          )}
-          {revenueByEvent.map((row) => (
-            <div key={row.title} className="flex items-center justify-between gap-4 p-3">
-              <span className="font-medium">{row.title}</span>
-              <span className="text-muted-foreground">
-                {formatBdt(row.revenueBdt)} · {row.count} payment{row.count === 1 ? "" : "s"}
-              </span>
-            </div>
-          ))}
+      <div className="flex flex-col gap-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Students</h2>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <ReportCard title="Instructor Performance">
+            <ReportList
+              emptyMessage="No instructors yet."
+              rows={instructorPerformance.map((row) => ({
+                key: row.name,
+                label: row.name,
+                value: `${row.eventCount} Event${row.eventCount === 1 ? "" : "s"} · ${row.registrationCount} registrations${row.avgRating !== null ? ` · ${row.avgRating}/5 avg rating` : ""}`,
+              }))}
+            />
+          </ReportCard>
         </div>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Payment Success / Failure</h2>
-        <p className="text-sm text-muted-foreground">
-          {paymentRates.paid} paid · {paymentRates.failed} failed · {paymentRates.pending} pending
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Discount Usage</h2>
-        <div className="divide-y rounded-lg border text-sm">
-          {discountUsage.length === 0 && (
-            <p className="p-4 text-muted-foreground">No coupons created yet.</p>
-          )}
-          {discountUsage.map((row) => (
-            <div key={row.code} className="flex items-center justify-between gap-4 p-3">
-              <span className="font-medium">{row.code}</span>
-              <span className="text-muted-foreground">
-                {row.redemptions} used · {formatBdt(row.totalDiscountBdt)} given
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Attendance and Completion</h2>
-        <div className="divide-y rounded-lg border text-sm">
-          {attendanceCompletion.length === 0 && (
-            <p className="p-4 text-muted-foreground">No completed Events yet.</p>
-          )}
-          {attendanceCompletion.map((row) => (
-            <div key={row.title} className="flex items-center justify-between gap-4 p-3">
-              <span className="font-medium">{row.title}</span>
-              <span className="text-muted-foreground">
-                {row.completionRatePct}% completed · {row.attendanceRatePct}% attended
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Certificate Issuance</h2>
-        <p className="text-sm text-muted-foreground">
-          {certificates.issued} issued · {certificates.revoked} revoked
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">Instructor Performance</h2>
-        <div className="divide-y rounded-lg border text-sm">
-          {instructorPerformance.length === 0 && (
-            <p className="p-4 text-muted-foreground">No instructors yet.</p>
-          )}
-          {instructorPerformance.map((row) => (
-            <div key={row.name} className="flex items-center justify-between gap-4 p-3">
-              <span className="font-medium">{row.name}</span>
-              <span className="text-muted-foreground">
-                {row.eventCount} Event{row.eventCount === 1 ? "" : "s"} ·{" "}
-                {row.registrationCount} registrations
-                {row.avgRating !== null && ` · ${row.avgRating}/5 avg rating`}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

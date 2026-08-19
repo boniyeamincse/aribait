@@ -1,31 +1,35 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { TabBar } from "@/components/admin/tab-bar";
 import { prisma } from "@/lib/db/client";
-import {
-  archiveEvent,
-  cancelEvent,
-  completeEvent,
-  publishEvent,
-  updateEvent,
-} from "@/lib/events/actions";
-import { createEventSession, cancelEventSession } from "@/lib/events/session-actions";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { formatBdt } from "@/lib/utils";
 
-import { EventForm } from "../event-form";
-import { SessionForm } from "./session-form";
-import { AttachCouponForm } from "./attach-coupon-form";
-import { AnnouncementForm } from "./announcement-form";
-import { RemoveResourceButton, ResourceForm } from "./resource-form";
-import { ReviewModerationRow } from "./review-moderation";
+import { OverviewTab } from "./tabs/overview-tab";
+import { SessionsTab } from "./tabs/sessions-tab";
+import { RegistrationsTab } from "./tabs/registrations-tab";
+import { PaymentsTab } from "./tabs/payments-tab";
+import { AttendanceTab } from "./tabs/attendance-tab";
+import { NotificationsTab } from "./tabs/notifications-tab";
+import { CertificatesTab } from "./tabs/certificates-tab";
+import { ActivityTab } from "./tabs/activity-tab";
 
-export default async function AdminEventDetailPage({
-  params,
-}: PageProps<"/admin/events/[id]">) {
-  const { id } = await params;
+const TABS = [
+  { id: "overview", label: "Overview" },
+  { id: "sessions", label: "Sessions" },
+  { id: "registrations", label: "Registrations" },
+  { id: "payments", label: "Payments" },
+  { id: "attendance", label: "Attendance" },
+  { id: "notifications", label: "Notifications" },
+  { id: "certificates", label: "Certificates" },
+  { id: "activity", label: "Activity Log" },
+];
+
+export default async function AdminEventDetailPage(
+  props: PageProps<"/admin/events/[id]">,
+) {
+  const { id } = await props.params;
+  const searchParams = await props.searchParams;
+  const tab = typeof searchParams.tab === "string" ? searchParams.tab : "overview";
 
   const [event, categories, instructors] = await Promise.all([
     prisma.event.findUnique({
@@ -44,250 +48,35 @@ export default async function AdminEventDetailPage({
 
   if (!event) notFound();
 
-  const nextSequence = event.sessions.length + 1;
-
   return (
-    <div className="flex max-w-2xl flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {event.title}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            /events/{event.slug} · {formatBdt(event.priceBdt)} ·{" "}
-            {event._count.registrations} registration
+          <h1 className="text-2xl font-bold text-white">{event.title}</h1>
+          <p className="text-sm text-slate-400">
+            /events/{event.slug} · {formatBdt(event.priceBdt)} · {event._count.registrations} registration
             {event._count.registrations === 1 ? "" : "s"}
           </p>
         </div>
-        <Badge variant="secondary">{event.status}</Badge>
+        <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2.5 py-1 text-xs font-semibold text-violet-400">
+          {event.status.replace(/_/g, " ")}
+        </span>
       </div>
 
-      <div className="flex gap-2">
-        {event.status === "DRAFT" && (
-          <form action={publishEvent.bind(null, event.id)}>
-            <Button type="submit" size="sm">
-              Publish
-            </Button>
-          </form>
-        )}
-        {event.status !== "CANCELLED" && event.status !== "ARCHIVED" && (
-          <form action={cancelEvent.bind(null, event.id)}>
-            <Button type="submit" size="sm" variant="destructive">
-              Cancel Event
-            </Button>
-          </form>
-        )}
-        {event.status !== "ARCHIVED" && (
-          <form action={archiveEvent.bind(null, event.id)}>
-            <Button type="submit" size="sm" variant="outline">
-              Archive
-            </Button>
-          </form>
-        )}
-        {event.status === "PUBLISHED" && (
-          <form action={completeEvent.bind(null, event.id)}>
-            <Button type="submit" size="sm" variant="outline">
-              Complete Event
-            </Button>
-          </form>
-        )}
-      </div>
+      <TabBar tabs={TABS} active={tab} baseHref={`/admin/events/${event.id}`} />
 
-      <Separator />
-
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium">Edit Event</h2>
-        <EventForm
-          action={updateEvent.bind(null, event.id)}
-          categories={categories}
-          instructors={instructors}
-          submitLabel="Save changes"
-          defaultValues={{
-            title: event.title,
-            shortDescription: event.shortDescription,
-            description: event.description,
-            type: event.type,
-            categoryId: event.categoryId,
-            instructorId: event.instructorId,
-            thumbnailUrl: event.thumbnailUrl,
-            learningObjectives: event.learningObjectives,
-            targetAudience: event.targetAudience,
-            prerequisites: event.prerequisites,
-            language: event.language,
-            capacity: event.capacity,
-            priceBdt: event.priceBdt,
-            registrationOpensAt: event.registrationOpensAt,
-            registrationClosesAt: event.registrationClosesAt,
-            startAt: event.startAt,
-            endAt: event.endAt,
-            featured: event.featured,
-            termsAndRefundPolicy: event.termsAndRefundPolicy,
-          }}
-        />
-      </div>
-
-      <Separator />
-
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium">Sessions</h2>
-
-        <div className="flex flex-col divide-y rounded-lg border">
-          {event.sessions.length === 0 && (
-            <p className="p-4 text-sm text-muted-foreground">
-              No Sessions yet — add the first one below.
-            </p>
-          )}
-          {event.sessions.map((session) => (
-            <div
-              key={session.id}
-              className="flex items-center justify-between gap-4 p-3 text-sm"
-            >
-              <div>
-                <p className="font-medium">
-                  {session.sequence}. {session.title}
-                </p>
-                <p className="text-muted-foreground">
-                  {session.startAt.toLocaleString("en-GB", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })}{" "}
-                  · {session.platform}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">{session.status}</Badge>
-                <Button
-                  render={
-                    <Link href={`/admin/events/${event.id}/sessions/${session.id}`}>
-                      Edit
-                    </Link>
-                  }
-                  size="sm"
-                  variant="outline"
-                />
-                {session.status !== "CANCELLED" && (
-                  <form action={cancelEventSession.bind(null, session.id)}>
-                    <Button type="submit" size="sm" variant="destructive">
-                      Cancel
-                    </Button>
-                  </form>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="rounded-lg border p-4">
-          <h3 className="mb-3 text-sm font-medium">Add Session</h3>
-          <SessionForm
-            action={createEventSession.bind(null, event.id)}
-            instructors={instructors}
-            nextSequence={nextSequence}
-            submitLabel="Add Session"
-            defaultValues={{
-              title: "",
-              sequence: nextSequence,
-              description: null,
-              startAt: event.startAt,
-              endAt: event.endAt,
-              timeZone: "Asia/Dhaka",
-              hostInstructorId: event.instructorId,
-              platform: "ZOOM",
-              meetingId: null,
-              meetingUrl: null,
-              meetingPasscode: null,
-            }}
-          />
-        </div>
-      </div>
-
-      {event.priceBdt > 0 && (
-        <>
-          <Separator />
-          <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-medium">Coupons</h2>
-            <div className="flex flex-wrap gap-2">
-              {event.discountEvents.length === 0 && (
-                <p className="text-sm text-muted-foreground">
-                  No coupons attached to this Event.
-                </p>
-              )}
-              {event.discountEvents.map((de) => (
-                <Badge key={de.id} variant="secondary">
-                  {de.discount.code}
-                </Badge>
-              ))}
-            </div>
-            <AttachCouponForm eventId={event.id} />
-          </div>
-        </>
+      {tab === "overview" && (
+        <OverviewTab event={event} categories={categories} instructors={instructors} />
       )}
-
-      <Separator />
-
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium">Resources</h2>
-        <div className="divide-y rounded-lg border">
-          {event.resources.length === 0 && (
-            <p className="p-4 text-sm text-muted-foreground">
-              No resources attached to this Event.
-            </p>
-          )}
-          {event.resources.map((resource) => (
-            <div
-              key={resource.id}
-              className="flex items-center justify-between gap-4 p-3 text-sm"
-            >
-              <div>
-                <p className="font-medium">{resource.title}</p>
-                <p className="truncate text-muted-foreground">{resource.url}</p>
-              </div>
-              <RemoveResourceButton resourceId={resource.id} />
-            </div>
-          ))}
-        </div>
-        <ResourceForm eventId={event.id} />
-      </div>
-
-      <Separator />
-
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium">Reviews</h2>
-        <div className="divide-y rounded-lg border">
-          {event.reviews.length === 0 && (
-            <p className="p-4 text-sm text-muted-foreground">
-              No reviews submitted yet.
-            </p>
-          )}
-          {event.reviews.map((review) => (
-            <div
-              key={review.id}
-              className="flex items-center justify-between gap-4 p-3 text-sm"
-            >
-              <div>
-                <p className="font-medium">
-                  {review.user.name} — {review.rating}/5
-                </p>
-                {review.comment && (
-                  <p className="text-muted-foreground">{review.comment}</p>
-                )}
-              </div>
-              <ReviewModerationRow reviewId={review.id} published={review.published} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Separator />
-
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-medium">Announcements</h2>
-        <p className="text-sm text-muted-foreground">
-          Sends an in-app + email notification to every confirmed and
-          waitlisted registrant.
-        </p>
-        <AnnouncementForm eventId={event.id} />
-      </div>
+      {tab === "sessions" && (
+        <SessionsTab event={event} instructors={instructors} />
+      )}
+      {tab === "registrations" && <RegistrationsTab eventId={event.id} />}
+      {tab === "payments" && <PaymentsTab eventId={event.id} />}
+      {tab === "attendance" && <AttendanceTab eventId={event.id} />}
+      {tab === "notifications" && <NotificationsTab eventId={event.id} />}
+      {tab === "certificates" && <CertificatesTab eventId={event.id} />}
+      {tab === "activity" && <ActivityTab eventId={event.id} />}
     </div>
   );
 }

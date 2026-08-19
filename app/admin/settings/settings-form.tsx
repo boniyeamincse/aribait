@@ -1,0 +1,148 @@
+"use client";
+
+import { useActionState } from "react";
+
+import { updateSettings } from "@/lib/settings/actions";
+
+type Settings = {
+  siteName: string;
+  defaultTimeZone: string;
+  currency: string;
+  seatHoldMinutes: number;
+  joinWindowBeforeMinutes: number;
+  joinWindowAfterMinutes: number;
+  bkashNagadReceivingMsisdn: string;
+  maintenanceMode: boolean;
+};
+
+const FIELD_KEYS = [
+  "siteName",
+  "defaultTimeZone",
+  "currency",
+  "seatHoldMinutes",
+  "joinWindowBeforeMinutes",
+  "joinWindowAfterMinutes",
+  "bkashNagadReceivingMsisdn",
+  "maintenanceMode",
+] as const satisfies readonly (keyof Settings)[];
+
+function inputClass() {
+  return "w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none";
+}
+
+export function SettingsForm({
+  settings,
+  visible,
+}: {
+  settings: Settings;
+  visible: (keyof Settings)[];
+}) {
+  const [state, action, pending] = useActionState(updateSettings, null);
+  const isVisible = (key: keyof Settings) => visible.includes(key);
+
+  return (
+    <form action={action} className="flex max-w-lg flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900 p-6">
+      {isVisible("siteName") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Site name</span>
+          <input name="siteName" defaultValue={settings.siteName} className={inputClass()} required />
+        </label>
+      )}
+      {isVisible("defaultTimeZone") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Default time zone</span>
+          <input name="defaultTimeZone" defaultValue={settings.defaultTimeZone} className={inputClass()} required />
+        </label>
+      )}
+      {isVisible("currency") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Currency</span>
+          <input name="currency" defaultValue={settings.currency} className={inputClass()} required />
+        </label>
+      )}
+      {isVisible("maintenanceMode") && (
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="maintenanceMode"
+            defaultChecked={settings.maintenanceMode}
+            className="size-4 rounded border-slate-700 bg-slate-950"
+          />
+          <span className="text-slate-300">Maintenance mode</span>
+        </label>
+      )}
+      {isVisible("seatHoldMinutes") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Seat hold duration (minutes)</span>
+          <input
+            type="number"
+            name="seatHoldMinutes"
+            defaultValue={settings.seatHoldMinutes}
+            min={1}
+            max={180}
+            className={inputClass()}
+            required
+          />
+        </label>
+      )}
+      {isVisible("joinWindowBeforeMinutes") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Join window opens before start (minutes)</span>
+          <input
+            type="number"
+            name="joinWindowBeforeMinutes"
+            defaultValue={settings.joinWindowBeforeMinutes}
+            min={0}
+            max={180}
+            className={inputClass()}
+            required
+          />
+        </label>
+      )}
+      {isVisible("joinWindowAfterMinutes") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Join window closes after end (minutes)</span>
+          <input
+            type="number"
+            name="joinWindowAfterMinutes"
+            defaultValue={settings.joinWindowAfterMinutes}
+            min={0}
+            max={180}
+            className={inputClass()}
+            required
+          />
+        </label>
+      )}
+      {isVisible("bkashNagadReceivingMsisdn") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">bKash/Nagad receiving number</span>
+          <input
+            name="bkashNagadReceivingMsisdn"
+            defaultValue={settings.bkashNagadReceivingMsisdn}
+            className={inputClass()}
+            required
+          />
+        </label>
+      )}
+
+      {FIELD_KEYS.filter((key) => !isVisible(key)).map((key) =>
+        key === "maintenanceMode" ? (
+          settings.maintenanceMode ? <input key={key} type="hidden" name={key} value="on" /> : null
+        ) : (
+          <input key={key} type="hidden" name={key} value={String(settings[key])} />
+        ),
+      )}
+
+      {state?.ok === false && <p className="text-sm text-red-400">{state.error}</p>}
+      {state?.ok === true && <p className="text-sm text-emerald-400">Saved.</p>}
+
+      <button
+        type="submit"
+        disabled={pending}
+        className="self-start rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-400 hover:to-violet-500 disabled:opacity-50"
+      >
+        {pending ? "Saving…" : "Save changes"}
+      </button>
+    </form>
+  );
+}

@@ -18,6 +18,11 @@ export function formatBdt(amountBdt: number) {
   return `৳${amountBdt.toLocaleString("en-BD")}`
 }
 
+/** Like formatBdt, but for revenue/collections figures where 0 means "৳0 collected", not "Free". */
+export function formatBdtAmount(amountBdt: number) {
+  return `৳${amountBdt.toLocaleString("en-BD")}`
+}
+
 /** Formats a Date for a `datetime-local` input's `defaultValue`, in local time. */
 export function toDatetimeLocalValue(date: Date) {
   const pad = (n: number) => String(n).padStart(2, "0")

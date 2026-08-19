@@ -205,6 +205,96 @@ landing-page file).
 
 ---
 
+## Admin Dashboard UI Redesign (post-Phase 5)
+
+Implemented step-by-step from `docs/admin-dashboard-idea.md` /
+`docs/admin-dashboard-dev.md`. All 5 phases' admin functionality already
+existed and worked — this was a UI/UX pass: dark theme, consistent
+table/filter/tab patterns, and a genuinely richer Overview, on top of the
+existing Server Actions (no backend logic changed except one new bulk
+action and Settings persistence, both noted below).
+
+- [x] Admin layout — dark theme header/sidebar, responsive mobile drawer
+      (`components/admin/admin-nav.tsx`, `admin-mobile-nav.tsx`), grouped nav
+      with icons and a live pending-payments badge
+- [x] Shared components — `AdminPageHeader`, `StatusBadge`, `AdminTable`, `TabBar`
+      (`components/admin/`), reused across every module below
+- [x] Overview redesign — 8 KPI cards, Action Required panel (pending
+      payments/missing meeting links/certificates to issue/nearly-full
+      events/waitlisted students), Today's Sessions + 7-day upcoming
+      timeline, Registration/Revenue trend charts, Recent Activity feed
+      (`lib/admin/overview.ts`)
+- [x] Events module — dark filterable list + an 8-tab detail page (Overview,
+      Sessions, Registrations, Payments, Attendance, Notifications,
+      Certificates, Activity Log), each new tab backed by a real scoped
+      query (`lib/admin/event-detail.ts`)
+- [x] Payments queue — Pending/Paid/Failed/All tabs, inline approve/reject
+      unchanged functionally, restyled to pill buttons
+- [x] Students module — new dark list + a 7-tab student detail page
+      (Profile, Registrations, Upcoming Sessions, Payments, Attendance,
+      Certificates, Activity) — this page didn't exist before, was a stub
+      (`lib/admin/student-detail.ts`)
+- [x] Attendance workspace — color-coded status toggles, new "Mark all
+      present" bulk action with an inline (non-native-dialog) confirmation
+      step (`markAllPresent` in `lib/attendance/actions.ts`)
+- [x] Reports — regrouped into Operational/Financial/Students sections,
+      same underlying queries from Phase 5
+- [x] Settings — was a stub; built for real. 4 tabs (General, Registration,
+      Payments, Sessions) bound to the actual `Settings` singleton with a
+      new `updateSettings` action (audit-logged, diffed like every other
+      admin mutation); Certificates/Security tabs are honest placeholders
+      since no backing config exists yet for those
+
+Two real bugs found and fixed while testing this (not automation
+artifacts):
+1. The Revenue Trend bar chart rendered zero-height bars — the bar's
+   percentage `height` was resolving against an auto-height flex-column
+   wrapper instead of the fixed-height row (percentage heights don't
+   resolve against auto-height containing blocks per the CSS spec).
+   Registration Trend didn't have this bug because its bars are direct
+   children of the fixed-height row. Fixed by switching to a pixel height
+   computed in JS instead of a percentage.
+2. Three Base UI `<Button render={<Link>...</Link>} />` call sites
+   (`admin/events/page.tsx`, the Sessions tab, `admin/events/[id]/sessions/
+   [sessionId]/page.tsx`, `admin/reports/page.tsx`) logged a console error
+   because Base UI's `Button` defaults `nativeButton` to `true` and expects
+   a real `<button>` in `render`. Fixed by passing `nativeButton={false}`,
+   the fix Base UI's own warning names. Pre-existing in the codebase, not
+   introduced today — just newly exercised by pages built/touched today.
+
+`formatBdt(0)` returns `"Free"`, which reads fine for an event's price but
+was misleading on the Monthly Revenue KPI card ("Monthly Revenue: Free").
+Added `formatBdtAmount()` for revenue/collections contexts where 0 means
+"৳0 collected," not "free."
+
+Verified end-to-end in the browser against a seeded scenario (a nearly-full
+paid Event with one PENDING and one PAID transaction, a session today
+missing a meeting link, a session in 3 days with one configured, a second
+COMPLETED Event with an uncertified registration): every Action Required
+trigger fired correctly and matched the seed; approved the pending payment
+through the real Payments queue and watched the nav badge and Action
+Required item both clear; clicked through all 8 Events tabs and all 7
+Students tabs and cross-checked every number; used "Mark all present" then
+overrode one student to Late and confirmed both the bulk and individual
+paths persist correctly; saved a real Settings change (seat-hold minutes
+15→20), confirmed it persisted and audit-logged with a correct diff
+summary, then reverted it back to 15 through the same form. All seed data
+(2 Events, 2 Sessions, 3 registrations, 2 payments/transactions, attendance
+records, and every audit-log/notification side-effect they triggered)
+removed from the production Neon DB afterward — this required extending
+the cleanup script mid-way after discovering attendance rows and a
+payment-confirmation notification the first pass had missed. `npx tsc
+--noEmit` and `npx eslint .` both clean (one pre-existing unrelated warning
+in the other session's landing-page file).
+
+Also found: `docs/admin-dashboard-dev.md`'s own "Current State" table
+claimed `/admin/students` and `/admin/settings` were already built and the
+admin layout already had the dark theme — none of that was true; both
+pages were one-paragraph stubs and the layout was still the Phase-1
+plain-shadcn version. Built from scratch rather than trusting the table.
+
+---
+
 ## Cross-Cutting (ongoing through every phase)
 
 - [ ] Zod validation on every Server Action / Route Handler input

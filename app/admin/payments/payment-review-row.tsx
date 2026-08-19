@@ -3,7 +3,6 @@
 import { useActionState, useState } from "react";
 
 import { approveManualPayment, rejectManualPayment } from "@/lib/payments/actions";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -20,10 +19,18 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
   );
 
   if (approveState?.ok) {
-    return <p className="text-sm text-muted-foreground">Approved.</p>;
+    return (
+      <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
+        Approved
+      </span>
+    );
   }
   if (rejectState?.ok) {
-    return <p className="text-sm text-muted-foreground">Rejected.</p>;
+    return (
+      <span className="rounded-full border border-red-500/30 bg-red-500/15 px-2.5 py-0.5 text-xs font-semibold text-red-400">
+        Rejected
+      </span>
+    );
   }
 
   if (rejecting) {
@@ -35,23 +42,26 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
           rows={2}
           required
           minLength={5}
-          className="w-64"
+          className="w-64 border-slate-700 bg-slate-950 text-white placeholder:text-slate-600"
         />
         {rejectState?.ok === false && (
-          <p className="text-sm text-destructive">{rejectState.error}</p>
+          <p className="text-sm text-red-400">{rejectState.error}</p>
         )}
         <div className="flex gap-2">
-          <Button type="submit" size="sm" variant="destructive" disabled={rejectPending}>
+          <button
+            type="submit"
+            disabled={rejectPending}
+            className="rounded-full border border-red-500/30 bg-red-500/15 px-3 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/25 disabled:opacity-50"
+          >
             {rejectPending ? "Rejecting…" : "Confirm reject"}
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            size="sm"
-            variant="outline"
             onClick={() => setRejecting(false)}
+            className="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-400 hover:bg-slate-800"
           >
             Back
-          </Button>
+          </button>
         </div>
       </form>
     );
@@ -60,18 +70,21 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
   return (
     <div className="flex gap-2">
       <form action={approveAction}>
-        <Button type="submit" size="sm" disabled={approvePending}>
-          {approvePending ? "Approving…" : "Approve"}
-        </Button>
+        <button
+          type="submit"
+          disabled={approvePending}
+          className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/25 disabled:opacity-50"
+        >
+          {approvePending ? "Approving…" : "✓ Approve"}
+        </button>
       </form>
-      <Button
+      <button
         type="button"
-        size="sm"
-        variant="destructive"
         onClick={() => setRejecting(true)}
+        className="rounded-full border border-red-500/30 bg-red-500/15 px-3 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/25"
       >
-        Reject
-      </Button>
+        ✕ Reject
+      </button>
     </div>
   );
 }

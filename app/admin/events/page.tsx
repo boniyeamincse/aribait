@@ -1,54 +1,132 @@
 import Link from "next/link";
 
-import { prisma } from "@/lib/db/client";
-import { Badge } from "@/components/ui/badge";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminTable } from "@/components/admin/admin-table";
+import { StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/db/client";
+import type { EventStatus } from "@/lib/generated/prisma/client";
 import { formatBdt } from "@/lib/utils";
 
-export default async function AdminEventsPage() {
+const STATUS_COLORS: Record<string, string> = {
+  DRAFT: "bg-slate-500/15 text-slate-400 border-slate-500/30",
+  PUBLISHED: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  REGISTRATION_OPEN: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  REGISTRATION_CLOSED: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  ONGOING: "bg-violet-500/15 text-violet-400 border-violet-500/30",
+  COMPLETED: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  CANCELLED: "bg-red-500/15 text-red-400 border-red-500/30",
+  ARCHIVED: "bg-slate-700/15 text-slate-600 border-slate-700/30",
+};
+
+const STATUS_OPTIONS = Object.keys(STATUS_COLORS) as EventStatus[];
+
+export default async function AdminEventsPage(props: PageProps<"/admin/events">) {
+  const searchParams = await props.searchParams;
+  const query = typeof searchParams.q === "string" ? searchParams.q : "";
+  const statusFilter = typeof searchParams.status === "string" ? searchParams.status : "";
+
+  const validStatus = STATUS_OPTIONS.includes(statusFilter as EventStatus)
+    ? (statusFilter as EventStatus)
+    : undefined;
+
   const events = await prisma.event.findMany({
+    where: {
+      ...(query ? { title: { contains: query, mode: "insensitive" } } : {}),
+      ...(validStatus ? { status: validStatus } : {}),
+    },
     orderBy: { createdAt: "desc" },
-    take: 50,
+    take: 100,
     include: {
       category: true,
       instructor: true,
-      _count: { select: { registrations: true, sessions: true } },
+      _count: { select: { registrations: { where: { status: "CONFIRMED" } }, sessions: true } },
     },
   });
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
-        <Button render={<Link href="/admin/events/new">Create Event</Link>} />
-      </div>
+      <AdminPageHeader
+        title="Events"
+        description="Manage every live class, training program, workshop and seminar."
+        actions={<Button render={<Link href="/admin/events/new">Create Event</Link>} nativeButton={false} />}
+      />
 
-      <div className="divide-y rounded-lg border">
-        {events.length === 0 && (
-          <p className="p-4 text-sm text-muted-foreground">
-            No Events yet. Create one to get started.
-          </p>
-        )}
-        {events.map((event) => (
-          <Link
-            key={event.id}
-            href={`/admin/events/${event.id}`}
-            className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-accent"
-          >
-            <div>
-              <p className="font-medium">{event.title}</p>
-              <p className="text-muted-foreground">
-                {event.category.name} · {event.instructor.name} ·{" "}
-                {formatBdt(event.priceBdt)} · {event._count.sessions} session
-                {event._count.sessions === 1 ? "" : "s"} ·{" "}
-                {event._count.registrations} registration
-                {event._count.registrations === 1 ? "" : "s"}
-              </p>
-            </div>
-            <Badge variant="secondary">{event.status}</Badge>
-          </Link>
-        ))}
-      </div>
+      <form className="flex flex-wrap gap-3 rounded-2xl border border-slate-800 bg-slate-900 p-4">
+        <input
+          type="text"
+          name="q"
+          defaultValue={query}
+          placeholder="Search events…"
+          className="min-w-48 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-500 focus:outline-none"
+        />
+        <select
+          name="status"
+          defaultValue={validStatus ?? ""}
+          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none"
+        >
+          <option value="">All statuses</option>
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>
+              {s.replace(/_/g, " ")}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-400 hover:to-violet-500"
+        >
+          Filter
+        </button>
+      </form>
+
+      <AdminTable
+        rowKey={(event) => event.id}
+        rows={events}
+        emptyMessage="No Events match this filter."
+        columns={[
+          {
+            key: "title",
+            label: "Event",
+            render: (event) => (
+              <Link href={`/admin/events/${event.id}`} className="font-medium text-white hover:underline">
+                {event.title}
+                <span className="block text-xs font-normal text-slate-500">
+                  {event.category.name} · {event.instructor.name}
+                </span>
+              </Link>
+            ),
+          },
+          {
+            key: "sessions",
+            label: "Sessions",
+            render: (event) => event._count.sessions,
+          },
+          {
+            key: "capacity",
+            label: "Capacity",
+            render: (event) =>
+              event.capacity === null
+                ? `${event._count.registrations} / unlimited`
+                : `${event._count.registrations} / ${event.capacity}`,
+          },
+          { key: "price", label: "Price", render: (event) => formatBdt(event.priceBdt) },
+          {
+            key: "status",
+            label: "Status",
+            render: (event) => <StatusBadge status={event.status} map={STATUS_COLORS} />,
+          },
+          {
+            key: "actions",
+            label: "",
+            render: (event) => (
+              <Link href={`/admin/events/${event.id}`} className="text-xs text-cyan-400 hover:underline">
+                Manage →
+              </Link>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }

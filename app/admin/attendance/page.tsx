@@ -1,7 +1,8 @@
 import Link from "next/link";
 
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminTable } from "@/components/admin/admin-table";
 import { prisma } from "@/lib/db/client";
-import { Badge } from "@/components/ui/badge";
 
 export default async function AdminAttendancePage() {
   const sessions = await prisma.eventSession.findMany({
@@ -18,37 +19,31 @@ export default async function AdminAttendancePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Attendance</h1>
-      <p className="text-sm text-muted-foreground">
-        Pick a Session to mark or review attendance.
-      </p>
+      <AdminPageHeader title="Attendance" description="Pick a Session to mark or review attendance." />
 
-      <div className="divide-y rounded-lg border">
-        {sessions.length === 0 && (
-          <p className="p-4 text-sm text-muted-foreground">No Sessions yet.</p>
-        )}
-        {sessions.map((session) => (
-          <Link
-            key={session.id}
-            href={`/admin/attendance/${session.id}`}
-            className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-accent"
-          >
-            <div>
-              <p className="font-medium">
-                {session.event.title} — {session.title}
-              </p>
-              <p className="text-muted-foreground">
-                {session.startAt.toLocaleString("en-GB", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}{" "}
-                · {session._count.attendances} marked
-              </p>
-            </div>
-            <Badge variant="secondary">{session.status}</Badge>
-          </Link>
-        ))}
-      </div>
+      <AdminTable
+        rowKey={(s) => s.id}
+        rows={sessions}
+        emptyMessage="No Sessions yet."
+        columns={[
+          {
+            key: "session",
+            label: "Session",
+            render: (s) => (
+              <Link href={`/admin/attendance/${s.id}`} className="font-medium text-white hover:underline">
+                {s.event.title} — {s.title}
+              </Link>
+            ),
+          },
+          {
+            key: "when",
+            label: "Date/Time",
+            render: (s) => s.startAt.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }),
+          },
+          { key: "marked", label: "Marked", render: (s) => s._count.attendances },
+          { key: "status", label: "Status", render: (s) => s.status.replace(/_/g, " ") },
+        ]}
+      />
     </div>
   );
 }
