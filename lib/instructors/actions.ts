@@ -15,13 +15,25 @@ export async function createInstructor(
 ): Promise<ActionResult> {
   await requireAdmin();
 
+  const getStr = (key: string) => {
+    const val = formData.get(key)?.toString().trim();
+    return val ? val : undefined;
+  };
+
   const parsed = instructorSchema.safeParse({
     name: formData.get("name"),
-    title: formData.get("title") || undefined,
-    bio: formData.get("bio") || undefined,
+    title: getStr("title"),
+    bio: getStr("bio"),
+    email: getStr("email"),
+    company: getStr("company"),
+    phone: getStr("phone"),
+    website: getStr("website"),
+    twitterUrl: getStr("twitterUrl"),
+    linkedinUrl: getStr("linkedinUrl"),
+    githubUrl: getStr("githubUrl"),
   });
   if (!parsed.success) {
-    return { ok: false, error: "Enter a valid instructor name." };
+    return { ok: false, error: "Please enter valid instructor information (e.g. valid URLs/emails)." };
   }
 
   const slug = slugify(parsed.data.name);

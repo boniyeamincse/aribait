@@ -12,18 +12,54 @@ export function InstructorForm() {
   const [state, formAction, pending] = useActionState(createInstructor, null);
 
   return (
-    <form action={formAction} className="flex max-w-md flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="name">Name</Label>
-        <Input id="name" name="name" required minLength={2} maxLength={100} />
+    <form action={formAction} className="flex max-w-3xl flex-col gap-6">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="name">Name</Label>
+          <Input id="name" name="name" required minLength={2} maxLength={100} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="title">Title</Label>
+          <Input id="title" name="title" placeholder="e.g. Senior SOC Analyst" />
+        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" placeholder="e.g. Senior SOC Analyst" />
+      
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" type="email" placeholder="instructor@example.com" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="phone">Phone</Label>
+          <Input id="phone" name="phone" placeholder="+880 1..." />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="company">Company</Label>
+          <Input id="company" name="company" placeholder="Company Name" />
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="bio">Bio</Label>
-        <Textarea id="bio" name="bio" rows={3} />
+        <Textarea id="bio" name="bio" rows={3} placeholder="Instructor background..." />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="website">Website URL</Label>
+          <Input id="website" name="website" type="url" placeholder="https://..." />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+          <Input id="linkedinUrl" name="linkedinUrl" type="url" placeholder="https://linkedin.com/in/..." />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="githubUrl">GitHub URL</Label>
+          <Input id="githubUrl" name="githubUrl" type="url" placeholder="https://github.com/..." />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="twitterUrl">Twitter/X URL</Label>
+          <Input id="twitterUrl" name="twitterUrl" type="url" placeholder="https://twitter.com/..." />
+        </div>
       </div>
       {state?.ok === false && (
         <p className="text-sm text-destructive">{state.error}</p>

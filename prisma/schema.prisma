@@ -117,7 +117,24 @@ model Settings {
   joinWindowAfterMinutes    Int      @default(15) @map("join_window_after_minutes")
   bkashNagadReceivingMsisdn String   @default("01914638653") @map("bkash_nagad_receiving_msisdn")
   maintenanceMode           Boolean  @default(false) @map("maintenance_mode")
-  updatedAt                 DateTime @updatedAt @map("updated_at")
+
+  // Contact and social — shown in the public footer/contact page.
+  contactEmail  String? @map("contact_email")
+  contactPhone  String? @map("contact_phone")
+  facebookUrl   String? @map("facebook_url")
+  linkedinUrl   String? @map("linkedin_url")
+
+  // Transactional email sender identity — read by lib/notifications/email.ts.
+  emailFromName    String? @map("email_from_name")
+  emailFromAddress String? @map("email_from_address")
+
+  // Rendered as-is (plain text/markdown, no HTML) on the public
+  // /terms, /privacy and /refund-policy pages.
+  termsContent   String? @db.Text @map("terms_content")
+  privacyContent String? @db.Text @map("privacy_content")
+  refundContent  String? @db.Text @map("refund_content")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("settings")
 }
@@ -146,8 +163,15 @@ model Instructor {
   slug      String   @unique
   title     String?
   bio       String?  @db.Text
-  avatarUrl String?  @map("avatar_url")
-  createdAt DateTime @default(now()) @map("created_at")
+  avatarUrl   String?  @map("avatar_url")
+  email       String?
+  company     String?
+  phone       String?
+  website     String?
+  twitterUrl  String?  @map("twitter_url")
+  linkedinUrl String?  @map("linkedin_url")
+  githubUrl   String?  @map("github_url")
+  createdAt   DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   events        Event[]

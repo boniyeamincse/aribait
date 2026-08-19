@@ -1,3 +1,7 @@
+import { Mail, Phone, Building2, Globe, Linkedin, Github, Twitter } from "lucide-react";
+
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminTable } from "@/components/admin/admin-table";
 import { prisma } from "@/lib/db/client";
 
 import { InstructorForm } from "./instructor-form";
@@ -9,30 +13,106 @@ export default async function AdminInstructorsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Instructors</h1>
-      <InstructorForm />
-      <div className="max-w-2xl divide-y rounded-lg border">
-        {instructors.length === 0 && (
-          <p className="p-4 text-sm text-muted-foreground">
-            No instructors yet.
-          </p>
-        )}
-        {instructors.map((instructor) => (
-          <div key={instructor.id} className="flex items-center justify-between p-3 text-sm">
-            <div>
-              <p className="font-medium">{instructor.name}</p>
-              {instructor.title && (
-                <p className="text-muted-foreground">{instructor.title}</p>
-              )}
-            </div>
-            <span className="text-muted-foreground">
-              {instructor._count.events} Event
-              {instructor._count.events === 1 ? "" : "s"}
-            </span>
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-col gap-8">
+      <AdminPageHeader 
+        title="Instructors" 
+        description="Manage instructor profiles, contact information, and social links." 
+      />
+      
+      <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+        <h2 className="mb-4 text-sm font-semibold text-white">Add New Instructor</h2>
+        <InstructorForm />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold text-white">Instructor Directory</h2>
+        <AdminTable
+          rowKey={(i) => i.id}
+          rows={instructors}
+          emptyMessage="No instructors yet."
+          columns={[
+            {
+              key: "name",
+              label: "Name",
+              render: (i) => (
+                <div>
+                  <p className="font-medium text-white">{i.name}</p>
+                  {i.title && <p className="text-xs text-slate-500">{i.title}</p>}
+                </div>
+              ),
+            },
+            {
+              key: "contact",
+              label: "Contact",
+              render: (i) => (
+                <div className="flex flex-col gap-1 text-xs text-slate-400">
+                  {i.email && (
+                    <span className="flex items-center gap-1.5 hover:text-cyan-400">
+                      <Mail size={12} /> {i.email}
+                    </span>
+                  )}
+                  {i.phone && (
+                    <span className="flex items-center gap-1.5 hover:text-cyan-400">
+                      <Phone size={12} /> {i.phone}
+                    </span>
+                  )}
+                  {!i.email && !i.phone && <span>—</span>}
+                </div>
+              ),
+            },
+            {
+              key: "company",
+              label: "Company",
+              render: (i) =>
+                i.company ? (
+                  <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                    <Building2 size={12} /> {i.company}
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-600">—</span>
+                ),
+            },
+            {
+              key: "socials",
+              label: "Links",
+              render: (i) => (
+                <div className="flex items-center gap-2 text-slate-500">
+                  {i.website && (
+                    <a href={i.website} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="Website">
+                      <Globe size={14} />
+                    </a>
+                  )}
+                  {i.linkedinUrl && (
+                    <a href={i.linkedinUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="LinkedIn">
+                      <Linkedin size={14} />
+                    </a>
+                  )}
+                  {i.githubUrl && (
+                    <a href={i.githubUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="GitHub">
+                      <Github size={14} />
+                    </a>
+                  )}
+                  {i.twitterUrl && (
+                    <a href={i.twitterUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="Twitter/X">
+                      <Twitter size={14} />
+                    </a>
+                  )}
+                  {!i.website && !i.linkedinUrl && !i.githubUrl && !i.twitterUrl && <span>—</span>}
+                </div>
+              ),
+            },
+            {
+              key: "events",
+              label: "Events",
+              render: (i) => (
+                <span className="text-slate-300">
+                  {i._count.events} Event{i._count.events === 1 ? "" : "s"}
+                </span>
+              ),
+            },
+          ]}
+        />
+      </section>
     </div>
   );
 }
