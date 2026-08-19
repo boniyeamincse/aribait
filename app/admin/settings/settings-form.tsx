@@ -13,6 +13,15 @@ type Settings = {
   joinWindowAfterMinutes: number;
   bkashNagadReceivingMsisdn: string;
   maintenanceMode: boolean;
+  contactEmail: string | null;
+  contactPhone: string | null;
+  facebookUrl: string | null;
+  linkedinUrl: string | null;
+  emailFromName: string | null;
+  emailFromAddress: string | null;
+  termsContent: string | null;
+  privacyContent: string | null;
+  refundContent: string | null;
 };
 
 const FIELD_KEYS = [
@@ -24,10 +33,24 @@ const FIELD_KEYS = [
   "joinWindowAfterMinutes",
   "bkashNagadReceivingMsisdn",
   "maintenanceMode",
+  "contactEmail",
+  "contactPhone",
+  "facebookUrl",
+  "linkedinUrl",
+  "emailFromName",
+  "emailFromAddress",
+  "termsContent",
+  "privacyContent",
+  "refundContent",
 ] as const satisfies readonly (keyof Settings)[];
 
 function inputClass() {
   return "w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none";
+}
+
+function hiddenValue(value: string | number | boolean | null) {
+  if (value === null) return "";
+  return String(value);
 }
 
 export function SettingsForm({
@@ -124,12 +147,115 @@ export function SettingsForm({
           />
         </label>
       )}
+      {isVisible("contactEmail") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Contact email</span>
+          <input
+            type="email"
+            name="contactEmail"
+            defaultValue={settings.contactEmail ?? ""}
+            placeholder="hello@aribait.com"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("contactPhone") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Contact phone</span>
+          <input
+            name="contactPhone"
+            defaultValue={settings.contactPhone ?? ""}
+            placeholder="01914638653"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("facebookUrl") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Facebook URL</span>
+          <input
+            type="url"
+            name="facebookUrl"
+            defaultValue={settings.facebookUrl ?? ""}
+            placeholder="https://facebook.com/aribait"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("linkedinUrl") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">LinkedIn URL</span>
+          <input
+            type="url"
+            name="linkedinUrl"
+            defaultValue={settings.linkedinUrl ?? ""}
+            placeholder="https://linkedin.com/company/aribait"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("emailFromName") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Email sender name</span>
+          <input
+            name="emailFromName"
+            defaultValue={settings.emailFromName ?? ""}
+            placeholder="Ariba IT"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("emailFromAddress") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Email sender address</span>
+          <input
+            type="email"
+            name="emailFromAddress"
+            defaultValue={settings.emailFromAddress ?? ""}
+            placeholder="no-reply@aribait.com"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("termsContent") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Terms of service — shown at /terms</span>
+          <textarea
+            name="termsContent"
+            defaultValue={settings.termsContent ?? ""}
+            rows={10}
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("privacyContent") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Privacy policy — shown at /privacy</span>
+          <textarea
+            name="privacyContent"
+            defaultValue={settings.privacyContent ?? ""}
+            rows={10}
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("refundContent") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-400">Refund policy — shown at /refund-policy</span>
+          <textarea
+            name="refundContent"
+            defaultValue={settings.refundContent ?? ""}
+            rows={10}
+            className={inputClass()}
+          />
+        </label>
+      )}
 
       {FIELD_KEYS.filter((key) => !isVisible(key)).map((key) =>
         key === "maintenanceMode" ? (
           settings.maintenanceMode ? <input key={key} type="hidden" name={key} value="on" /> : null
         ) : (
-          <input key={key} type="hidden" name={key} value={String(settings[key])} />
+          <input key={key} type="hidden" name={key} value={hiddenValue(settings[key])} />
         ),
       )}
 

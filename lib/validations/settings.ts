@@ -1,5 +1,28 @@
 import { z } from "zod";
 
+function optionalText(max: number) {
+  return z
+    .string()
+    .max(max)
+    .transform((v) => (v.trim() === "" ? null : v.trim()));
+}
+
+function optionalEmail() {
+  return z
+    .string()
+    .max(160)
+    .transform((v) => (v.trim() === "" ? null : v.trim()))
+    .refine((v) => v === null || z.email().safeParse(v).success, "Enter a valid email address.");
+}
+
+function optionalUrl() {
+  return z
+    .string()
+    .max(300)
+    .transform((v) => (v.trim() === "" ? null : v.trim()))
+    .refine((v) => v === null || z.url().safeParse(v).success, "Enter a valid URL.");
+}
+
 export const settingsSchema = z.object({
   siteName: z.string().min(2).max(120),
   defaultTimeZone: z.string().min(2).max(60),
@@ -11,4 +34,13 @@ export const settingsSchema = z.object({
     .string()
     .regex(/^01[3-9]\d{8}$/, "Enter a valid 11-digit Bangladeshi mobile number."),
   maintenanceMode: z.preprocess((v) => v === "on" || v === true, z.boolean()),
+  contactEmail: optionalEmail(),
+  contactPhone: optionalText(30),
+  facebookUrl: optionalUrl(),
+  linkedinUrl: optionalUrl(),
+  emailFromName: optionalText(120),
+  emailFromAddress: optionalEmail(),
+  termsContent: optionalText(20_000),
+  privacyContent: optionalText(20_000),
+  refundContent: optionalText(20_000),
 });

@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/db/client";
+
 /**
  * Email adapter — swap this implementation for a real transactional
  * provider (Resend, Postmark, SES, ...) behind EMAIL_API_KEY. Until that
@@ -9,9 +11,13 @@ export async function sendEmail(params: {
   subject: string;
   text: string;
 }) {
+  const settings = await prisma.settings.findUnique({ where: { id: 1 } });
+  const fromName = settings?.emailFromName ?? "Ariba IT";
+  const fromAddress = settings?.emailFromAddress ?? "no-reply@aribait.local";
+
   if (!process.env.EMAIL_API_KEY) {
     console.log(
-      `[email:dev] to=${params.to} subject="${params.subject}"\n${params.text}`,
+      `[email:dev] from="${fromName} <${fromAddress}>" to=${params.to} subject="${params.subject}"\n${params.text}`,
     );
     return;
   }

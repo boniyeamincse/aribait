@@ -117,23 +117,10 @@ export default async function AdminSettingsPage(
 
       {tab === "contact" && (
         <SettingsSection description="Contact details and social links shown in the public footer and contact page.">
-          <InfoCard>
-            Contact email, phone, Facebook, LinkedIn and social links are not
-            yet stored in the Settings model. Add these fields to the Prisma
-            schema (e.g.{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              contactEmail
-            </code>
-            ,{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              facebookUrl
-            </code>
-            ) and a corresponding{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              updateSettings
-            </code>{" "}
-            action to enable this tab.
-          </InfoCard>
+          <SettingsForm
+            settings={settings}
+            visible={["contactEmail", "contactPhone", "facebookUrl", "linkedinUrl"]}
+          />
         </SettingsSection>
       )}
 
@@ -151,7 +138,7 @@ export default async function AdminSettingsPage(
           <InfoCard>
             Per-event registration rules (email verification requirement,
             cancellation policy, terms acceptance) are configured on each
-            Event's edit page. Platform defaults can be added to the Settings
+            Event&apos;s edit page. Platform defaults can be added to the Settings
             model in a future release.
           </InfoCard>
         </SettingsSection>
@@ -207,23 +194,16 @@ export default async function AdminSettingsPage(
       )}
 
       {tab === "email" && (
-        <SettingsSection description="Email sender configuration and notification templates. All transactional emails use these settings.">
+        <SettingsSection description="Sender identity used on every transactional email. Per-template customization is still a future release.">
+          <SettingsForm settings={settings} visible={["emailFromName", "emailFromAddress"]} />
           <InfoCard>
-            Email sender address, display name, and per-template customization 
-            are not yet stored in the Settings model. Currently all emails are 
-            sent via the{" "}
+            No live provider is wired up yet — sends still log to the server
+            console (governed by the{" "}
             <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
               EMAIL_API_KEY
             </code>{" "}
-            environment variable. Add{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              emailFromAddress
-            </code>{" "}
-            and{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              emailFromName
-            </code>{" "}
-            to the Settings schema to enable this tab.
+            environment variable), but every send now reads the sender name/
+            address configured here.
           </InfoCard>
         </SettingsSection>
       )}
@@ -286,24 +266,10 @@ export default async function AdminSettingsPage(
       )}
 
       {tab === "policies" && (
-        <SettingsSection description="Terms of service, privacy policy, and refund policy content shown on public pages.">
-          <InfoCard>
-            Policy page content is currently static HTML in the public routes. 
-            Add{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              termsContent
-            </code>
-            ,{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              privacyContent
-            </code>
-            , and{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              refundContent
-            </code>{" "}
-            (rich text) fields to the Settings schema to make these editable 
-            here.
-          </InfoCard>
+        <SettingsSection description="Terms of service, privacy policy, and refund policy content — rendered as plain text on the matching public page. Leave blank to show a 'not published yet' notice.">
+          <SettingsForm settings={settings} visible={["termsContent"]} />
+          <SettingsForm settings={settings} visible={["privacyContent"]} />
+          <SettingsForm settings={settings} visible={["refundContent"]} />
         </SettingsSection>
       )}
 

@@ -24,6 +24,15 @@ export async function updateSettings(
     joinWindowAfterMinutes: formData.get("joinWindowAfterMinutes"),
     bkashNagadReceivingMsisdn: formData.get("bkashNagadReceivingMsisdn"),
     maintenanceMode: formData.get("maintenanceMode"),
+    contactEmail: formData.get("contactEmail") ?? "",
+    contactPhone: formData.get("contactPhone") ?? "",
+    facebookUrl: formData.get("facebookUrl") ?? "",
+    linkedinUrl: formData.get("linkedinUrl") ?? "",
+    emailFromName: formData.get("emailFromName") ?? "",
+    emailFromAddress: formData.get("emailFromAddress") ?? "",
+    termsContent: formData.get("termsContent") ?? "",
+    privacyContent: formData.get("privacyContent") ?? "",
+    refundContent: formData.get("refundContent") ?? "",
   });
 
   if (!parsed.success) {
@@ -58,5 +67,8 @@ export async function updateSettings(
   }
 
   revalidatePath("/admin/settings");
+  revalidatePath("/terms");
+  revalidatePath("/privacy");
+  revalidatePath("/refund-policy");
   return { ok: true };
 }
