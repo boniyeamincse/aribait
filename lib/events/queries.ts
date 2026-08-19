@@ -43,6 +43,20 @@ export function listPublishedEvents(filters: EventListFilters) {
   });
 }
 
+// Soonest-starting published Events, for the homepage "Upcoming Events" rail.
+export function listUpcomingEventsForLanding(limit: number) {
+  return prisma.event.findMany({
+    where: { status: "PUBLISHED", startAt: { gte: new Date() } },
+    orderBy: { startAt: "asc" },
+    take: limit,
+    include: {
+      category: true,
+      instructor: true,
+      _count: { select: { sessions: true } },
+    },
+  });
+}
+
 // Meeting URL/passcode/meetingId are deliberately excluded from this select —
 // public Event pages must never receive them (docs/security.md §4).
 export function getPublishedEventBySlug(slug: string) {
