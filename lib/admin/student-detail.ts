@@ -76,12 +76,10 @@ export async function getStudentActivity(userId: string) {
 
   const events = [
     ...registrations.map((r) => ({
-      icon: "📝",
       text: `Registered for ${r.event.title}`,
       at: r.createdAt,
     })),
     ...transactions.map((t) => ({
-      icon: t.status === "PAID" ? "✅" : "❌",
       text: `Payment ${t.status === "PAID" ? "confirmed" : "failed"} for ${t.payment.registration.event.title}`,
       at: t.updatedAt,
     })),

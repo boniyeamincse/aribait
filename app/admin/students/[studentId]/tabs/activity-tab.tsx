@@ -10,7 +10,6 @@ export async function ActivityTab({ userId }: { userId: string }) {
       ) : (
         entries.map((entry, i) => (
           <div key={i} className="flex items-center gap-3 px-4 py-3 text-sm">
-            <span>{entry.icon}</span>
             <span className="flex-1 text-slate-300">{entry.text}</span>
             <span className="whitespace-nowrap text-xs text-slate-600">
               {entry.at.toLocaleString("en-US", { timeZone: "Asia/Dhaka", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}

@@ -75,7 +75,7 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
           disabled={approvePending}
           className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/25 disabled:opacity-50"
         >
-          {approvePending ? "Approving…" : "✓ Approve"}
+          {approvePending ? "Approving…" : "Approve"}
         </button>
       </form>
       <button
@@ -83,7 +83,7 @@ export function PaymentReviewRow({ transactionId }: { transactionId: string }) {
         onClick={() => setRejecting(true)}
         className="rounded-full border border-red-500/30 bg-red-500/15 px-3 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/25"
       >
-        ✕ Reject
+        Reject
       </button>
     </div>
   );

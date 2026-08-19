@@ -133,7 +133,6 @@ export async function getActionRequired() {
   ).length;
 
   const items: {
-    icon: string;
     label: string;
     href: string;
     urgency: "high" | "medium" | "low";
@@ -141,7 +140,6 @@ export async function getActionRequired() {
 
   if (pendingPayments > 0) {
     items.push({
-      icon: "💳",
       label: `${pendingPayments} payment${pendingPayments === 1 ? "" : "s"} awaiting review`,
       href: "/admin/payments",
       urgency: "high",
@@ -149,7 +147,6 @@ export async function getActionRequired() {
   }
   if (sessionsWithoutLinks > 0) {
     items.push({
-      icon: "🔗",
       label: `${sessionsWithoutLinks} upcoming session${sessionsWithoutLinks === 1 ? "" : "s"} missing a meeting link`,
       href: "/admin/sessions",
       urgency: "high",
@@ -157,7 +154,6 @@ export async function getActionRequired() {
   }
   if (completedRegistrationsWithoutCertificate > 0) {
     items.push({
-      icon: "🏆",
       label: `${completedRegistrationsWithoutCertificate} certificate${completedRegistrationsWithoutCertificate === 1 ? "" : "s"} ready to issue`,
       href: "/admin/certificates",
       urgency: "medium",
@@ -165,7 +161,6 @@ export async function getActionRequired() {
   }
   if (nearlyFullCount > 0) {
     items.push({
-      icon: "📈",
       label: `${nearlyFullCount} event${nearlyFullCount === 1 ? "" : "s"} nearly full (80%+ capacity)`,
       href: "/admin/events",
       urgency: "low",
@@ -173,7 +168,6 @@ export async function getActionRequired() {
   }
   if (waitlistedStudents > 0) {
     items.push({
-      icon: "⏳",
       label: `${waitlistedStudents} student${waitlistedStudents === 1 ? "" : "s"} on a waitlist`,
       href: "/admin/registrations",
       urgency: "low",
@@ -315,19 +309,16 @@ export async function getRecentActivity(limit = 15) {
     }),
   ]);
 
-  const events: { icon: string; text: string; at: Date }[] = [
+  const events: { text: string; at: Date }[] = [
     ...auditLogs.map((a) => ({
-      icon: "🛠️",
       text: `${a.actor.name ?? a.actor.email}: ${a.summary}`,
       at: a.createdAt,
     })),
     ...registrations.map((r) => ({
-      icon: "📝",
       text: `${r.user.name ?? r.user.email} registered for ${r.event.title}`,
       at: r.createdAt,
     })),
     ...paidTransactions.map((t) => ({
-      icon: t.status === "PAID" ? "✅" : "❌",
       text: `Payment ${t.status === "PAID" ? "confirmed" : "failed"} — ${t.payment.registration.user.name ?? t.payment.registration.user.email} for ${t.payment.registration.event.title}`,
       at: t.updatedAt,
     })),

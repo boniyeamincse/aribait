@@ -6,49 +6,49 @@ import { usePathname } from "next/navigation";
 const NAV_GROUPS = [
   {
     label: null,
-    items: [{ href: "/admin", label: "Overview", icon: "🏠", exact: true }],
+    items: [{ href: "/admin", label: "Overview", exact: true }],
   },
   {
     label: "Content",
     items: [
-      { href: "/admin/events", label: "Events", icon: "📅" },
-      { href: "/admin/sessions", label: "Sessions", icon: "🔴" },
-      { href: "/admin/categories", label: "Categories", icon: "🗂️" },
-      { href: "/admin/instructors", label: "Instructors", icon: "👨‍🏫" },
+      { href: "/admin/events", label: "Events" },
+      { href: "/admin/sessions", label: "Sessions" },
+      { href: "/admin/categories", label: "Categories" },
+      { href: "/admin/instructors", label: "Instructors" },
     ],
   },
   {
     label: "Students",
     items: [
-      { href: "/admin/students", label: "Students", icon: "🎓" },
-      { href: "/admin/registrations", label: "Registrations", icon: "📋" },
+      { href: "/admin/students", label: "Students" },
+      { href: "/admin/registrations", label: "Registrations" },
     ],
   },
   {
     label: "Commerce",
     items: [
-      { href: "/admin/payments", label: "Payments", icon: "💳", badge: "pendingPayments" },
-      { href: "/admin/discounts", label: "Coupons", icon: "🏷️" },
+      { href: "/admin/payments", label: "Payments", badge: "pendingPayments" },
+      { href: "/admin/discounts", label: "Coupons" },
     ],
   },
   {
     label: "Operations",
     items: [
-      { href: "/admin/attendance", label: "Attendance", icon: "✅" },
-      { href: "/admin/certificates", label: "Certificates", icon: "🏆" },
-      { href: "/admin/notifications", label: "Notifications", icon: "🔔" },
+      { href: "/admin/attendance", label: "Attendance" },
+      { href: "/admin/certificates", label: "Certificates" },
+      { href: "/admin/notifications", label: "Notifications" },
     ],
   },
   {
     label: "Analytics",
     items: [
-      { href: "/admin/reports", label: "Reports", icon: "📊" },
-      { href: "/admin/audit-logs", label: "Audit Logs", icon: "🔍" },
+      { href: "/admin/reports", label: "Reports" },
+      { href: "/admin/audit-logs", label: "Audit Logs" },
     ],
   },
   {
     label: "System",
-    items: [{ href: "/admin/settings", label: "Settings", icon: "⚙️" }],
+    items: [{ href: "/admin/settings", label: "Settings" }],
   },
 ] as const;
 
@@ -91,7 +91,6 @@ export function AdminNav({
                     : "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-white"
                 }
               >
-                <span aria-hidden="true">{item.icon}</span>
                 <span className="flex-1">{item.label}</span>
                 {!!badgeCount && (
                   <span className="rounded-full bg-red-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-red-400">

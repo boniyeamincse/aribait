@@ -65,15 +65,14 @@ export default async function AdminOverviewPage() {
   }).format(new Date());
 
   const kpiCards = [
-    { icon: "🎓", label: "Total Students", value: kpis.totalStudents, href: "/admin/students" },
-    { icon: "📅", label: "Active Events", value: kpis.activeEvents, href: "/admin/events" },
-    { icon: "☀️", label: "Today's Sessions", value: kpis.todaysSessionsCount, href: "/admin/sessions" },
-    { icon: "🔜", label: "Upcoming Sessions", value: kpis.upcomingSessionsCount, href: "/admin/sessions" },
-    { icon: "✅", label: "Confirmed Registrations", value: kpis.confirmedRegistrations, href: "/admin/registrations" },
-    { icon: "💺", label: "Seats Available", value: kpis.availableSeats, href: "/admin/events" },
-    { icon: "💰", label: "Monthly Revenue", value: formatBdtAmount(kpis.monthlyRevenueBdt), href: "/admin/reports" },
+    { label: "Total Students", value: kpis.totalStudents, href: "/admin/students" },
+    { label: "Active Events", value: kpis.activeEvents, href: "/admin/events" },
+    { label: "Today's Sessions", value: kpis.todaysSessionsCount, href: "/admin/sessions" },
+    { label: "Upcoming Sessions", value: kpis.upcomingSessionsCount, href: "/admin/sessions" },
+    { label: "Confirmed Registrations", value: kpis.confirmedRegistrations, href: "/admin/registrations" },
+    { label: "Seats Available", value: kpis.availableSeats, href: "/admin/events" },
+    { label: "Monthly Revenue", value: formatBdtAmount(kpis.monthlyRevenueBdt), href: "/admin/reports" },
     {
-      icon: "📊",
       label: "Payment Success Rate",
       value: kpis.paymentSuccessRatePct === null ? "—" : `${kpis.paymentSuccessRatePct}%`,
       href: "/admin/payments",
@@ -96,9 +95,8 @@ export default async function AdminOverviewPage() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {kpiCards.map((card) => (
           <div key={card.label} className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-            <span className="text-2xl">{card.icon}</span>
-            <p className="mt-3 text-2xl font-bold text-white sm:text-3xl">{card.value}</p>
-            <p className="mt-1 text-sm text-slate-500">{card.label}</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">{card.label}</p>
+            <p className="mt-2 text-2xl font-bold text-white sm:text-3xl">{card.value}</p>
             <Link href={card.href} className="mt-3 inline-block text-xs text-cyan-400 hover:underline">
               View details →
             </Link>
@@ -121,7 +119,6 @@ export default async function AdminOverviewPage() {
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl border border-slate-800 border-l-4 bg-slate-900 px-4 py-3 text-sm text-slate-300 transition-colors hover:bg-slate-800/60 ${URGENCY_BORDER[item.urgency]}`}
               >
-                <span className="text-lg">{item.icon}</span>
                 <span className="flex-1">{item.label}</span>
                 <span className="text-cyan-400">→</span>
               </Link>
@@ -279,7 +276,6 @@ export default async function AdminOverviewPage() {
           ) : (
             recentActivity.map((item, i) => (
               <div key={i} className="flex items-start gap-3 px-4 py-3 text-sm">
-                <span>{item.icon}</span>
                 <span className="flex-1 text-slate-300">{item.text}</span>
                 <span className="whitespace-nowrap text-xs text-slate-600">
                   {item.at.toLocaleString("en-US", { timeZone: "Asia/Dhaka", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
