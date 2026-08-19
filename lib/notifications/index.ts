@@ -1,18 +1,7 @@
 import { prisma } from "@/lib/db/client";
+import type { NotificationType } from "@/lib/generated/prisma/client";
 
 import { sendEmail } from "./email";
-
-type NotificationType =
-  | "SESSION_REMINDER"
-  | "SESSION_RESCHEDULED"
-  | "SESSION_CANCELLED"
-  | "EVENT_CANCELLED"
-  | "EVENT_COMPLETED"
-  | "WAITLIST_PROMOTED"
-  | "ANNOUNCEMENT"
-  | "REGISTRATION_CONFIRMED"
-  | "PAYMENT_CONFIRMED"
-  | "PAYMENT_FAILED";
 
 /**
  * Always writes the in-app Notification row; also emails when `email` is

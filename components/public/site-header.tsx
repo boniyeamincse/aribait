@@ -70,11 +70,12 @@ export async function SiteHeader() {
             >
               Log in
             </Link>
-            <Button
-              size="sm"
-              className="bg-gradient-to-r from-cyan-500 to-violet-600 text-white hover:from-cyan-400 hover:to-violet-500"
-              render={<Link href="/register">Register</Link>}
-            />
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-violet-600 px-3 py-1.5 text-sm font-medium text-white transition-all hover:from-cyan-400 hover:to-violet-500"
+            >
+              Register
+            </Link>
           </>
         )}
       </nav>
