@@ -1,10 +1,12 @@
+import { Search, CheckCircle2, Target, Trophy } from "lucide-react";
+
 const HOW_IT_WORKS = [
   {
     step: "01",
     title: "Find Your Event",
     description:
       "Browse live classes, training programs, workshops, and webinars. Filter by category, date, or price.",
-    icon: "🔍",
+    icon: Search,
     color: "from-blue-500 to-blue-600",
   },
   {
@@ -12,7 +14,7 @@ const HOW_IT_WORKS = [
     title: "Register & Pay Securely",
     description:
       "Instantly register for free events or complete a simple bKash/Nagad payment for paid programs.",
-    icon: "✅",
+    icon: CheckCircle2,
     color: "from-green-500 to-green-600",
   },
   {
@@ -20,7 +22,7 @@ const HOW_IT_WORKS = [
     title: "Join Your Live Session",
     description:
       "Receive reminders and securely join via Zoom, Google Meet, or Microsoft Teams from your dashboard.",
-    icon: "🎯",
+    icon: Target,
     color: "from-blue-500 to-blue-600",
   },
   {
@@ -28,7 +30,7 @@ const HOW_IT_WORKS = [
     title: "Earn Your Certificate",
     description:
       "Complete the program, meet attendance requirements, and download your verified certificate.",
-    icon: "🏆",
+    icon: Trophy,
     color: "from-emerald-500 to-emerald-600",
   },
 ];
@@ -38,7 +40,7 @@ export function HowItWorksSection() {
     <section className="bg-slate-50 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-400">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-600">
             How It Works
           </p>
           <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -54,18 +56,18 @@ export function HowItWorksSection() {
             <div key={item.step} className="relative flex flex-col items-center text-center">
               {/* Connector line */}
               {idx < HOW_IT_WORKS.length - 1 && (
-                <div className="absolute left-[calc(50%+3rem)] top-8 hidden h-0.5 w-[calc(100%-6rem)] bg-gradient-to-r from-slate-700 to-slate-800 lg:block" />
+                <div className="absolute left-[calc(50%+3rem)] top-8 hidden h-0.5 w-[calc(100%-6rem)] bg-slate-200 lg:block" />
               )}
 
               {/* Icon */}
               <div
-                className={`relative z-10 mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-3xl shadow-lg`}
+                className={`relative z-10 mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} shadow-lg`}
               >
-                {item.icon}
+                <item.icon className="h-7 w-7 text-white" strokeWidth={1.75} />
               </div>
 
               {/* Step number */}
-              <span className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-600">
+              <span className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
                 Step {item.step}
               </span>
 

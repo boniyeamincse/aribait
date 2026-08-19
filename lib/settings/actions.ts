@@ -26,6 +26,8 @@ export async function updateSettings(
     maintenanceMode: formData.get("maintenanceMode"),
     contactEmail: formData.get("contactEmail") ?? "",
     contactPhone: formData.get("contactPhone") ?? "",
+    contactAddress: formData.get("contactAddress") ?? "",
+    whatsappUrl: formData.get("whatsappUrl") ?? "",
     facebookUrl: formData.get("facebookUrl") ?? "",
     linkedinUrl: formData.get("linkedinUrl") ?? "",
     emailFromName: formData.get("emailFromName") ?? "",
@@ -74,5 +76,7 @@ export async function updateSettings(
   revalidatePath("/terms");
   revalidatePath("/privacy");
   revalidatePath("/refund-policy");
+  revalidatePath("/contact");
+  revalidatePath("/", "layout");
   return { ok: true };
 }

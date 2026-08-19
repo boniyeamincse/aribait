@@ -43,6 +43,25 @@ export function listPublishedEvents(filters: EventListFilters) {
   });
 }
 
+// Categories with their published-event counts, for the homepage "Explore by topic" rail.
+export async function listCategoriesForLanding(limit: number) {
+  const [categories, counts] = await Promise.all([
+    prisma.category.findMany({ orderBy: { name: "asc" } }),
+    prisma.event.groupBy({
+      by: ["categoryId"],
+      where: { status: "PUBLISHED" },
+      _count: { _all: true },
+    }),
+  ]);
+
+  const countByCategory = new Map(counts.map((c) => [c.categoryId, c._count._all]));
+
+  return categories
+    .map((category) => ({ ...category, eventCount: countByCategory.get(category.id) ?? 0 }))
+    .sort((a, b) => b.eventCount - a.eventCount || a.name.localeCompare(b.name))
+    .slice(0, limit);
+}
+
 // Soonest-starting published Events, for the homepage "Upcoming Events" rail.
 export function listUpcomingEventsForLanding(limit: number) {
   return prisma.event.findMany({

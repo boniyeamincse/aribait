@@ -42,7 +42,7 @@ export function TestimonialsSection() {
     <section className="bg-white py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-emerald-400">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-emerald-600">
             Testimonials
           </p>
           <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -65,7 +65,7 @@ export function TestimonialsSection() {
               </p>
               <div className="flex items-center gap-3 border-t border-slate-200 pt-4">
                 <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${t.color} text-sm font-bold text-slate-900`}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${t.color} text-sm font-bold text-white`}
                 >
                   {t.avatar}
                 </div>

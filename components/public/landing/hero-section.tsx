@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-28 text-slate-900">
+    <section className="relative overflow-hidden bg-white py-28">
       {/* Background glow orbs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[120px]" />
@@ -13,20 +12,20 @@ export function HeroSection() {
 
       {/* Grid pattern */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 opacity-[0.4]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+            "linear-gradient(rgba(15,23,42,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.05) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }}
       />
 
       <div className="relative mx-auto max-w-6xl px-6 text-center">
         {/* Badge */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm text-blue-300">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-50 px-4 py-1.5 text-sm text-blue-700">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-400" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
           </span>
           Live sessions available now
         </div>
@@ -34,7 +33,7 @@ export function HeroSection() {
         {/* Heading */}
         <h1 className="mx-auto max-w-4xl text-5xl font-bold tracking-tight text-slate-900 sm:text-6xl lg:text-7xl">
           Learn{" "}
-          <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
             Cybersecurity & IT
           </span>{" "}
           from Expert Instructors
@@ -50,13 +49,13 @@ export function HeroSection() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/events"
-            className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-blue-500/25 transition-all hover:from-blue-400 hover:to-green-500"
+            className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:from-blue-400 hover:to-green-500"
           >
             Browse All Events
           </Link>
           <Link
             href="/register"
-            className="inline-flex items-center justify-center rounded-lg border border-white/25 bg-transparent px-6 py-3 text-sm font-semibold text-slate-900 backdrop-blur-sm transition-all hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-all hover:bg-slate-50"
           >
             Get Started Free
           </Link>

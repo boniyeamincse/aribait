@@ -30,7 +30,7 @@ export default function PublicLayout({
                 platform. Expert-led sessions via Zoom, Google Meet & Teams.
               </p>
               <p className="mt-4 text-sm text-slate-500">
-                📞 01914638653 (bKash/Nagad)
+                01914638653 (bKash/Nagad)
               </p>
             </div>
 
@@ -69,7 +69,7 @@ export default function PublicLayout({
                   { label: "Contact", href: "/contact" },
                   { label: "Terms & Conditions", href: "/terms" },
                   { label: "Privacy Policy", href: "/privacy" },
-                  { label: "Refund Policy", href: "/refund" },
+                  { label: "Refund Policy", href: "/refund-policy" },
                 ].map((link) => (
                   <li key={link.href}>
                     <Link

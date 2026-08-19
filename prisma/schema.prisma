@@ -119,10 +119,12 @@ model Settings {
   maintenanceMode           Boolean  @default(false) @map("maintenance_mode")
 
   // Contact and social — shown in the public footer/contact page.
-  contactEmail  String? @map("contact_email")
-  contactPhone  String? @map("contact_phone")
-  facebookUrl   String? @map("facebook_url")
-  linkedinUrl   String? @map("linkedin_url")
+  contactEmail   String? @map("contact_email")
+  contactPhone   String? @map("contact_phone")
+  contactAddress String? @map("contact_address")
+  whatsappUrl    String? @map("whatsapp_url")
+  facebookUrl    String? @map("facebook_url")
+  linkedinUrl    String? @map("linkedin_url")
 
   // Transactional email sender identity & SMTP configuration
   emailFromName    String? @map("email_from_name")

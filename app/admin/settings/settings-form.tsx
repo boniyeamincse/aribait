@@ -15,6 +15,8 @@ type Settings = {
   maintenanceMode: boolean;
   contactEmail: string | null;
   contactPhone: string | null;
+  contactAddress: string | null;
+  whatsappUrl: string | null;
   facebookUrl: string | null;
   linkedinUrl: string | null;
   emailFromName: string | null;
@@ -39,6 +41,8 @@ const FIELD_KEYS = [
   "maintenanceMode",
   "contactEmail",
   "contactPhone",
+  "contactAddress",
+  "whatsappUrl",
   "facebookUrl",
   "linkedinUrl",
   "emailFromName",
@@ -174,6 +178,29 @@ export function SettingsForm({
             name="contactPhone"
             defaultValue={settings.contactPhone ?? ""}
             placeholder="01914638653"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("contactAddress") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-600">Contact address</span>
+          <input
+            name="contactAddress"
+            defaultValue={settings.contactAddress ?? ""}
+            placeholder="Dhaka 1212, Bangladesh"
+            className={inputClass()}
+          />
+        </label>
+      )}
+      {isVisible("whatsappUrl") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-600">WhatsApp group invite URL</span>
+          <input
+            type="url"
+            name="whatsappUrl"
+            defaultValue={settings.whatsappUrl ?? ""}
+            placeholder="https://chat.whatsapp.com/..."
             className={inputClass()}
           />
         </label>

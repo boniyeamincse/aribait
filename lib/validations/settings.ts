@@ -36,6 +36,8 @@ export const settingsSchema = z.object({
   maintenanceMode: z.preprocess((v) => v === "on" || v === true, z.boolean()),
   contactEmail: optionalEmail(),
   contactPhone: optionalText(30),
+  contactAddress: optionalText(300),
+  whatsappUrl: optionalUrl(),
   facebookUrl: optionalUrl(),
   linkedinUrl: optionalUrl(),
   emailFromName: optionalText(120),

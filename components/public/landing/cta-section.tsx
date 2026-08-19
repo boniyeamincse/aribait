@@ -1,20 +1,21 @@
 import Link from "next/link";
+import { Rocket, Check } from "lucide-react";
 
 export function CtaSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-green-950/30 to-slate-950 py-24">
+    <section className="relative overflow-hidden bg-slate-50 py-24">
       {/* Glow */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-green-600/10 blur-[100px]" />
+        <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-green-500/10 blur-[100px]" />
       </div>
 
       <div className="relative mx-auto max-w-3xl px-6 text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 text-sm text-green-300">
-          🚀 Start your IT career today
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-50 px-4 py-1.5 text-sm text-green-700">
+          <Rocket className="h-4 w-4" strokeWidth={1.75} /> Start your IT career today
         </div>
         <h2 className="text-4xl font-bold text-slate-900 sm:text-5xl">
           Ready to level up your{" "}
-          <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
             IT skills?
           </span>
         </h2>
@@ -25,28 +26,28 @@ export function CtaSection() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/register"
-            className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-green-500/25 transition-all hover:from-green-500 hover:to-blue-500"
+            className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-500/25 transition-all hover:from-green-500 hover:to-blue-500"
           >
             Create Free Account
           </Link>
           <Link
             href="/events"
-            className="inline-flex items-center justify-center rounded-lg border border-white/25 bg-transparent px-6 py-3 text-sm font-semibold text-slate-900 transition-all hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-all hover:bg-slate-100"
           >
             Browse Events
           </Link>
         </div>
 
         {/* Trust badges */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-600">
           <span className="flex items-center gap-1.5">
-            <span className="text-emerald-400">✓</span> No commitment required
+            <Check className="h-4 w-4 text-emerald-600" strokeWidth={2.5} /> No commitment required
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="text-emerald-400">✓</span> bKash & Nagad accepted
+            <Check className="h-4 w-4 text-emerald-600" strokeWidth={2.5} /> bKash & Nagad accepted
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="text-emerald-400">✓</span> Verified certificates
+            <Check className="h-4 w-4 text-emerald-600" strokeWidth={2.5} /> Verified certificates
           </span>
         </div>
       </div>

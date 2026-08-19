@@ -17,9 +17,9 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TAG_COLORS: Record<string, string> = {
-  HOT: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  NEW: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  FREE: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  HOT: "bg-orange-50 text-orange-700 border-orange-300",
+  NEW: "bg-emerald-50 text-emerald-700 border-emerald-300",
+  FREE: "bg-blue-50 text-blue-700 border-blue-300",
 };
 
 export async function UpcomingEventsSection() {
@@ -31,7 +31,7 @@ export async function UpcomingEventsSection() {
         {/* Section header */}
         <div className="mb-12 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-400">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-600">
               Upcoming Events
             </p>
             <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
@@ -76,7 +76,7 @@ export async function UpcomingEventsSection() {
                           {tag}
                         </span>
                       </div>
-                      <CardTitle className="text-lg text-slate-900 group-hover:text-blue-300 transition-colors">
+                      <CardTitle className="text-lg text-slate-900 group-hover:text-blue-700 transition-colors">
                         {event.title}
                       </CardTitle>
                     </CardHeader>
@@ -101,7 +101,7 @@ export async function UpcomingEventsSection() {
                             timeStyle: "short",
                           })}
                         </span>
-                        <span className="text-sm font-bold text-blue-400">
+                        <span className="text-sm font-bold text-blue-600">
                           {event.priceBdt === 0
                             ? "Free"
                             : `৳${event.priceBdt.toLocaleString()}`}
