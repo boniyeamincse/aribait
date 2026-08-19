@@ -124,9 +124,13 @@ model Settings {
   facebookUrl   String? @map("facebook_url")
   linkedinUrl   String? @map("linkedin_url")
 
-  // Transactional email sender identity — read by lib/notifications/email.ts.
+  // Transactional email sender identity & SMTP configuration
   emailFromName    String? @map("email_from_name")
   emailFromAddress String? @map("email_from_address")
+  smtpHost         String? @map("smtp_host")
+  smtpPort         Int?    @map("smtp_port")
+  smtpUser         String? @map("smtp_user")
+  smtpPassword     String? @map("smtp_password")
 
   // Rendered as-is (plain text/markdown, no HTML) on the public
   // /terms, /privacy and /refund-policy pages.

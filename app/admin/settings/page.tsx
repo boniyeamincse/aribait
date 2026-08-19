@@ -194,16 +194,14 @@ export default async function AdminSettingsPage(
       )}
 
       {tab === "email" && (
-        <SettingsSection description="Sender identity used on every transactional email. Per-template customization is still a future release.">
-          <SettingsForm settings={settings} visible={["emailFromName", "emailFromAddress"]} />
+        <SettingsSection description="Sender identity used on every transactional email and full SMTP configuration for outgoing emails.">
+          <SettingsForm 
+            settings={settings} 
+            visible={["emailFromName", "emailFromAddress", "smtpHost", "smtpPort", "smtpUser", "smtpPassword"]} 
+          />
           <InfoCard>
-            No live provider is wired up yet — sends still log to the server
-            console (governed by the{" "}
-            <code className="rounded bg-slate-800 px-1 py-0.5 text-xs text-cyan-400">
-              EMAIL_API_KEY
-            </code>{" "}
-            environment variable), but every send now reads the sender name/
-            address configured here.
+            This SMTP configuration will be used to send all system emails including password resets, 
+            verification links, and class reminders. Ensure the credentials are correct or emails will fail silently (logged to console).
           </InfoCard>
         </SettingsSection>
       )}

@@ -19,6 +19,10 @@ type Settings = {
   linkedinUrl: string | null;
   emailFromName: string | null;
   emailFromAddress: string | null;
+  smtpHost: string | null;
+  smtpPort: number | null;
+  smtpUser: string | null;
+  smtpPassword: string | null;
   termsContent: string | null;
   privacyContent: string | null;
   refundContent: string | null;
@@ -39,6 +43,10 @@ const FIELD_KEYS = [
   "linkedinUrl",
   "emailFromName",
   "emailFromAddress",
+  "smtpHost",
+  "smtpPort",
+  "smtpUser",
+  "smtpPassword",
   "termsContent",
   "privacyContent",
   "refundContent",
@@ -217,6 +225,55 @@ export function SettingsForm({
           />
         </label>
       )}
+      
+      {isVisible("smtpHost") && (
+        <div className="mt-4 flex flex-col gap-4 border-t border-slate-800 pt-4">
+          <h3 className="font-medium text-white">SMTP Configuration</h3>
+          
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-400">SMTP Host</span>
+            <input
+              name="smtpHost"
+              defaultValue={settings.smtpHost ?? ""}
+              placeholder="smtp.resend.com"
+              className={inputClass()}
+            />
+          </label>
+          
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-400">SMTP Port</span>
+            <input
+              type="number"
+              name="smtpPort"
+              defaultValue={settings.smtpPort ?? ""}
+              placeholder="465"
+              className={inputClass()}
+            />
+          </label>
+          
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-400">SMTP Username</span>
+            <input
+              name="smtpUser"
+              defaultValue={settings.smtpUser ?? ""}
+              placeholder="resend"
+              className={inputClass()}
+            />
+          </label>
+          
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-400">SMTP Password</span>
+            <input
+              type="password"
+              name="smtpPassword"
+              defaultValue={settings.smtpPassword ?? ""}
+              placeholder="••••••••••••••••"
+              className={inputClass()}
+            />
+          </label>
+        </div>
+      )}
+
       {isVisible("termsContent") && (
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="text-slate-400">Terms of service — shown at /terms</span>
