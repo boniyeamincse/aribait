@@ -19,7 +19,7 @@ export async function SiteHeader() {
           <Image
             src="/logo.png"
             alt="Ariba IT Logo"
-            width={110}
+            width={62}
             height={34}
             className="h-8 w-auto object-contain"
             priority

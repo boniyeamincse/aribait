@@ -78,7 +78,7 @@ export default function AuthLayout({
             <Image
               src="/logo.png"
               alt="Ariba IT"
-              width={110}
+              width={62}
               height={32}
               className="h-8 w-auto object-contain"
             />

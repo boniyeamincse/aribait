@@ -20,9 +20,6 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-black/30">
         {/* Header */}
         <div className="mb-6 text-center">
-          <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-blue-600 text-xl shadow-lg shadow-green-500/20">
-            🔐
-          </div>
           <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
           <p className="mt-1 text-sm text-slate-600">
             {callbackUrl ? "Sign in to continue your booking." : "Access your Ariba IT dashboard."}
