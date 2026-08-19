@@ -4,13 +4,19 @@ import { prisma } from "@/lib/db/client";
 export default async function AdminOverviewPage() {
   const [
     totalStudents,
-    activeEvents,
+    publishedEventsWithCapacity,
     upcomingSessions,
     confirmedRegistrations,
     pendingPayments,
   ] = await Promise.all([
     prisma.user.count({ where: { role: "STUDENT" } }),
-    prisma.event.count({ where: { status: "PUBLISHED" } }),
+    prisma.event.findMany({
+      where: { status: "PUBLISHED" },
+      select: {
+        capacity: true,
+        _count: { select: { registrations: { where: { status: "CONFIRMED" } } } },
+      },
+    }),
     prisma.eventSession.count({
       where: {
         startAt: { gte: new Date() },
@@ -21,12 +27,18 @@ export default async function AdminOverviewPage() {
     prisma.paymentTransaction.count({ where: { status: "PENDING" } }),
   ]);
 
+  const activeEvents = publishedEventsWithCapacity.length;
+  const availableSeats = publishedEventsWithCapacity.reduce((sum, event) => {
+    if (event.capacity === null) return sum;
+    return sum + Math.max(0, event.capacity - event._count.registrations);
+  }, 0);
+
   const overviewCards = [
     { label: "Total students", value: totalStudents },
     { label: "Active Events", value: activeEvents },
     { label: "Upcoming Sessions", value: upcomingSessions },
     { label: "Confirmed registrations", value: confirmedRegistrations },
-    { label: "Available seats", value: "—" },
+    { label: "Available seats", value: availableSeats },
     { label: "Pending payments", value: pendingPayments },
   ];
 

@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/admin/attendance", label: "Attendance" },
   { href: "/admin/certificates", label: "Certificates" },
   { href: "/admin/reports", label: "Reports" },
+  { href: "/admin/audit-logs", label: "Audit Logs" },
   { href: "/admin/settings", label: "Settings" },
 ];
 

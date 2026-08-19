@@ -20,6 +20,7 @@ import { SessionForm } from "./session-form";
 import { AttachCouponForm } from "./attach-coupon-form";
 import { AnnouncementForm } from "./announcement-form";
 import { RemoveResourceButton, ResourceForm } from "./resource-form";
+import { ReviewModerationRow } from "./review-moderation";
 
 export default async function AdminEventDetailPage({
   params,
@@ -33,6 +34,7 @@ export default async function AdminEventDetailPage({
         sessions: { orderBy: { sequence: "asc" } },
         discountEvents: { include: { discount: true } },
         resources: { orderBy: { createdAt: "asc" } },
+        reviews: { orderBy: { createdAt: "desc" }, include: { user: true } },
         _count: { select: { registrations: true } },
       },
     }),
@@ -245,6 +247,35 @@ export default async function AdminEventDetailPage({
           ))}
         </div>
         <ResourceForm eventId={event.id} />
+      </div>
+
+      <Separator />
+
+      <div className="flex flex-col gap-4">
+        <h2 className="text-lg font-medium">Reviews</h2>
+        <div className="divide-y rounded-lg border">
+          {event.reviews.length === 0 && (
+            <p className="p-4 text-sm text-muted-foreground">
+              No reviews submitted yet.
+            </p>
+          )}
+          {event.reviews.map((review) => (
+            <div
+              key={review.id}
+              className="flex items-center justify-between gap-4 p-3 text-sm"
+            >
+              <div>
+                <p className="font-medium">
+                  {review.user.name} — {review.rating}/5
+                </p>
+                {review.comment && (
+                  <p className="text-muted-foreground">{review.comment}</p>
+                )}
+              </div>
+              <ReviewModerationRow reviewId={review.id} published={review.published} />
+            </div>
+          ))}
+        </div>
       </div>
 
       <Separator />
