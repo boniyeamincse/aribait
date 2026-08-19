@@ -7,6 +7,7 @@ import { requireAdmin, requireUser } from "@/lib/permissions";
 import { paymentProofSchema, rejectPaymentSchema } from "@/lib/validations/payment";
 import { sendNotification } from "@/lib/notifications";
 import { formatBdt } from "@/lib/utils";
+import { writeAuditLog } from "@/lib/audit/log";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -130,6 +131,14 @@ export async function approveManualPayment(transactionId: string) {
     });
   });
 
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "payment.approve",
+    targetType: "PaymentTransaction",
+    targetId: transactionId,
+    summary: `Approved ${transaction.method} payment (TrxID ${transaction.trxId}) for registration ${transaction.payment.registrationId}`,
+  });
+
   const event = await prisma.event.findUniqueOrThrow({
     where: { id: transaction.payment.registration.eventId },
   });
@@ -189,6 +198,14 @@ export async function rejectManualPayment(
       where: { id: transaction.paymentId },
       data: { status: "FAILED" },
     });
+  });
+
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "payment.reject",
+    targetType: "PaymentTransaction",
+    targetId: transactionId,
+    summary: `Rejected ${transaction.method} payment (TrxID ${transaction.trxId}) for registration ${transaction.payment.registrationId}: ${parsed.data.reason}`,
   });
 
   const event = await prisma.event.findUniqueOrThrow({

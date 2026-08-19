@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db/client";
 import { requireAdmin } from "@/lib/permissions";
+import { writeAuditLog } from "@/lib/audit/log";
 
 const STATUSES = ["PRESENT", "ABSENT", "LATE", "EXCUSED"] as const;
 type Status = (typeof STATUSES)[number];
@@ -31,6 +32,14 @@ export async function markAttendance(
       markedById: admin.id,
       markedAt: new Date(),
     },
+  });
+
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "attendance.mark",
+    targetType: "SessionAttendance",
+    targetId: `${registrationId}:${eventSessionId}`,
+    summary: `Marked registration ${registrationId} as ${status} for session ${eventSessionId}`,
   });
 
   revalidatePath(`/admin/attendance/${eventSessionId}`);

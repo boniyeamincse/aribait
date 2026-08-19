@@ -9,6 +9,7 @@ import { eventSchema } from "@/lib/validations/event";
 import { announcementSchema } from "@/lib/validations/announcement";
 import { slugify } from "@/lib/utils";
 import { sendNotification } from "@/lib/notifications";
+import { writeAuditLog } from "@/lib/audit/log";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -65,7 +66,7 @@ export async function createEvent(
   _prevState: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = parseEventForm(formData);
   if (!parsed.success) {
@@ -80,6 +81,14 @@ export async function createEvent(
     data: { ...parsed.data, slug },
   });
 
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "event.create",
+    targetType: "Event",
+    targetId: event.id,
+    summary: `Created Event "${event.title}" (${event.status})`,
+  });
+
   revalidatePath("/admin/events");
   redirect(`/admin/events/${event.id}`);
 }
@@ -89,7 +98,7 @@ export async function updateEvent(
   _prevState: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = parseEventForm(formData);
   if (!parsed.success) {
@@ -99,17 +108,49 @@ export async function updateEvent(
     };
   }
 
+  const current = await prisma.event.findUniqueOrThrow({ where: { id: eventId } });
   await prisma.event.update({ where: { id: eventId }, data: parsed.data });
+
+  const changes: string[] = [];
+  if (current.priceBdt !== parsed.data.priceBdt) {
+    changes.push(`price ${current.priceBdt} → ${parsed.data.priceBdt}`);
+  }
+  if (current.capacity !== parsed.data.capacity) {
+    changes.push(`capacity ${current.capacity ?? "unlimited"} → ${parsed.data.capacity ?? "unlimited"}`);
+  }
+  if (current.startAt.getTime() !== parsed.data.startAt.getTime()) {
+    changes.push("start time changed");
+  }
+  if (current.endAt.getTime() !== parsed.data.endAt.getTime()) {
+    changes.push("end time changed");
+  }
+  if (changes.length > 0) {
+    await writeAuditLog({
+      actorId: admin.id,
+      action: "event.update",
+      targetType: "Event",
+      targetId: eventId,
+      summary: `Updated "${current.title}": ${changes.join(", ")}`,
+    });
+  }
+
   revalidatePath(`/admin/events/${eventId}`);
   revalidatePath("/admin/events");
   return { ok: true };
 }
 
 export async function publishEvent(eventId: string) {
-  await requireAdmin();
-  await prisma.event.update({
+  const admin = await requireAdmin();
+  const event = await prisma.event.update({
     where: { id: eventId },
     data: { status: "PUBLISHED" },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "event.publish",
+    targetType: "Event",
+    targetId: eventId,
+    summary: `Published "${event.title}"`,
   });
   revalidatePath(`/admin/events/${eventId}`);
   revalidatePath("/admin/events");
@@ -117,10 +158,17 @@ export async function publishEvent(eventId: string) {
 }
 
 export async function cancelEvent(eventId: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const event = await prisma.event.update({
     where: { id: eventId },
     data: { status: "CANCELLED" },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "event.cancel",
+    targetType: "Event",
+    targetId: eventId,
+    summary: `Cancelled "${event.title}"`,
   });
 
   await notifyRegistrants(eventId, ["CONFIRMED", "WAITLISTED"], (userId) => ({
@@ -141,10 +189,17 @@ export async function cancelEvent(eventId: string) {
 }
 
 export async function archiveEvent(eventId: string) {
-  await requireAdmin();
-  await prisma.event.update({
+  const admin = await requireAdmin();
+  const event = await prisma.event.update({
     where: { id: eventId },
     data: { status: "ARCHIVED" },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "event.archive",
+    targetType: "Event",
+    targetId: eventId,
+    summary: `Archived "${event.title}"`,
   });
   revalidatePath(`/admin/events/${eventId}`);
   revalidatePath("/admin/events");
@@ -152,12 +207,19 @@ export async function archiveEvent(eventId: string) {
 }
 
 // Admin-triggered after reviewing attendance for all required Sessions
-// (idea.md §6.5). Certificate issuance is Phase 5 — not handled here.
+// (idea.md §6.5). Certificate issuance is a separate admin action.
 export async function completeEvent(eventId: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const event = await prisma.event.update({
     where: { id: eventId },
     data: { status: "COMPLETED" },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "event.complete",
+    targetType: "Event",
+    targetId: eventId,
+    summary: `Marked "${event.title}" completed`,
   });
 
   const registrations = await prisma.registration.findMany({

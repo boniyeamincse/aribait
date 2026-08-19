@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/permissions";
 import { eventSessionSchema } from "@/lib/validations/event-session";
 import { encryptSecret } from "@/lib/security/crypto";
 import { sendNotification } from "@/lib/notifications";
+import { writeAuditLog } from "@/lib/audit/log";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -60,7 +61,7 @@ export async function createEventSession(
   _prevState: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = parseSessionForm(formData);
   if (!parsed.success) {
@@ -80,8 +81,15 @@ export async function createEventSession(
     };
   }
 
-  await prisma.eventSession.create({
+  const session = await prisma.eventSession.create({
     data: { ...encryptSessionSecrets(parsed.data), eventId },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "session.create",
+    targetType: "EventSession",
+    targetId: session.id,
+    summary: `Created Session "${session.title}" (#${session.sequence})${parsed.data.meetingUrl ? " with a meeting link" : ""}`,
   });
   revalidatePath(`/admin/events/${eventId}`);
   return { ok: true };
@@ -92,7 +100,7 @@ export async function updateEventSession(
   _prevState: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = parseSessionForm(formData);
   if (!parsed.success) {
@@ -122,6 +130,23 @@ export async function updateEventSession(
     },
   });
 
+  const meetingLinkChanged = Boolean(parsed.data.meetingUrl || parsed.data.meetingPasscode);
+  if (timingChanged || meetingLinkChanged) {
+    const changes = [
+      timingChanged && "timing",
+      meetingLinkChanged && "meeting link/passcode",
+    ]
+      .filter(Boolean)
+      .join(", ");
+    await writeAuditLog({
+      actorId: admin.id,
+      action: "session.update",
+      targetType: "EventSession",
+      targetId: sessionId,
+      summary: `Updated Session "${session.title}": ${changes}`,
+    });
+  }
+
   if (timingChanged) {
     // Old reminders were correct for the old time; delete them so the
     // reminders cron can fire a fresh one 20 minutes before the new time
@@ -149,11 +174,18 @@ export async function updateEventSession(
 }
 
 export async function cancelEventSession(sessionId: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const session = await prisma.eventSession.update({
     where: { id: sessionId },
     data: { status: "CANCELLED" },
     include: { event: true },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "session.cancel",
+    targetType: "EventSession",
+    targetId: sessionId,
+    summary: `Cancelled Session "${session.title}"`,
   });
 
   await prisma.notification.deleteMany({
