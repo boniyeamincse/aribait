@@ -76,6 +76,7 @@ function BookingActions({
     <div className="flex flex-wrap items-center gap-4">
       {!isLoggedIn && (
         <Button
+          nativeButton={false}
           render={
             <Link href={`/login?callbackUrl=/events/${event.slug}`}>
               Log in to register
@@ -97,6 +98,7 @@ function BookingActions({
             {existingRegistration.status === "CONFIRMED" && (
               <Button
                 variant="outline"
+                nativeButton={false}
                 render={<Link href={`/dashboard/events/${event.id}`}>View Event in Dashboard</Link>}
               />
             )}
@@ -108,6 +110,7 @@ function BookingActions({
         existingRegistration.payment && (
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <Link href={`/dashboard/payments/${existingRegistration.payment.id}`}>
                 Continue checkout

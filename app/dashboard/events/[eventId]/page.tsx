@@ -131,6 +131,7 @@ export default async function MyEventDetailPage({
                   {canJoin ? (
                     <Button
                       size="sm"
+                      nativeButton={false}
                       render={<Link href={`/dashboard/sessions/${session.id}/join`}>Join Live Class</Link>}
                     />
                   ) : (

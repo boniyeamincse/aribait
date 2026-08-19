@@ -42,6 +42,7 @@ export default async function MyCertificatesPage() {
                 <Button
                   size="sm"
                   variant="outline"
+                  nativeButton={false}
                   render={
                     <a href={`/dashboard/certificates/${certificate.id}/download`}>
                       Download

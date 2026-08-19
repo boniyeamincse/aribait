@@ -77,14 +77,16 @@ export default async function BookingSuccessPage({
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Button render={<Link href="/dashboard">View Student Dashboard</Link>} />
+        <Button nativeButton={false} render={<Link href="/dashboard">View Student Dashboard</Link>} />
         <Button
           variant="outline"
+          nativeButton={false}
           render={<Link href={`/dashboard/events/${registration.eventId}`}>View My Event</Link>}
         />
         {isFree && registration.status !== "WAITLISTED" && (
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <a href={`/dashboard/registrations/${registration.id}/confirmation`}>
                 Download Enrollment Confirmation
