@@ -1,4 +1,4 @@
-import { Mail, Phone, Building2, Globe, Linkedin, Github, Twitter } from "lucide-react";
+import { Mail, Phone, Building2, Globe, Briefcase, Code2, MessageSquare } from "lucide-react";
 
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminTable } from "@/components/admin/admin-table";
@@ -84,17 +84,17 @@ export default async function AdminInstructorsPage() {
                   )}
                   {i.linkedinUrl && (
                     <a href={i.linkedinUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="LinkedIn">
-                      <Linkedin size={14} />
+                      <Briefcase size={14} />
                     </a>
                   )}
                   {i.githubUrl && (
                     <a href={i.githubUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="GitHub">
-                      <Github size={14} />
+                      <Code2 size={14} />
                     </a>
                   )}
                   {i.twitterUrl && (
                     <a href={i.twitterUrl} target="_blank" rel="noreferrer" className="hover:text-cyan-400" title="Twitter/X">
-                      <Twitter size={14} />
+                      <MessageSquare size={14} />
                     </a>
                   )}
                   {!i.website && !i.linkedinUrl && !i.githubUrl && !i.twitterUrl && <span>—</span>}
