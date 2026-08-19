@@ -135,17 +135,73 @@ pending reminder was deleted.
 
 ## Phase 5 — Certificates and Reporting
 
-- [ ] `certificates` table — unique certificate number, QR verification token
-- [ ] Certificate issue/revoke/reissue admin actions + audit log
-- [ ] PDF generation + student download
-- [ ] Public certificate verification page (minimal PII)
-- [ ] `event_resources` table + upload/download (signed/authorized access)
-- [ ] `reviews` table + public testimonials section
-- [ ] `audit_logs` table + write path for every privileged action listed in `docs/security.md` §8
-- [ ] Reports: registration by Event/date, free vs paid, seat utilization, conversion, revenue, discount usage, payment success/failure, attendance/completion, instructor performance, certificate issuance
-- [ ] CSV export
-- [ ] Admin overview dashboard cards (§5.9 in `idea.md`)
-- [ ] Student dashboard overview cards (§5.8 in `idea.md`)
+- [x] `certificates` table — unique certificate number, QR verification token
+- [x] Certificate issue/revoke/reissue admin actions + audit log
+- [x] PDF generation + student download
+- [x] Public certificate verification page (minimal PII)
+- [x] `event_resources` table + upload/download (signed/authorized access)
+- [x] `reviews` table + public testimonials section
+- [x] `audit_logs` table + write path for every privileged action listed in `docs/security.md` §8
+- [x] Reports: registration by Event/date, free vs paid, seat utilization, conversion, revenue, discount usage, payment success/failure, attendance/completion, instructor performance, certificate issuance
+- [x] CSV export
+- [x] Admin overview dashboard cards (§5.9 in `idea.md`)
+- [x] Student dashboard overview cards (§5.8 in `idea.md`)
+
+Notes on scope decisions:
+- `event_resources` are admin-provided links, not file uploads — `STORAGE_*`
+  env vars are still placeholders (no storage provider wired up). Access is
+  still properly gated: a protected `/dashboard/resources/[resourceId]/view`
+  redirect route mirrors the Phase 4 Session-join pattern, checking for a
+  `CONFIRMED`/`COMPLETED` registration server-side before redirecting —
+  resource URLs never appear in client-rendered JSX/RSC payload.
+- Certificate verification uses a random `verificationToken` (not the
+  human-readable `certificateNumber`) as the public lookup key, so a
+  leaked/guessed certificate number alone can't be used to probe the
+  verification endpoint.
+- `getPublishedTestimonials()` (`lib/reviews/queries.ts`) is built and ready
+  for the homepage testimonials section but intentionally not wired in —
+  that section belongs to the landing-page redesign in progress in another
+  session, same boundary respected for the "Upcoming Events" wiring earlier.
+- Audit logging was retrofitted onto every existing privileged admin
+  mutation from Phases 1-4 (Event/Session create/update/publish/cancel/
+  archive/complete, manual payment approve/reject, attendance marking), not
+  just the new Phase 5 actions — `docs/security.md` §8 lists all of these
+  as required.
+
+One real bug found and fixed while testing this phase (not an automation
+artifact): the hand-maintained `NotificationType` union in
+`lib/notifications/index.ts` didn't include the new `CERTIFICATE_ISSUED`
+value, causing a type error at the certificate-issue call site. Fixed by
+importing the real Prisma-generated `NotificationType` instead of
+duplicating the enum by hand — removes this whole class of drift bug going
+forward.
+
+Verified end-to-end in the browser against a seeded scenario (one paid,
+attended, completed registration and one still-confirmed registration on
+the same Event): issued a certificate and downloaded the real PDF —
+correct student name/Event title/certificate number/issue date and a
+scannable embedded QR code linking to the verification page; the public
+verification page showed the correct Valid state; revoked it with a reason
+and confirmed the verification page flipped to Revoked and the download
+route returned 410; reissued it and confirmed status returned to Issued and
+the download route worked again — all three actions (`certificate.issue`,
+`certificate.revoke`, `certificate.reissue`) appeared correctly on
+`/admin/audit-logs` with the right actor and summary. Added an Event
+resource as admin, confirmed it was inaccessible to a registrant without a
+`CONFIRMED`/`COMPLETED` registration and accessible (redirected to the
+real URL) to one that had it. Submitted a review as a student, confirmed it
+stayed unpublished until an admin toggled Publish, and that resubmitting an
+edited review reset it to unpublished. Cross-checked every number on
+`/admin/reports` against the seeded data (registrations by status, free/paid
+split, revenue, payment success/failure, attendance/completion rate,
+certificate issued/revoked counts, instructor rating average) and confirmed
+an exact match; exported the registrations CSV and confirmed the file
+contained the correct rows and fields. All Phase 5 seed data (category,
+instructor, Event, Session, both registrations, payment + transaction,
+attendance, certificate, review, audit logs) removed from the production
+Neon DB afterward via a cleanup script; `npx tsc --noEmit` and `npx eslint .`
+both clean (one pre-existing unrelated warning in the other session's
+landing-page file).
 
 ---
 
