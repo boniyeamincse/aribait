@@ -98,6 +98,11 @@ export default async function EventDetailPage({
             ? `${confirmedCount}/${event.capacity} seats filled`
             : "Unlimited seats"}
         </span>
+        {event.classSchedule && (
+          <span className="w-full text-slate-800">
+            <strong>Schedule:</strong> {event.classSchedule}
+          </span>
+        )}
       </div>
 
       <div className="mt-6 flex items-center gap-4">

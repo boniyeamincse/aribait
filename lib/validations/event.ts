@@ -49,6 +49,7 @@ export const eventSchema = z
       .optional()
       .transform((value) => value !== undefined),
     termsAndRefundPolicy: optionalText,
+    classSchedule: optionalText,
   })
   .refine((data) => data.endAt > data.startAt, {
     message: "Event end time must be after the start time.",

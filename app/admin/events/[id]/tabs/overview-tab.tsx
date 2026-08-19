@@ -93,6 +93,7 @@ export function OverviewTab({
             endAt: event.endAt,
             featured: event.featured,
             termsAndRefundPolicy: event.termsAndRefundPolicy,
+            classSchedule: event.classSchedule,
           }}
         />
       </div>

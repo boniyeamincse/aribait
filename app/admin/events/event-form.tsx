@@ -58,8 +58,8 @@ export function EventForm({
     registrationClosesAt: Date | null;
     startAt: Date;
     endAt: Date;
-    featured: boolean;
     termsAndRefundPolicy: string | null;
+    classSchedule: string | null;
   };
 }) {
   const [state, formAction, pending] = useActionState(action, null);
@@ -190,6 +190,16 @@ export function EventForm({
             id="language"
             name="language"
             defaultValue={defaultValues?.language ?? "English"}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="classSchedule">Class schedule</Label>
+          <Input
+            id="classSchedule"
+            name="classSchedule"
+            placeholder="e.g., Mon, Wed, Fri at 9:00 PM"
+            defaultValue={defaultValues?.classSchedule ?? undefined}
           />
         </div>
 

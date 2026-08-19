@@ -59,6 +59,7 @@ function parseEventForm(formData: FormData) {
     endAt: formData.get("endAt"),
     featured: formData.get("featured") ?? undefined,
     termsAndRefundPolicy: formData.get("termsAndRefundPolicy") ?? undefined,
+    classSchedule: formData.get("classSchedule") ?? undefined,
   });
 }
 
