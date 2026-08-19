@@ -7,7 +7,9 @@ import { requireUser } from "@/lib/permissions";
 import { validateCoupon } from "@/lib/discounts/validate";
 import { sendNotification } from "@/lib/notifications";
 
-type ActionResult = { ok: true; waitlisted: boolean } | { ok: false; error: string };
+type ActionResult =
+  | { ok: true; waitlisted: boolean; registrationId: string }
+  | { ok: false; error: string };
 
 export async function registerFree(eventId: string): Promise<ActionResult> {
   const user = await requireUser();
@@ -35,7 +37,7 @@ export async function registerFree(eventId: string): Promise<ActionResult> {
     return { ok: false, error: "You are already registered for this Event." };
   }
 
-  const waitlisted = await prisma.$transaction(
+  const { waitlisted, registrationId } = await prisma.$transaction(
     async (tx) => {
       const confirmedCount = await tx.registration.count({
         where: { eventId, status: "CONFIRMED" },
@@ -43,7 +45,7 @@ export async function registerFree(eventId: string): Promise<ActionResult> {
       const isFull =
         event.capacity !== null && confirmedCount >= event.capacity;
 
-      await tx.registration.create({
+      const registration = await tx.registration.create({
         data: {
           userId: user.id,
           eventId,
@@ -53,7 +55,7 @@ export async function registerFree(eventId: string): Promise<ActionResult> {
         },
       });
 
-      return isFull;
+      return { waitlisted: isFull, registrationId: registration.id };
     },
     { isolationLevel: "Serializable" },
   );
@@ -77,7 +79,7 @@ export async function registerFree(eventId: string): Promise<ActionResult> {
   revalidatePath(`/events/${event.slug}`);
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/events");
-  return { ok: true, waitlisted };
+  return { ok: true, waitlisted, registrationId };
 }
 
 type CheckoutResult =

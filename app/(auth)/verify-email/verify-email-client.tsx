@@ -10,10 +10,15 @@ type Status = "verifying" | "success" | "error";
 export function VerifyEmailClient({
   email,
   token,
+  callbackUrl,
 }: {
   email: string;
   token: string;
+  callbackUrl?: string;
 }) {
+  const loginHref = callbackUrl
+    ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/login";
   const [status, setStatus] = useState<Status>("verifying");
   const [message, setMessage] = useState<string | null>(null);
   const ran = useRef(false);
@@ -40,7 +45,7 @@ export function VerifyEmailClient({
     return (
       <div className="flex flex-col gap-3">
         <p className="text-sm">Your email is verified. You can log in now.</p>
-        <Link href="/login" className="text-sm underline underline-offset-4">
+        <Link href={loginHref} className="text-sm underline underline-offset-4">
           Go to login
         </Link>
       </div>

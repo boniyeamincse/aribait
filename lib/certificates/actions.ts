@@ -43,6 +43,21 @@ export async function issueCertificate(
     return { ok: false, error: "A certificate already exists for this registration." };
   }
 
+  if (registration.event.minAttendanceSessions !== null) {
+    const attendedCount = await prisma.sessionAttendance.count({
+      where: {
+        registrationId,
+        status: { in: ["PRESENT", "LATE"] },
+      },
+    });
+    if (attendedCount < registration.event.minAttendanceSessions) {
+      return {
+        ok: false,
+        error: `Not eligible — attended ${attendedCount} of the required ${registration.event.minAttendanceSessions} Session(s).`,
+      };
+    }
+  }
+
   const certificateNumber = await uniqueCertificateNumber();
   const verificationToken = randomBytes(16).toString("hex");
 

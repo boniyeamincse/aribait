@@ -54,6 +54,7 @@ export function EventForm({
     language: string;
     capacity: number | null;
     priceBdt: number;
+    compareAtPriceBdt: number | null;
     registrationOpensAt: Date | null;
     registrationClosesAt: Date | null;
     startAt: Date;
@@ -61,6 +62,7 @@ export function EventForm({
     featured: boolean;
     termsAndRefundPolicy: string | null;
     classSchedule: string | null;
+    minAttendanceSessions: number | null;
   };
 }) {
   const [state, formAction, pending] = useActionState(action, null);
@@ -224,6 +226,30 @@ export function EventForm({
             min={0}
             required
             defaultValue={defaultValues?.priceBdt ?? 0}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="compareAtPriceBdt">Regular price (৳, blank = no discount shown)</Label>
+          <Input
+            id="compareAtPriceBdt"
+            name="compareAtPriceBdt"
+            type="number"
+            min={0}
+            defaultValue={defaultValues?.compareAtPriceBdt ?? undefined}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="minAttendanceSessions">
+            Minimum Sessions attended for certificate (blank = no requirement)
+          </Label>
+          <Input
+            id="minAttendanceSessions"
+            name="minAttendanceSessions"
+            type="number"
+            min={1}
+            defaultValue={defaultValues?.minAttendanceSessions ?? undefined}
           />
         </div>
 

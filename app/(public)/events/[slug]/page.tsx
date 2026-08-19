@@ -95,19 +95,36 @@ export default async function EventDetailPage({
         <span>{event.language}</span>
         <span>
           {event.capacity
-            ? `${confirmedCount}/${event.capacity} seats filled`
+            ? `${Math.max(0, event.capacity - confirmedCount)} of ${event.capacity} seats available`
             : "Unlimited seats"}
         </span>
+        {event.registrationClosesAt && (
+          <span>
+            Registration closes{" "}
+            {event.registrationClosesAt.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}
+          </span>
+        )}
         {event.classSchedule && (
           <span className="w-full text-slate-800">
             <strong>Schedule:</strong> {event.classSchedule}
           </span>
         )}
+        {event.minAttendanceSessions !== null && (
+          <span className="w-full text-slate-800">
+            <strong>Certificate:</strong> awarded after attending at least {event.minAttendanceSessions} of{" "}
+            {event.sessions.length} Session{event.sessions.length === 1 ? "" : "s"}.
+          </span>
+        )}
       </div>
 
       <div className="mt-6 flex items-center gap-4">
-        <span className="text-2xl font-semibold">
-          {formatBdt(event.priceBdt)}
+        <span className="flex items-baseline gap-2">
+          <span className="text-2xl font-semibold">{formatBdt(event.priceBdt)}</span>
+          {event.compareAtPriceBdt !== null && event.compareAtPriceBdt > event.priceBdt && (
+            <span className="text-sm text-muted-foreground line-through">
+              {formatBdt(event.compareAtPriceBdt)}
+            </span>
+          )}
         </span>
 
         {!session?.user && (
@@ -124,11 +141,19 @@ export default async function EventDetailPage({
           existingRegistration &&
           (existingRegistration.status === "CONFIRMED" ||
             existingRegistration.status === "WAITLISTED") && (
-            <Badge variant="secondary">
-              {existingRegistration.status === "CONFIRMED"
-                ? "You're registered"
-                : "You're waitlisted"}
-            </Badge>
+            <>
+              <Badge variant="secondary">
+                {existingRegistration.status === "CONFIRMED"
+                  ? "You're registered"
+                  : "You're waitlisted"}
+              </Badge>
+              {existingRegistration.status === "CONFIRMED" && (
+                <Button
+                  variant="outline"
+                  render={<Link href={`/dashboard/events/${event.id}`}>View Event in Dashboard</Link>}
+                />
+              )}
+            </>
           )}
 
         {session?.user &&

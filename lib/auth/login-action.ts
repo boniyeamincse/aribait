@@ -3,6 +3,7 @@
 import { AuthError } from "next-auth";
 
 import { signIn } from "@/lib/auth";
+import { safeRedirectPath } from "@/lib/utils";
 
 type LoginResult = { ok: false; error: string } | undefined;
 
@@ -14,7 +15,7 @@ export async function login(
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirectTo: "/dashboard",
+      redirectTo: safeRedirectPath(formData.get("callbackUrl") as string | null),
     });
   } catch (error) {
     if (error instanceof AuthError) {

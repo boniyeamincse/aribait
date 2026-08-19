@@ -53,6 +53,7 @@ function parseEventForm(formData: FormData) {
     language: formData.get("language") || "English",
     capacity: formData.get("capacity") ?? undefined,
     priceBdt: formData.get("priceBdt") ?? "0",
+    compareAtPriceBdt: formData.get("compareAtPriceBdt") ?? undefined,
     registrationOpensAt: formData.get("registrationOpensAt") ?? undefined,
     registrationClosesAt: formData.get("registrationClosesAt") ?? undefined,
     startAt: formData.get("startAt"),
@@ -60,6 +61,7 @@ function parseEventForm(formData: FormData) {
     featured: formData.get("featured") ?? undefined,
     termsAndRefundPolicy: formData.get("termsAndRefundPolicy") ?? undefined,
     classSchedule: formData.get("classSchedule") ?? undefined,
+    minAttendanceSessions: formData.get("minAttendanceSessions") ?? undefined,
   });
 }
 

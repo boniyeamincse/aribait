@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatBdt } from "@/lib/utils";
 
 import { PaymentProofForm } from "./payment-proof-form";
+import { SeatHoldCountdown } from "./seat-hold-countdown";
 
 export default async function PaymentDetailPage({
   params,
@@ -18,7 +19,7 @@ export default async function PaymentDetailPage({
   const payment = await prisma.payment.findUnique({
     where: { id },
     include: {
-      registration: { include: { event: true } },
+      registration: { include: { event: true, seatHold: true } },
       transactions: { orderBy: { createdAt: "desc" } },
     },
   });
@@ -51,6 +52,13 @@ export default async function PaymentDetailPage({
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 text-sm">
+          {(payment.status === "INITIATED" || payment.status === "PENDING") &&
+            payment.registration.seatHold?.status === "HELD" && (
+              <SeatHoldCountdown
+                expiresAt={payment.registration.seatHold.expiresAt.toISOString()}
+              />
+            )}
+
           {(payment.status === "INITIATED" || payment.status === "FAILED") && (
             <>
               {payment.status === "FAILED" && latestTransaction?.reviewNote && (
@@ -82,7 +90,7 @@ export default async function PaymentDetailPage({
           )}
 
           {payment.status === "PAID" && (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
               <p>Payment confirmed — you&apos;re registered.</p>
               {latestTransaction && (
                 <p className="text-muted-foreground">
@@ -93,6 +101,12 @@ export default async function PaymentDetailPage({
                   })}
                 </p>
               )}
+              <a
+                href={`/dashboard/payments/${payment.id}/invoice`}
+                className="text-sm text-cyan-600 underline underline-offset-4"
+              >
+                Download invoice
+              </a>
             </div>
           )}
 

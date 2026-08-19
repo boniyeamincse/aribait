@@ -7,7 +7,13 @@ export const metadata: Metadata = {
   description: "Log in to access your Ariba IT student dashboard.",
 };
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: PageProps<"/login">) {
+  const params = await searchParams;
+  const callbackUrl = typeof params.callbackUrl === "string" ? params.callbackUrl : undefined;
+  const registerHref = callbackUrl
+    ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/register";
+
   return (
     <div className="flex flex-col gap-6">
       {/* Card */}
@@ -19,11 +25,11 @@ export default function LoginPage() {
           </div>
           <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
           <p className="mt-1 text-sm text-slate-600">
-            Access your Ariba IT dashboard.
+            {callbackUrl ? "Sign in to continue your booking." : "Access your Ariba IT dashboard."}
           </p>
         </div>
 
-        <LoginForm />
+        <LoginForm callbackUrl={callbackUrl} />
       </div>
 
       {/* Footer links */}
@@ -37,7 +43,7 @@ export default function LoginPage() {
         <p>
           No account?{" "}
           <Link
-            href="/register"
+            href={registerHref}
             className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
           >
             Register free

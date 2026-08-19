@@ -8,7 +8,13 @@ export const metadata: Metadata = {
     "Register as a student to browse, enroll, and join live IT and cybersecurity training events.",
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage({ searchParams }: PageProps<"/register">) {
+  const params = await searchParams;
+  const callbackUrl = typeof params.callbackUrl === "string" ? params.callbackUrl : undefined;
+  const loginHref = callbackUrl
+    ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/login";
+
   return (
     <div className="flex flex-col gap-6">
       {/* Card */}
@@ -20,18 +26,20 @@ export default function RegisterPage() {
           </div>
           <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
           <p className="mt-1 text-sm text-slate-600">
-            Register as a student to browse and join Events.
+            {callbackUrl
+              ? "Create an account to continue your booking."
+              : "Register as a student to browse and join Events."}
           </p>
         </div>
 
-        <RegisterForm />
+        <RegisterForm callbackUrl={callbackUrl} />
       </div>
 
       {/* Footer link */}
       <p className="text-center text-sm text-slate-500">
         Already have an account?{" "}
         <Link
-          href="/login"
+          href={loginHref}
           className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
         >
           Log in

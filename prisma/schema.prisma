@@ -223,6 +223,10 @@ model Event {
   language             String      @default("English")
   capacity             Int?
   priceBdt             Int         @default(0) @map("price_bdt")
+  // Optional "regular" price shown struck-through next to priceBdt (the
+  // actual launch/offer price that gets charged). Display-only — checkout
+  // always snapshots priceBdt, never this field.
+  compareAtPriceBdt    Int?        @map("compare_at_price_bdt")
   registrationOpensAt  DateTime?   @map("registration_opens_at")
   registrationClosesAt DateTime?   @map("registration_closes_at")
   startAt              DateTime    @map("start_at")
@@ -230,6 +234,11 @@ model Event {
   featured             Boolean     @default(false)
   termsAndRefundPolicy String?     @map("terms_and_refund_policy") @db.Text
   classSchedule        String?     @map("class_schedule")
+  // Minimum PRESENT/LATE Session attendances (out of this Event's total
+  // Sessions) a CONFIRMED-turned-COMPLETED registration needs before a
+  // certificate can be issued. Null = no attendance requirement enforced
+  // (matches prior behavior for single-Session/short Events).
+  minAttendanceSessions Int?       @map("min_attendance_sessions")
   status               EventStatus @default(DRAFT)
   createdAt            DateTime    @default(now()) @map("created_at")
   updatedAt            DateTime    @updatedAt @map("updated_at")

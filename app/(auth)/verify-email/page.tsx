@@ -14,6 +14,7 @@ export default async function VerifyEmailPage({
   const params = await searchParams;
   const email = typeof params.email === "string" ? params.email : "";
   const token = typeof params.token === "string" ? params.token : "";
+  const callbackUrl = typeof params.callbackUrl === "string" ? params.callbackUrl : undefined;
 
   return (
     <Card>
@@ -23,7 +24,7 @@ export default async function VerifyEmailPage({
       </CardHeader>
       <CardContent>
         {email && token ? (
-          <VerifyEmailClient email={email} token={token} />
+          <VerifyEmailClient email={email} token={token} callbackUrl={callbackUrl} />
         ) : (
           <p className="text-sm text-destructive">
             This verification link is missing required information.

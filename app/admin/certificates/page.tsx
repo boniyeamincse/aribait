@@ -8,10 +8,14 @@ import {
 } from "./certificate-actions";
 
 export default async function AdminCertificatesPage() {
-  const [eligibleRegistrations, certificates] = await Promise.all([
+  const [completedRegistrations, certificates] = await Promise.all([
     prisma.registration.findMany({
       where: { status: "COMPLETED", certificate: null },
-      include: { user: true, event: true },
+      include: {
+        user: true,
+        event: { include: { _count: { select: { sessions: true } } } },
+        attendances: { where: { status: { in: ["PRESENT", "LATE"] } } },
+      },
       orderBy: { updatedAt: "desc" },
       take: 50,
     }),
@@ -21,6 +25,13 @@ export default async function AdminCertificatesPage() {
       include: { registration: { include: { user: true, event: true } } },
     }),
   ]);
+
+  const eligibleRegistrations = completedRegistrations.map((r) => {
+    const attendedCount = r.attendances.length;
+    const required = r.event.minAttendanceSessions;
+    const eligible = required === null || attendedCount >= required;
+    return { ...r, attendedCount, required, eligible };
+  });
 
   return (
     <div className="flex flex-col gap-8">
@@ -43,9 +54,23 @@ export default async function AdminCertificatesPage() {
             >
               <div>
                 <p className="font-medium">{registration.user.name}</p>
-                <p className="text-muted-foreground">{registration.event.title}</p>
+                <p className="text-muted-foreground">
+                  {registration.event.title}
+                  {registration.required !== null && (
+                    <>
+                      {" "}
+                      · attended {registration.attendedCount}/{registration.event._count.sessions}{" "}
+                      Session{registration.event._count.sessions === 1 ? "" : "s"} (requires{" "}
+                      {registration.required})
+                    </>
+                  )}
+                </p>
               </div>
-              <IssueCertificateButton registrationId={registration.id} />
+              {registration.eligible ? (
+                <IssueCertificateButton registrationId={registration.id} />
+              ) : (
+                <Badge variant="destructive">Attendance not met</Badge>
+              )}
             </div>
           ))}
         </div>

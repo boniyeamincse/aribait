@@ -39,7 +39,7 @@ export function PayButton({ eventId }: { eventId: string }) {
             })
           }
         >
-          {pending ? "Starting checkout…" : "Register & Pay"}
+          {pending ? "Starting checkout…" : "Book Your Seat"}
         </Button>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}

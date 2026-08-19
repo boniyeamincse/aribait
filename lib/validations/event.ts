@@ -40,6 +40,10 @@ export const eventSchema = z
       .optional()
       .transform((value) => (value ? Number(value) : undefined)),
     priceBdt: z.coerce.number().int().min(0),
+    compareAtPriceBdt: z
+      .string()
+      .optional()
+      .transform((value) => (value ? Number(value) : undefined)),
     registrationOpensAt: optionalDatetimeLocal,
     registrationClosesAt: optionalDatetimeLocal,
     startAt: z.string().transform((value) => new Date(value)),
@@ -50,6 +54,10 @@ export const eventSchema = z
       .transform((value) => value !== undefined),
     termsAndRefundPolicy: optionalText,
     classSchedule: optionalText,
+    minAttendanceSessions: z
+      .string()
+      .optional()
+      .transform((value) => (value ? Number(value) : undefined)),
   })
   .refine((data) => data.endAt > data.startAt, {
     message: "Event end time must be after the start time.",
@@ -58,6 +66,17 @@ export const eventSchema = z
   .refine((data) => data.capacity === undefined || data.capacity > 0, {
     message: "Capacity must be greater than zero when limited.",
     path: ["capacity"],
+  })
+  .refine(
+    (data) => data.compareAtPriceBdt === undefined || data.compareAtPriceBdt > data.priceBdt,
+    {
+      message: "Regular price must be higher than the actual price when set.",
+      path: ["compareAtPriceBdt"],
+    },
+  )
+  .refine((data) => data.minAttendanceSessions === undefined || data.minAttendanceSessions > 0, {
+    message: "Minimum attendance must be greater than zero when set.",
+    path: ["minAttendanceSessions"],
   })
   .refine(
     (data) =>

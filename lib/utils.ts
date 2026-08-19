@@ -28,3 +28,14 @@ export function toDatetimeLocalValue(date: Date) {
   const pad = (n: number) => String(n).padStart(2, "0")
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
+
+/**
+ * Only allow same-origin relative paths (e.g. "/events/foo") as a post-login
+ * redirect target. Rejects absolute URLs and protocol-relative "//evil.com"
+ * paths, which would otherwise be an open redirect.
+ */
+export function safeRedirectPath(value: string | null | undefined, fallback = "/dashboard") {
+  if (!value) return fallback
+  if (!value.startsWith("/") || value.startsWith("//")) return fallback
+  return value
+}

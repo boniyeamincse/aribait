@@ -87,6 +87,7 @@ export function OverviewTab({
             language: event.language,
             capacity: event.capacity,
             priceBdt: event.priceBdt,
+            compareAtPriceBdt: event.compareAtPriceBdt,
             registrationOpensAt: event.registrationOpensAt,
             registrationClosesAt: event.registrationClosesAt,
             startAt: event.startAt,
@@ -94,6 +95,7 @@ export function OverviewTab({
             featured: event.featured,
             termsAndRefundPolicy: event.termsAndRefundPolicy,
             classSchedule: event.classSchedule,
+            minAttendanceSessions: event.minAttendanceSessions,
           }}
         />
       </div>

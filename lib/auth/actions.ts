@@ -5,7 +5,8 @@ import { randomBytes } from "crypto";
 import { prisma } from "@/lib/db/client";
 import { sendEmail } from "@/lib/notifications/email";
 import { hashPassword } from "@/lib/security/password";
-import { loginSchema, registerSchema } from "@/lib/validations/auth";
+import { loginSchema, passwordSchema, registerSchema } from "@/lib/validations/auth";
+import { safeRedirectPath } from "@/lib/utils";
 
 const VERIFY_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
@@ -33,13 +34,21 @@ export async function registerStudent(
   _prevState: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
+  if (formData.get("acceptTerms") !== "on") {
+    return { ok: false, error: "You must accept the Terms and Privacy Policy to continue." };
+  }
+
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
   });
   if (!parsed.success) {
-    return { ok: false, error: "Please check the form for errors." };
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Please check the form for errors.",
+    };
   }
   const { name, email, password } = parsed.data;
 
@@ -54,7 +63,9 @@ export async function registerStudent(
   });
 
   const token = await issueToken(verifyIdentifier(email), VERIFY_TOKEN_TTL_MS);
-  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/verify-email?email=${encodeURIComponent(email)}&token=${token}`;
+  const callbackUrl = safeRedirectPath(formData.get("callbackUrl") as string | null, "");
+  const callbackParam = callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : "";
+  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/verify-email?email=${encodeURIComponent(email)}&token=${token}${callbackParam}`;
 
   await sendEmail({
     to: email,
@@ -125,7 +136,7 @@ export async function resetPassword(
   const token = String(formData.get("token") ?? "");
   const password = String(formData.get("password") ?? "");
 
-  const parsed = registerSchema.pick({ password: true }).safeParse({ password });
+  const parsed = passwordSchema.safeParse({ password });
   if (!parsed.success) {
     return { ok: false, error: "Password must be at least 8 characters." };
   }
