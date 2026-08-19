@@ -22,4 +22,14 @@ Use this account to experience the platform as a student—registering for cours
 * **Password:** `Student@1234`
 * **Access URL:** `/dashboard`
 
-> **Note:** If you are testing email-specific features (like password recovery), you can also use your personal credentials that have been registered (`boniyeamin.cse@gmail.com` as Admin, `boni.ielts@gmail.com` as Student), assuming you have SMTP configured in your `.env`.
+### Personal Accounts (Your Credentials)
+
+If you prefer to use your personal accounts for testing emails and actual use:
+
+**Admin:**
+* **Email:** `boniyeamin.cse@gmail.com`
+* **Password:** `Care@#$%17189`
+
+**Student:**
+* **Email:** `boni.ielts@gmail.com`
+* **Password:** *(Your personal password)*
