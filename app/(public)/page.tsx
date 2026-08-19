@@ -1,24 +1,28 @@
-import Link from "next/link";
+import type { Metadata } from "next";
+import { HeroSection } from "@/components/public/landing/hero-section";
+import { UpcomingEventsSection } from "@/components/public/landing/upcoming-events-section";
+import { CategoriesSection } from "@/components/public/landing/categories-section";
+import { HowItWorksSection } from "@/components/public/landing/how-it-works-section";
+import { FeaturesSection } from "@/components/public/landing/features-section";
+import { TestimonialsSection } from "@/components/public/landing/testimonials-section";
+import { CtaSection } from "@/components/public/landing/cta-section";
 
-import { Button } from "@/components/ui/button";
+export const metadata: Metadata = {
+  title: "Ariba IT — Live IT & Cybersecurity Training in Bangladesh",
+  description:
+    "Discover, register, and join live cybersecurity and IT training programs. Expert-led bootcamps, workshops, and webinars via Zoom, Google Meet & Teams. bKash & Nagad accepted.",
+};
 
 export default function HomePage() {
   return (
-    <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 py-24 text-center">
-      <h1 className="text-4xl font-semibold tracking-tight">
-        Live classes, training and events — in one place
-      </h1>
-      <p className="max-w-xl text-muted-foreground">
-        Discover, register and join live cybersecurity and IT training
-        delivered over Zoom, Google Meet or Microsoft Teams.
-      </p>
-      <div className="flex gap-4">
-        <Button render={<Link href="/events">Browse Events</Link>} />
-        <Button
-          variant="outline"
-          render={<Link href="/register">Get started</Link>}
-        />
-      </div>
-    </div>
+    <>
+      <HeroSection />
+      <UpcomingEventsSection />
+      <HowItWorksSection />
+      <CategoriesSection />
+      <FeaturesSection />
+      <TestimonialsSection />
+      <CtaSection />
+    </>
   );
 }

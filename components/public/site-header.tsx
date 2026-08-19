@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { auth } from "@/lib/auth";
 import { logout } from "@/lib/auth/logout-action";
@@ -8,40 +9,72 @@ export async function SiteHeader() {
   const session = await auth();
 
   return (
-    <header className="flex items-center justify-between border-b px-6 py-4">
-      <Link href="/" className="text-lg font-semibold tracking-tight">
-        Ariba IT
+    <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-800 bg-slate-950/80 px-6 py-3 backdrop-blur-md">
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-2">
+        <Image
+          src="/logo.png"
+          alt="Ariba IT Logo"
+          width={120}
+          height={36}
+          className="h-9 w-auto object-contain"
+          priority
+        />
       </Link>
-      <nav className="flex items-center gap-4 text-sm">
-        <Link href="/events" className="text-muted-foreground hover:text-foreground">
+
+      {/* Nav */}
+      <nav className="flex items-center gap-5 text-sm">
+        <Link
+          href="/events"
+          className="text-slate-400 transition-colors hover:text-white"
+        >
           Events
         </Link>
-        <Link href="/training" className="text-muted-foreground hover:text-foreground">
+        <Link
+          href="/training"
+          className="text-slate-400 transition-colors hover:text-white"
+        >
           Training
         </Link>
-        <Link href="/schedule" className="text-muted-foreground hover:text-foreground">
+        <Link
+          href="/schedule"
+          className="text-slate-400 transition-colors hover:text-white"
+        >
           Schedule
         </Link>
+
         {session?.user ? (
           <>
             <Link
               href={session.user.role === "ADMIN" ? "/admin" : "/dashboard"}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-slate-400 transition-colors hover:text-white"
             >
               Dashboard
             </Link>
             <form action={logout}>
-              <Button type="submit" variant="outline" size="sm">
+              <Button
+                type="submit"
+                variant="outline"
+                size="sm"
+                className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+              >
                 Log out
               </Button>
             </form>
           </>
         ) : (
           <>
-            <Link href="/login" className="text-muted-foreground hover:text-foreground">
+            <Link
+              href="/login"
+              className="text-slate-400 transition-colors hover:text-white"
+            >
               Log in
             </Link>
-            <Button size="sm" render={<Link href="/register">Register</Link>} />
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-cyan-500 to-violet-600 text-white hover:from-cyan-400 hover:to-violet-500"
+              render={<Link href="/register">Register</Link>}
+            />
           </>
         )}
       </nav>

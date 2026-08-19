@@ -1,28 +1,45 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/events", label: "My Events" },
-  { href: "/dashboard/sessions", label: "My Sessions" },
-  { href: "/dashboard/attendance", label: "Attendance" },
-  { href: "/dashboard/certificates", label: "Certificates" },
-  { href: "/dashboard/payments", label: "Payments and Receipts" },
-  { href: "/dashboard/notifications", label: "Notifications" },
-  { href: "/dashboard/profile", label: "Profile" },
+  { href: "/dashboard", label: "Overview", icon: "🏠" },
+  { href: "/dashboard/events", label: "My Events", icon: "📅" },
+  { href: "/dashboard/sessions", label: "My Sessions", icon: "🔴" },
+  { href: "/dashboard/attendance", label: "Attendance", icon: "✅" },
+  { href: "/dashboard/certificates", label: "Certificates", icon: "🏆" },
+  { href: "/dashboard/payments", label: "Payments", icon: "💳" },
+  { href: "/dashboard/notifications", label: "Notifications", icon: "🔔" },
+  { href: "/dashboard/profile", label: "Profile", icon: "👤" },
 ];
 
 export function DashboardNav() {
+  const pathname = usePathname();
+
   return (
-    <nav className="flex w-56 shrink-0 flex-col gap-1 border-r p-4">
-      {NAV_ITEMS.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
-        >
-          {item.label}
-        </Link>
-      ))}
+    <nav className="flex w-60 shrink-0 flex-col gap-1 border-r border-slate-800 bg-slate-950 p-4">
+      {NAV_ITEMS.map((item) => {
+        const isActive =
+          item.href === "/dashboard"
+            ? pathname === "/dashboard"
+            : pathname.startsWith(item.href);
+
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 ${
+              isActive
+                ? "bg-gradient-to-r from-cyan-500/15 to-violet-500/10 text-white border border-cyan-500/20"
+                : "text-slate-500 hover:bg-slate-800 hover:text-slate-200"
+            }`}
+          >
+            <span className="text-base">{item.icon}</span>
+            {item.label}
+          </Link>
+        );
+      })}
     </nav>
   );
 }
