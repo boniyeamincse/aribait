@@ -12,6 +12,38 @@ import { formatBdt } from "@/lib/utils";
 import { RegisterButton } from "./register-button";
 import { PayButton } from "./pay-button";
 
+const TOPICS_PATTERN = /^Topics:\s*([\s\S]*?)\.\s*Expected outcome:\s*([\s\S]*)$/;
+
+function SessionAgenda({ description }: { description: string }) {
+  const match = description.match(TOPICS_PATTERN);
+  if (!match) {
+    return <p className="mt-3 whitespace-pre-line border-t pt-3 text-muted-foreground">{description}</p>;
+  }
+
+  const topics = match[1]
+    .split(";")
+    .map((topic) => topic.trim())
+    .filter(Boolean);
+  const outcome = match[2].trim();
+
+  return (
+    <div className="mt-3 border-t pt-3 text-muted-foreground">
+      <p className="font-medium text-foreground">Topics</p>
+      <ol className="mt-2 list-decimal space-y-1 pl-5">
+        {topics.map((topic, i) => (
+          <li key={i}>{topic}</li>
+        ))}
+      </ol>
+      {outcome && (
+        <p className="mt-3">
+          <span className="font-medium text-foreground">Expected outcome: </span>
+          {outcome}
+        </p>
+      )}
+    </div>
+  );
+}
+
 const EVENT_TYPE_LABELS: Record<string, string> = {
   LIVE_CLASS: "Live class",
   TRAINING_PROGRAM: "Training program",
@@ -267,9 +299,7 @@ export default async function EventDetailPage({
                     })}
                   </p>
                 </summary>
-                <p className="mt-3 whitespace-pre-line border-t pt-3 text-muted-foreground">
-                  {eventSession.description}
-                </p>
+                <SessionAgenda description={eventSession.description} />
               </details>
             ) : (
               <div key={eventSession.id} className="flex items-center justify-between gap-4 p-4 text-sm">
