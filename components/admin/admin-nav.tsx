@@ -44,6 +44,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/admin/events",      label: "Events",      icon: CalendarDays },
       { href: "/admin/sessions",    label: "Sessions",    icon: MonitorPlay  },
+      { href: "/admin/calendar",    label: "Calendar",    icon: CalendarDays },
       { href: "/admin/categories",  label: "Categories",  icon: Tag          },
       { href: "/admin/instructors", label: "Instructors", icon: UserCog      },
     ],

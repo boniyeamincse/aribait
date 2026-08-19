@@ -3,9 +3,22 @@ import Image from "next/image";
 
 import { requireAdmin } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
+import { prisma } from "@/lib/db/client";
 import { Button } from "@/components/ui/button";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
+import { GlobalSearch } from "@/components/admin/global-search";
+import { QuickCreate } from "@/components/admin/quick-create";
+import { TopBarClock } from "@/components/admin/top-bar-clock";
+import { TopBarNotifications } from "@/components/admin/top-bar-notifications";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default async function AdminLayout({
   children,
@@ -13,6 +26,9 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await requireAdmin();
+  const unreadCount = await prisma.notification.count({
+    where: { userId: user.id, readAt: null },
+  });
 
   const initials = (user.name ?? user.email ?? "A")
     .split(" ")
@@ -24,11 +40,11 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-4 py-3 backdrop-blur-md sm:px-6">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
+        <div className="flex flex-1 items-center gap-3 md:gap-6">
           {/* Mobile hamburger */}
           <AdminMobileNav />
-          <Link href="/" className="flex shrink-0">
+          <Link href="/" className="hidden shrink-0 md:flex">
             <Image
               src="/logo.png"
               alt="Ariba IT"
@@ -38,32 +54,43 @@ export default async function AdminLayout({
               priority
             />
           </Link>
-          {/* Admin badge */}
-          <span className="hidden rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-green-400 sm:block">
-            Admin
-          </span>
+          <GlobalSearch />
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Greeting + time */}
-          <div className="hidden flex-col items-end sm:flex">
-            <span className="text-xs font-medium text-slate-900">{user.name ?? "Admin"}</span>
-            <span className="text-xs text-slate-500">{user.email}</span>
-          </div>
-          {/* Avatar */}
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900 shadow-md">
-            {initials}
-          </div>
-          <form action={logout}>
-            <Button
-              type="submit"
-              variant="outline"
-              size="sm"
-              className="border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 text-xs"
-            >
-              Log out
-            </Button>
-          </form>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <QuickCreate />
+          <TopBarClock />
+          <TopBarNotifications unreadCount={unreadCount} />
+
+          {/* Admin profile and logout */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900 shadow-md ring-offset-2 transition-all hover:ring-2 hover:ring-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300">
+                {initials}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="flex flex-col">
+                <span className="text-sm font-medium text-slate-900">{user.name ?? "Admin"}</span>
+                <span className="text-xs font-normal text-slate-500">{user.email}</span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/settings">Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <form action={logout} className="w-full">
+                  <button type="submit" className="w-full text-left text-destructive">
+                    Log out
+                  </button>
+                </form>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
