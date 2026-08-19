@@ -26,25 +26,37 @@ Checkboxes track progress. Phases mirror `idea.md` §14 Product Roadmap; task de
 
 ## Phase 2 — Event and Enrollment MVP
 
-- [ ] `categories`, `instructors` tables + admin CRUD
-- [ ] `events` table + admin CRUD (create/update/publish/cancel/archive)
-- [ ] `event_sessions` table + admin CRUD (multiple Sessions per Event)
-- [ ] Event status enum + transitions (`DRAFT` → ... → `ARCHIVED`)
-- [ ] Session status enum + transitions (`SCHEDULED` → ... → `CANCELLED`/`RESCHEDULED`)
-- [ ] Public Event listing (`/events`) with filters: keyword, category, free/paid, date, instructor, type, registration status; sorting
-- [ ] Public Event detail page (no meeting data exposed)
-- [ ] Schedule/calendar page
-- [ ] Instructor profile pages
-- [ ] `registrations` table + unique `(user_id, event_id)`
-- [ ] `seat_holds` table + state machine (`AVAILABLE → HELD → CONFIRMED` / `EXPIRED`)
-- [ ] Free registration flow (`registerFree`) — atomic confirm
-- [ ] Capacity validation inside DB transactions (holds + confirmed both count)
-- [ ] Waitlist flow when capacity full
-- [ ] Student dashboard: My Events, My Sessions, Upcoming Classes, Training Calendar
-- [ ] Cron: `expire-seat-holds`
+- [x] `categories`, `instructors` tables + admin CRUD (list + create; no edit/delete UI yet — not needed for MVP volume)
+- [x] `events` table + admin CRUD (create/update/publish/cancel/archive)
+- [x] `event_sessions` table + admin CRUD (create/edit/cancel; multiple Sessions per Event)
+- [x] Event status enum + transitions — admin-triggered publish/cancel/archive only; `REGISTRATION_OPEN`/`REGISTRATION_CLOSED`/`ONGOING`/`COMPLETED` reserved for a future automated status cron
+- [x] Session status enum + transitions (edit reschedules → `RESCHEDULED`; cancel → `CANCELLED`)
+- [x] Public Event listing (`/events`) with filters: keyword, category, type, free/paid, sort — instructor filter, explicit date filter, and registration-status filter not built (low value pre-launch with few Events; revisit if the catalog grows)
+- [x] Public Event detail page (no meeting data exposed — verified via a dedicated safe-select query)
+- [x] Schedule page (chronological list of upcoming Sessions; not a calendar grid)
+- [x] Instructor profile pages
+- [x] `registrations` table + unique `(user_id, event_id)`
+- [x] Free registration flow (`registerFree`) — atomic confirm, Serializable transaction
+- [x] Capacity validation inside DB transactions (confirmed registrations count toward capacity)
+- [x] Waitlist flow when capacity full, with automatic promotion on cancellation
+- [x] Student dashboard: My Events, My Sessions, Overview counts wired to real data — no separate calendar-grid view (My Sessions is a chronological list)
+
+Verified end-to-end in the browser: admin creates Category → Instructor →
+Event → Session → Publish; public listing/detail/schedule/instructor pages
+render correctly; two students confirmed the capacity-1/1 seat and waitlist
+path (1/1 filled → 2nd registrant waitlisted); cancelling the confirmed
+registration auto-promoted the waitlisted one; dashboard/admin overview
+counts reflected all of it.
+
+Moved to Phase 3: `seat_holds` table + state machine and the `expire-seat-holds`
+cron only matter once paid checkout exists to create holds — free registration
+confirms atomically with no hold step (`idea.md` §6.2), so building them here
+would be unused scaffolding.
 
 ## Phase 3 — Commerce (Manual bKash/Nagad)
 
+- [ ] `seat_holds` table + state machine (`AVAILABLE → HELD → CONFIRMED` / `EXPIRED`) — moved from Phase 2, see note there
+- [ ] Cron: `expire-seat-holds` — moved from Phase 2, see note there
 - [ ] `discounts`, `discount_events`, `discount_redemptions` tables
 - [ ] Admin coupon CRUD
 - [ ] `validateCoupon` action — active/window/usage caps/eligibility/min purchase, payable never negative

@@ -1,20 +1,43 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { prisma } from "@/lib/db/client";
+import { requireUser } from "@/lib/permissions";
 
-const OVERVIEW_CARDS = [
-  { label: "Enrolled Events", value: 0 },
-  { label: "Upcoming Sessions", value: 0 },
-  { label: "Completed Events", value: 0 },
-  { label: "Certificates", value: 0 },
-  { label: "Unread notifications", value: 0 },
-  { label: "Pending payments", value: 0 },
-];
+export default async function DashboardOverviewPage() {
+  const user = await requireUser();
 
-export default function DashboardOverviewPage() {
+  const [enrolledEvents, upcomingSessions, completedEvents] =
+    await Promise.all([
+      prisma.registration.count({
+        where: { userId: user.id, status: "CONFIRMED" },
+      }),
+      prisma.eventSession.count({
+        where: {
+          startAt: { gte: new Date() },
+          status: { in: ["SCHEDULED", "JOIN_OPEN", "LIVE", "RESCHEDULED"] },
+          event: {
+            registrations: { some: { userId: user.id, status: "CONFIRMED" } },
+          },
+        },
+      }),
+      prisma.registration.count({
+        where: { userId: user.id, status: "COMPLETED" },
+      }),
+    ]);
+
+  const overviewCards = [
+    { label: "Enrolled Events", value: enrolledEvents },
+    { label: "Upcoming Sessions", value: upcomingSessions },
+    { label: "Completed Events", value: completedEvents },
+    { label: "Certificates", value: 0 },
+    { label: "Unread notifications", value: 0 },
+    { label: "Pending payments", value: 0 },
+  ];
+
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {OVERVIEW_CARDS.map((card) => (
+        {overviewCards.map((card) => (
           <Card key={card.label}>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-muted-foreground">
