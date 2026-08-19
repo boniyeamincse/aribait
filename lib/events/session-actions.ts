@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/client";
 import { requireAdmin } from "@/lib/permissions";
 import { eventSessionSchema } from "@/lib/validations/event-session";
+import { encryptSecret } from "@/lib/security/crypto";
+import { sendNotification } from "@/lib/notifications";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -22,6 +24,35 @@ function parseSessionForm(formData: FormData) {
     meetingUrl: formData.get("meetingUrl") ?? "",
     meetingPasscode: formData.get("meetingPasscode") ?? undefined,
   });
+}
+
+/** Encrypts meetingUrl/meetingPasscode when provided; leaves them out of the
+ * returned object (Prisma treats an omitted/undefined key as "don't change
+ * this field") when left blank, so an edit never wipes a previously-set
+ * secret and never needs to display it back. */
+function encryptSessionSecrets<T extends { meetingUrl?: string; meetingPasscode?: string }>(
+  data: T,
+) {
+  return {
+    ...data,
+    meetingUrl: data.meetingUrl ? encryptSecret(data.meetingUrl) : undefined,
+    meetingPasscode: data.meetingPasscode
+      ? encryptSecret(data.meetingPasscode)
+      : undefined,
+  };
+}
+
+async function notifyConfirmedRegistrants(
+  eventId: string,
+  build: (userId: string) => Parameters<typeof sendNotification>[0],
+) {
+  const registrations = await prisma.registration.findMany({
+    where: { eventId, status: "CONFIRMED" },
+    select: { userId: true },
+  });
+  for (const registration of registrations) {
+    await sendNotification(build(registration.userId));
+  }
 }
 
 export async function createEventSession(
@@ -50,7 +81,7 @@ export async function createEventSession(
   }
 
   await prisma.eventSession.create({
-    data: { ...parsed.data, eventId },
+    data: { ...encryptSessionSecrets(parsed.data), eventId },
   });
   revalidatePath(`/admin/events/${eventId}`);
   return { ok: true };
@@ -73,18 +104,46 @@ export async function updateEventSession(
 
   const current = await prisma.eventSession.findUniqueOrThrow({
     where: { id: sessionId },
+    include: { event: true },
   });
+  // datetime-local inputs only carry minute precision, so compare at that
+  // granularity — otherwise every save re-triggers "RESCHEDULED" purely
+  // from losing the stored seconds/ms in the round trip.
+  const toMinute = (date: Date) => Math.floor(date.getTime() / 60_000);
   const timingChanged =
-    current.startAt.getTime() !== parsed.data.startAt.getTime() ||
-    current.endAt.getTime() !== parsed.data.endAt.getTime();
+    toMinute(current.startAt) !== toMinute(parsed.data.startAt) ||
+    toMinute(current.endAt) !== toMinute(parsed.data.endAt);
 
   const session = await prisma.eventSession.update({
     where: { id: sessionId },
     data: {
-      ...parsed.data,
+      ...encryptSessionSecrets(parsed.data),
       status: timingChanged ? "RESCHEDULED" : current.status,
     },
   });
+
+  if (timingChanged) {
+    // Old reminders were correct for the old time; delete them so the
+    // reminders cron can fire a fresh one 20 minutes before the new time
+    // instead of staying blocked by the stale row.
+    await prisma.notification.deleteMany({
+      where: { eventSessionId: sessionId, type: "SESSION_REMINDER" },
+    });
+
+    await notifyConfirmedRegistrants(current.eventId, (userId) => ({
+      userId,
+      type: "SESSION_RESCHEDULED",
+      title: `Session rescheduled: ${session.title}`,
+      body: `${current.event.title} — "${session.title}" is now scheduled for ${session.startAt.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}.`,
+      eventId: current.eventId,
+      eventSessionId: sessionId,
+      email: {
+        subject: `Session rescheduled: ${session.title}`,
+        text: `${current.event.title} — "${session.title}" is now scheduled for ${session.startAt.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}.`,
+      },
+    }));
+  }
+
   revalidatePath(`/admin/events/${session.eventId}`);
   return { ok: true };
 }
@@ -94,6 +153,25 @@ export async function cancelEventSession(sessionId: string) {
   const session = await prisma.eventSession.update({
     where: { id: sessionId },
     data: { status: "CANCELLED" },
+    include: { event: true },
   });
+
+  await prisma.notification.deleteMany({
+    where: { eventSessionId: sessionId, type: "SESSION_REMINDER" },
+  });
+
+  await notifyConfirmedRegistrants(session.eventId, (userId) => ({
+    userId,
+    type: "SESSION_CANCELLED",
+    title: `Session cancelled: ${session.title}`,
+    body: `${session.event.title} — "${session.title}" has been cancelled.`,
+    eventId: session.eventId,
+    eventSessionId: sessionId,
+    email: {
+      subject: `Session cancelled: ${session.title}`,
+      text: `${session.event.title} — "${session.title}" has been cancelled.`,
+    },
+  }));
+
   revalidatePath(`/admin/events/${session.eventId}`);
 }

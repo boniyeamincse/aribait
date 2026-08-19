@@ -5,37 +5,45 @@ import { requireUser } from "@/lib/permissions";
 export default async function DashboardOverviewPage() {
   const user = await requireUser();
 
-  const [enrolledEvents, upcomingSessions, completedEvents, pendingPayments] =
-    await Promise.all([
-      prisma.registration.count({
-        where: { userId: user.id, status: "CONFIRMED" },
-      }),
-      prisma.eventSession.count({
-        where: {
-          startAt: { gte: new Date() },
-          status: { in: ["SCHEDULED", "JOIN_OPEN", "LIVE", "RESCHEDULED"] },
-          event: {
-            registrations: { some: { userId: user.id, status: "CONFIRMED" } },
-          },
+  const [
+    enrolledEvents,
+    upcomingSessions,
+    completedEvents,
+    pendingPayments,
+    unreadNotifications,
+  ] = await Promise.all([
+    prisma.registration.count({
+      where: { userId: user.id, status: "CONFIRMED" },
+    }),
+    prisma.eventSession.count({
+      where: {
+        startAt: { gte: new Date() },
+        status: { in: ["SCHEDULED", "JOIN_OPEN", "LIVE", "RESCHEDULED"] },
+        event: {
+          registrations: { some: { userId: user.id, status: "CONFIRMED" } },
         },
-      }),
-      prisma.registration.count({
-        where: { userId: user.id, status: "COMPLETED" },
-      }),
-      prisma.payment.count({
-        where: {
-          registration: { userId: user.id },
-          status: { in: ["INITIATED", "PENDING", "FAILED"] },
-        },
-      }),
-    ]);
+      },
+    }),
+    prisma.registration.count({
+      where: { userId: user.id, status: "COMPLETED" },
+    }),
+    prisma.payment.count({
+      where: {
+        registration: { userId: user.id },
+        status: { in: ["INITIATED", "PENDING", "FAILED"] },
+      },
+    }),
+    prisma.notification.count({
+      where: { userId: user.id, readAt: null },
+    }),
+  ]);
 
   const overviewCards = [
     { label: "Enrolled Events", value: enrolledEvents },
     { label: "Upcoming Sessions", value: upcomingSessions },
     { label: "Completed Events", value: completedEvents },
     { label: "Certificates", value: 0 },
-    { label: "Unread notifications", value: 0 },
+    { label: "Unread notifications", value: unreadNotifications },
     { label: "Pending payments", value: pendingPayments },
   ];
 

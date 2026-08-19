@@ -53,6 +53,8 @@ model User {
   seatHolds            SeatHold[]
   discountRedemptions  DiscountRedemption[]
   reviewedTransactions PaymentTransaction[]
+  markedAttendance     SessionAttendance[]  @relation("AttendanceMarkedBy")
+  notifications        Notification[]
 
   @@map("users")
 }
@@ -204,6 +206,7 @@ model Event {
   registrations  Registration[]
   seatHolds      SeatHold[]
   discountEvents DiscountEvent[]
+  notifications  Notification[]
 
   @@index([status])
   @@index([categoryId])
@@ -231,9 +234,10 @@ enum SessionStatus {
   @@map("session_status")
 }
 
-// Meeting URL/passcode are plain text for now — encryption at rest lands in
-// Phase 4 alongside the protected join route that actually decrypts them
-// (see docs/security.md §4 and tasklist.md Phase 4).
+// meetingUrl/meetingPasscode hold AES-256-GCM ciphertext (lib/security/crypto.ts),
+// written by lib/events/session-actions.ts and decrypted only inside the
+// protected join route (docs/security.md §4). Admin edit forms never
+// display the decrypted value back — only overwrite-on-submit.
 model EventSession {
   id               String          @id @default(cuid())
   eventId          String          @map("event_id")
@@ -252,8 +256,10 @@ model EventSession {
   createdAt        DateTime        @default(now()) @map("created_at")
   updatedAt        DateTime        @updatedAt @map("updated_at")
 
-  event          Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  hostInstructor Instructor? @relation(fields: [hostInstructorId], references: [id])
+  event          Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  hostInstructor Instructor?         @relation(fields: [hostInstructorId], references: [id])
+  attendances    SessionAttendance[]
+  notifications  Notification[]
 
   @@unique([eventId, sequence])
   @@index([eventId])
@@ -294,6 +300,7 @@ model Registration {
   seatHold           SeatHold?
   payment            Payment?
   discountRedemption DiscountRedemption?
+  attendances        SessionAttendance[]
 
   @@unique([userId, eventId])
   @@index([eventId, status])
@@ -463,4 +470,84 @@ model PaymentTransaction {
   @@index([paymentId])
   @@index([status])
   @@map("payment_transactions")
+}
+
+// ---------------------------------------------------------------------------
+// Phase 4 — Live Delivery
+// Protected Session join, manual attendance, and the in-app + email
+// notification module (reminders, reschedule/cancel, announcements,
+// completion). See tasklist.md.
+// ---------------------------------------------------------------------------
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+
+  @@map("attendance_status")
+}
+
+// A row can exist purely from a join click (joinedAt set, status still null
+// — "evidence of attendance", not a verdict) or purely from an admin mark
+// (status set, joinedAt still null — admin override). Both may be set.
+model SessionAttendance {
+  id             String            @id @default(cuid())
+  registrationId String            @map("registration_id")
+  eventSessionId String            @map("event_session_id")
+  status         AttendanceStatus?
+  joinedAt       DateTime?         @map("joined_at")
+  markedById     String?           @map("marked_by_id")
+  markedAt       DateTime?         @map("marked_at")
+  note           String?
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  registration Registration @relation(fields: [registrationId], references: [id])
+  eventSession EventSession @relation(fields: [eventSessionId], references: [id])
+  markedBy     User?        @relation("AttendanceMarkedBy", fields: [markedById], references: [id])
+
+  @@unique([registrationId, eventSessionId])
+  @@index([eventSessionId])
+  @@map("session_attendance")
+}
+
+enum NotificationType {
+  SESSION_REMINDER
+  SESSION_RESCHEDULED
+  SESSION_CANCELLED
+  EVENT_CANCELLED
+  EVENT_COMPLETED
+  WAITLIST_PROMOTED
+  ANNOUNCEMENT
+  REGISTRATION_CONFIRMED
+  PAYMENT_CONFIRMED
+  PAYMENT_FAILED
+
+  @@map("notification_type")
+}
+
+// Reminder de-duplication (idea.md §5.10: unique per user/session/type) is
+// enforced at the application layer in the reminders cron, not a DB
+// constraint here — a blanket unique on (userId, eventSessionId, type)
+// would also wrongly collide two unrelated ANNOUNCEMENTs (eventSessionId
+// null on both) for the same user.
+model Notification {
+  id             String           @id @default(cuid())
+  userId         String           @map("user_id")
+  type           NotificationType
+  title          String
+  body           String           @db.Text
+  eventId        String?          @map("event_id")
+  eventSessionId String?          @map("event_session_id")
+  readAt         DateTime?        @map("read_at")
+  createdAt      DateTime         @default(now()) @map("created_at")
+
+  user         User          @relation(fields: [userId], references: [id])
+  event        Event?        @relation(fields: [eventId], references: [id])
+  eventSession EventSession? @relation(fields: [eventSessionId], references: [id])
+
+  @@index([userId, readAt])
+  @@index([eventSessionId, type])
+  @@map("notifications")
 }

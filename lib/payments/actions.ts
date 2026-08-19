@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/client";
 import { requireAdmin, requireUser } from "@/lib/permissions";
 import { paymentProofSchema, rejectPaymentSchema } from "@/lib/validations/payment";
+import { sendNotification } from "@/lib/notifications";
+import { formatBdt } from "@/lib/utils";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -128,6 +130,21 @@ export async function approveManualPayment(transactionId: string) {
     });
   });
 
+  const event = await prisma.event.findUniqueOrThrow({
+    where: { id: transaction.payment.registration.eventId },
+  });
+  await sendNotification({
+    userId: transaction.payment.registration.userId,
+    type: "PAYMENT_CONFIRMED",
+    title: `Payment confirmed: ${event.title}`,
+    body: `Your payment of ${formatBdt(transaction.payment.amountBdt)} for ${event.title} is confirmed. You're registered.`,
+    eventId: event.id,
+    email: {
+      subject: `Payment confirmed: ${event.title}`,
+      text: `Your payment of ${formatBdt(transaction.payment.amountBdt)} for ${event.title} is confirmed. You're registered.`,
+    },
+  });
+
   revalidatePath("/admin/payments");
   revalidatePath("/dashboard/payments");
   revalidatePath("/dashboard/events");
@@ -154,6 +171,7 @@ export async function rejectManualPayment(
 
   const transaction = await prisma.paymentTransaction.findUnique({
     where: { id: transactionId },
+    include: { payment: { include: { registration: true } } },
   });
   if (!transaction) return { ok: false, error: "Not found." };
 
@@ -171,6 +189,21 @@ export async function rejectManualPayment(
       where: { id: transaction.paymentId },
       data: { status: "FAILED" },
     });
+  });
+
+  const event = await prisma.event.findUniqueOrThrow({
+    where: { id: transaction.payment.registration.eventId },
+  });
+  await sendNotification({
+    userId: transaction.payment.registration.userId,
+    type: "PAYMENT_FAILED",
+    title: `Payment needs attention: ${event.title}`,
+    body: `Your payment proof for ${event.title} was rejected: ${parsed.data.reason} You can resubmit from your Payments page.`,
+    eventId: event.id,
+    email: {
+      subject: `Payment needs attention: ${event.title}`,
+      text: `Your payment proof for ${event.title} was rejected: ${parsed.data.reason} You can resubmit from your Payments page.`,
+    },
   });
 
   revalidatePath("/admin/payments");

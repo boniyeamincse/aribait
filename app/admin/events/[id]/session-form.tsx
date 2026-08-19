@@ -195,21 +195,29 @@ export function SessionForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="session-meetingUrl">Meeting URL (protected — never shown publicly)</Label>
+        <Label htmlFor="session-meetingUrl">Meeting URL (encrypted — never shown after saving)</Label>
         <Input
           id="session-meetingUrl"
           name="meetingUrl"
           type="url"
-          defaultValue={defaultValues?.meetingUrl ?? undefined}
+          placeholder={
+            defaultValues?.meetingUrl
+              ? "Already set — leave blank to keep it"
+              : undefined
+          }
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="session-meetingPasscode">Passcode</Label>
+        <Label htmlFor="session-meetingPasscode">Passcode (encrypted — never shown after saving)</Label>
         <Input
           id="session-meetingPasscode"
           name="meetingPasscode"
-          defaultValue={defaultValues?.meetingPasscode ?? undefined}
+          placeholder={
+            defaultValues?.meetingPasscode
+              ? "Already set — leave blank to keep it"
+              : undefined
+          }
         />
       </div>
 

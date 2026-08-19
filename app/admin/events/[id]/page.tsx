@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/client";
 import {
   archiveEvent,
   cancelEvent,
+  completeEvent,
   publishEvent,
   updateEvent,
 } from "@/lib/events/actions";
@@ -17,6 +18,7 @@ import { formatBdt } from "@/lib/utils";
 import { EventForm } from "../event-form";
 import { SessionForm } from "./session-form";
 import { AttachCouponForm } from "./attach-coupon-form";
+import { AnnouncementForm } from "./announcement-form";
 
 export default async function AdminEventDetailPage({
   params,
@@ -57,7 +59,7 @@ export default async function AdminEventDetailPage({
       </div>
 
       <div className="flex gap-2">
-        {event.status !== "PUBLISHED" && event.status !== "CANCELLED" && (
+        {event.status === "DRAFT" && (
           <form action={publishEvent.bind(null, event.id)}>
             <Button type="submit" size="sm">
               Publish
@@ -75,6 +77,13 @@ export default async function AdminEventDetailPage({
           <form action={archiveEvent.bind(null, event.id)}>
             <Button type="submit" size="sm" variant="outline">
               Archive
+            </Button>
+          </form>
+        )}
+        {event.status === "PUBLISHED" && (
+          <form action={completeEvent.bind(null, event.id)}>
+            <Button type="submit" size="sm" variant="outline">
+              Complete Event
             </Button>
           </form>
         )}
@@ -209,6 +218,17 @@ export default async function AdminEventDetailPage({
           </div>
         </>
       )}
+
+      <Separator />
+
+      <div className="flex flex-col gap-4">
+        <h2 className="text-lg font-medium">Announcements</h2>
+        <p className="text-sm text-muted-foreground">
+          Sends an in-app + email notification to every confirmed and
+          waitlisted registrant.
+        </p>
+        <AnnouncementForm eventId={event.id} />
+      </div>
     </div>
   );
 }

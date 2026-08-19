@@ -95,17 +95,43 @@ artifact. `SessionForm`'s ids are now prefixed (`session-title`, etc).
 
 ## Phase 4 — Live Delivery
 
-- [ ] Protected join route `app/dashboard/sessions/[sessionId]/join` per `docs/api.md` §3
-- [ ] Join-window validation (20 min before → 15 min after scheduled end)
-- [ ] Encrypt meeting URL/passcode at rest; decrypt only inside join handler
-- [ ] `session_attendance` table + join-timestamp logging
-- [ ] Admin manual attendance marking (present/absent/late/excused)
-- [ ] Notification module: in-app + email adapter (`lib/notifications/`)
-- [ ] Cron: `session-reminders` (every 5 min, 20-min-before window, unique per `(user_id, session_id, notification_type)`)
-- [ ] Cron: `session-status-sync` (`SCHEDULED → JOIN_OPEN → LIVE → COMPLETED`)
-- [ ] Reschedule/cancel workflow — new notification, invalidate stale reminders
-- [ ] Announcements (admin → students)
-- [ ] Event completion workflow (all Sessions done → attendance reviewed → Event `COMPLETED` → eligible registrations `COMPLETED`)
+- [x] Protected join route `app/dashboard/sessions/[sessionId]/join` per `docs/api.md` §3
+- [x] Join-window validation (20 min before → 15 min after scheduled end, both configurable via Settings)
+- [x] Encrypt meeting URL/passcode at rest (AES-256-GCM, `lib/security/crypto.ts`); decrypted only inside the join handler — admin edit forms never display the value back, only overwrite-on-submit
+- [x] `session_attendance` table + join-timestamp logging
+- [x] Admin manual attendance marking (present/absent/late/excused), student-facing read view
+- [x] Notification module: in-app + email adapter (`lib/notifications/`) — also retrofitted onto Phase 2/3 flows that idea.md lists as notification triggers but which hadn't been wired yet: registration confirmed/waitlisted, waitlist promotion, payment confirmed/failed
+- [x] Cron: `session-reminders` (every 5 min, 20-min-before window) — dedup is an existence check per (user, session) in the cron rather than a DB unique constraint, since a blanket constraint would also wrongly collide unrelated ANNOUNCEMENTs (see the comment on the Notification model)
+- [x] Cron: `session-status-sync` (`SCHEDULED → JOIN_OPEN → LIVE → COMPLETED`) — re-reads status between steps so an overdue Session cascades fully in one run
+- [x] Reschedule/cancel workflow — new notification, invalidate stale reminders (old `SESSION_REMINDER` rows deleted so the reminders cron isn't blocked from firing fresh ones at the new time)
+- [x] Announcements (admin → an Event's confirmed + waitlisted registrants)
+- [x] Event completion workflow — admin-triggered `completeEvent`; all-Sessions-done/attendance-reviewed is a human judgment call, not automated. Certificate issuance is still Phase 5.
+
+Two real bugs found and fixed while testing this phase (not automation
+artifacts):
+1. `datetime-local` inputs only carry minute precision, but the stored
+   `startAt`/`endAt` had seconds/ms from `new Date()`. Saving a Session
+   without touching the time fields lost that precision on the round trip
+   and made the "did the timing change?" check see a false positive —
+   every save silently flipped the Session to `RESCHEDULED` and fired a
+   reschedule notification. Fixed by comparing at minute granularity.
+2. The "Publish" button showed on any Event that wasn't `PUBLISHED` or
+   `CANCELLED` — including the new `COMPLETED` status, so it was possible
+   to accidentally un-complete a finished Event. Restricted to `DRAFT` only.
+
+Verified end-to-end in the browser: set a Session's meeting URL through the
+real admin form and confirmed the stored value was ciphertext, not
+plaintext; joined as a student and confirmed the redirect landed on the
+exact decrypted URL with an attendance row logged (`joinedAt` set, `status`
+null); admin marked it `PRESENT` and the student saw it reflected; sent an
+Event announcement and confirmed it showed unread → mark-read → mark-all-read
+on the student's Notifications page and in the Overview's unread count;
+ran both crons unauthenticated (401) and with `CRON_SECRET` (200) —
+`session-status-sync` cascaded a due Session `SCHEDULED → JOIN_OPEN → LIVE`
+in one call, `session-reminders` sent once then correctly deduped on a
+second run; completed an Event and confirmed the registration flipped to
+`COMPLETED` with a notification sent; cancelled a Session and confirmed its
+pending reminder was deleted.
 
 ## Phase 5 — Certificates and Reporting
 

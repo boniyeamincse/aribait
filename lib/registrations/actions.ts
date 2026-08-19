@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/client";
 import { requireUser } from "@/lib/permissions";
 import { validateCoupon } from "@/lib/discounts/validate";
+import { sendNotification } from "@/lib/notifications";
 
 type ActionResult = { ok: true; waitlisted: boolean } | { ok: false; error: string };
 
@@ -56,6 +57,22 @@ export async function registerFree(eventId: string): Promise<ActionResult> {
     },
     { isolationLevel: "Serializable" },
   );
+
+  await sendNotification({
+    userId: user.id,
+    type: "REGISTRATION_CONFIRMED",
+    title: waitlisted ? `Waitlisted: ${event.title}` : `Registered: ${event.title}`,
+    body: waitlisted
+      ? `You're on the waitlist for ${event.title} — we'll confirm your seat if one opens up.`
+      : `You're confirmed for ${event.title}. Check My Sessions for join details.`,
+    eventId: event.id,
+    email: {
+      subject: waitlisted ? `Waitlisted: ${event.title}` : `Registered: ${event.title}`,
+      text: waitlisted
+        ? `You're on the waitlist for ${event.title}.`
+        : `You're confirmed for ${event.title}.`,
+    },
+  });
 
   revalidatePath(`/events/${event.slug}`);
   revalidatePath("/dashboard");
@@ -230,7 +247,7 @@ export async function cancelRegistration(registrationId: string) {
     return { ok: true as const };
   }
 
-  await prisma.$transaction(async (tx) => {
+  const promotedUserId = await prisma.$transaction(async (tx) => {
     await tx.registration.update({
       where: { id: registrationId },
       data: { status: "CANCELLED", cancelledAt: new Date() },
@@ -257,9 +274,28 @@ export async function cancelRegistration(registrationId: string) {
           where: { id: nextInLine.id },
           data: { status: "CONFIRMED", confirmedAt: new Date() },
         });
+        return nextInLine.userId;
       }
     }
+    return null;
   });
+
+  if (promotedUserId) {
+    const event = await prisma.event.findUniqueOrThrow({
+      where: { id: registration.eventId },
+    });
+    await sendNotification({
+      userId: promotedUserId,
+      type: "WAITLIST_PROMOTED",
+      title: `Seat confirmed: ${event.title}`,
+      body: `A seat opened up and you're now confirmed for ${event.title}.`,
+      eventId: event.id,
+      email: {
+        subject: `Seat confirmed: ${event.title}`,
+        text: `A seat opened up and you're now confirmed for ${event.title}.`,
+      },
+    });
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/events");
