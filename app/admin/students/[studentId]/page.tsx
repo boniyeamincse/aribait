@@ -11,14 +11,24 @@ import { AttendanceTab } from "./tabs/attendance-tab";
 import { CertificatesTab } from "./tabs/certificates-tab";
 import { ActivityTab } from "./tabs/activity-tab";
 
+import {
+  User,
+  ClipboardList,
+  Clock,
+  CreditCard,
+  CheckSquare,
+  Award,
+  Activity,
+} from "lucide-react";
+
 const TABS = [
-  { id: "profile", label: "Profile" },
-  { id: "registrations", label: "Registrations" },
-  { id: "sessions", label: "Upcoming Sessions" },
-  { id: "payments", label: "Payments" },
-  { id: "attendance", label: "Attendance" },
-  { id: "certificates", label: "Certificates" },
-  { id: "activity", label: "Activity" },
+  { id: "profile", label: "Profile", icon: User },
+  { id: "registrations", label: "Registrations", icon: ClipboardList },
+  { id: "sessions", label: "Upcoming Sessions", icon: Clock },
+  { id: "payments", label: "Payments", icon: CreditCard },
+  { id: "attendance", label: "Attendance", icon: CheckSquare },
+  { id: "certificates", label: "Certificates", icon: Award },
+  { id: "activity", label: "Activity", icon: Activity },
 ];
 
 export default async function AdminStudentDetailPage(

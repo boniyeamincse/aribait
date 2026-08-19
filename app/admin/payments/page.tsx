@@ -7,11 +7,13 @@ import { formatBdt } from "@/lib/utils";
 
 import { PaymentReviewRow } from "./payment-review-row";
 
+import { Clock, CheckCircle, XCircle, List } from "lucide-react";
+
 const TABS = [
-  { label: "Pending", status: "PENDING" as const },
-  { label: "Paid", status: "PAID" as const },
-  { label: "Failed", status: "FAILED" as const },
-  { label: "All", status: null },
+  { id: "PENDING", label: "Pending", status: "PENDING" as const, icon: Clock },
+  { id: "PAID", label: "Paid", status: "PAID" as const, icon: CheckCircle },
+  { id: "FAILED", label: "Failed", status: "FAILED" as const, icon: XCircle },
+  { id: "ALL", label: "All", status: null, icon: List },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -37,19 +39,21 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
     <div className="flex flex-col gap-6">
       <AdminPageHeader title="Payments" description="Manual bKash/Nagad submissions and their review status." />
 
-      <div className="flex gap-2 border-b border-slate-800 pb-px">
+      <div className="flex gap-2 overflow-x-auto border-b border-slate-800 pb-px scrollbar-hide">
         {TABS.map((tab) => {
           const isActive = tab.label === activeTab.label;
+          const Icon = tab.icon;
           return (
             <Link
               key={tab.label}
               href={tab.status ? `/admin/payments?status=${tab.status}` : "/admin/payments?status=ALL"}
               className={
                 isActive
-                  ? "rounded-t-lg border-b-2 border-cyan-400 px-4 py-2 text-sm font-medium text-white"
-                  : "rounded-t-lg border-b-2 border-transparent px-4 py-2 text-sm text-slate-500 hover:text-slate-300"
+                  ? "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-cyan-400 px-4 py-2.5 text-sm font-medium text-white bg-slate-800/20"
+                  : "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-4 py-2.5 text-sm text-slate-500 hover:text-slate-300 hover:bg-slate-800/10 transition-colors"
               }
             >
+              <Icon size={16} className={isActive ? "text-cyan-400" : "text-slate-500"} strokeWidth={isActive ? 2 : 1.75} />
               {tab.label}
             </Link>
           );

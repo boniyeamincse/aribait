@@ -13,15 +13,26 @@ import { NotificationsTab } from "./tabs/notifications-tab";
 import { CertificatesTab } from "./tabs/certificates-tab";
 import { ActivityTab } from "./tabs/activity-tab";
 
+import {
+  LayoutDashboard,
+  MonitorPlay,
+  ClipboardList,
+  CreditCard,
+  CheckSquare,
+  Bell,
+  Award,
+  Activity,
+} from "lucide-react";
+
 const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "sessions", label: "Sessions" },
-  { id: "registrations", label: "Registrations" },
-  { id: "payments", label: "Payments" },
-  { id: "attendance", label: "Attendance" },
-  { id: "notifications", label: "Notifications" },
-  { id: "certificates", label: "Certificates" },
-  { id: "activity", label: "Activity Log" },
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "sessions", label: "Sessions", icon: MonitorPlay },
+  { id: "registrations", label: "Registrations", icon: ClipboardList },
+  { id: "payments", label: "Payments", icon: CreditCard },
+  { id: "attendance", label: "Attendance", icon: CheckSquare },
+  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "certificates", label: "Certificates", icon: Award },
+  { id: "activity", label: "Activity Log", icon: Activity },
 ];
 
 export default async function AdminEventDetailPage(
