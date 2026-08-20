@@ -10,8 +10,13 @@ import {
   CheckCircle,
   AlertCircle,
   LucideIcon,
+  Plus,
+  FileSpreadsheet,
+  ClockAlert,
+  Download,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { AdminTable } from "@/components/admin/admin-table";
@@ -122,6 +127,22 @@ export default async function AdminOverviewPage() {
       <AdminPageHeader
         title={`${greeting}, ${user.name ?? "Admin"}`}
         description={`${todayLabel} · Asia/Dhaka`}
+        actions={
+          <>
+            <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 hover:opacity-90">
+              <Plus className="h-4 w-4" /> Add New Record
+            </Button>
+            <Button size="sm" variant="outline" className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" /> Import Excel
+            </Button>
+            <Button size="sm" variant="outline" className="gap-2">
+              <ClockAlert className="h-4 w-4" /> View Pending
+            </Button>
+            <Button size="sm" variant="outline" className="gap-2">
+              <Download className="h-4 w-4" /> Export Report
+            </Button>
+          </>
+        }
       />
 
       {/* KPI cards */}

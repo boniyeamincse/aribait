@@ -4,19 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  CalendarDays,
-  MonitorPlay,
-  Tag,
+  FileText,
+  Users,
+  Laptop,
   UserCog,
-  GraduationCap,
-  ClipboardList,
-  CreditCard,
-  Ticket,
-  CheckSquare,
-  Award,
-  Bell,
   BarChart3,
+  Database,
   ShieldCheck,
+  ArrowRightLeft,
+  ClipboardList,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -37,50 +33,19 @@ type NavGroup = {
 const NAV_GROUPS: NavGroup[] = [
   {
     label: null,
-    items: [{ href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true }],
-  },
-  {
-    label: "Content",
     items: [
-      { href: "/admin/events",      label: "Events",      icon: CalendarDays },
-      { href: "/admin/sessions",    label: "Sessions",    icon: MonitorPlay  },
-      { href: "/admin/calendar",    label: "Calendar",    icon: CalendarDays },
-      { href: "/admin/categories",  label: "Categories",  icon: Tag          },
-      { href: "/admin/instructors", label: "Instructors", icon: UserCog      },
+      { href: "/admin",                 label: "Dashboard",          icon: LayoutDashboard, exact: true },
+      { href: "/admin/service-records", label: "Service Records",    icon: FileText },
+      { href: "/admin/employees",       label: "Employee Directory", icon: Users },
+      { href: "/admin/devices",         label: "Device Records",     icon: Laptop },
+      { href: "/admin/engineers",       label: "Engineers",          icon: UserCog },
+      { href: "/admin/reports",         label: "Reports",            icon: BarChart3 },
+      { href: "/admin/master-data",     label: "Master Data",        icon: Database },
+      { href: "/admin/users",           label: "User Management",    icon: ShieldCheck },
+      { href: "/admin/import-export",   label: "Import & Export",    icon: ArrowRightLeft },
+      { href: "/admin/audit-logs",      label: "Audit Logs",         icon: ClipboardList },
+      { href: "/admin/settings",        label: "System Settings",    icon: Settings },
     ],
-  },
-  {
-    label: "Students",
-    items: [
-      { href: "/admin/students",      label: "Students",      icon: GraduationCap },
-      { href: "/admin/registrations", label: "Registrations", icon: ClipboardList },
-    ],
-  },
-  {
-    label: "Commerce",
-    items: [
-      { href: "/admin/payments",  label: "Payments", icon: CreditCard, badge: "pendingPayments" },
-      { href: "/admin/discounts", label: "Coupons",  icon: Ticket },
-    ],
-  },
-  {
-    label: "Operations",
-    items: [
-      { href: "/admin/attendance",    label: "Attendance",    icon: CheckSquare },
-      { href: "/admin/certificates",  label: "Certificates",  icon: Award       },
-      { href: "/admin/notifications", label: "Notifications", icon: Bell        },
-    ],
-  },
-  {
-    label: "Analytics",
-    items: [
-      { href: "/admin/reports",    label: "Reports",    icon: BarChart3   },
-      { href: "/admin/audit-logs", label: "Audit Logs", icon: ShieldCheck },
-    ],
-  },
-  {
-    label: "System",
-    items: [{ href: "/admin/settings", label: "Settings", icon: Settings }],
   },
 ];
 
