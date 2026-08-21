@@ -7,6 +7,7 @@ import { AdminTable } from "@/components/admin/admin-table";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db/client";
+import type { EventStatus } from "@/lib/generated/prisma/client";
 import { formatBdt } from "@/lib/utils";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -22,12 +23,18 @@ const STATUS_COLORS: Record<string, string> = {
   ARCHIVED: "bg-slate-200/15 text-slate-600 border-slate-300/30",
 };
 
-export default async function InstructorEventsPage() {
+export default async function InstructorEventsPage(props: PageProps<"/instructor/events">) {
   const { user, instructor } = await requireInstructor();
   const eligible = isEligibleToCreateEvents(user, instructor);
 
+  const searchParams = await props.searchParams;
+  const statusFilter = typeof searchParams.status === "string" ? searchParams.status : "";
+  const validStatus = Object.keys(STATUS_COLORS).includes(statusFilter)
+    ? (statusFilter as EventStatus)
+    : undefined;
+
   const events = await prisma.event.findMany({
-    where: { instructorId: instructor.id },
+    where: { instructorId: instructor.id, ...(validStatus ? { status: validStatus } : {}) },
     orderBy: { createdAt: "desc" },
     include: { category: true, _count: { select: { registrations: { where: { status: "CONFIRMED" } } } } },
   });
@@ -35,7 +42,7 @@ export default async function InstructorEventsPage() {
   return (
     <div className="flex flex-col gap-6">
       <AdminPageHeader
-        title="My Events"
+        title={validStatus ? `My Events — ${validStatus.replace(/_/g, " ")}` : "My Events"}
         description="Events you've created — draft, submitted for approval, or published."
         actions={
           eligible ? (

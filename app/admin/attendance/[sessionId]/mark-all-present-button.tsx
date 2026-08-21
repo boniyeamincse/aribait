@@ -4,7 +4,13 @@ import { useState, useTransition } from "react";
 
 import { markAllPresent } from "@/lib/attendance/actions";
 
-export function MarkAllPresentButton({ eventSessionId }: { eventSessionId: string }) {
+export function MarkAllPresentButton({
+  eventSessionId,
+  action = markAllPresent,
+}: {
+  eventSessionId: string;
+  action?: (eventSessionId: string) => Promise<unknown>;
+}) {
   const [confirming, setConfirming] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -17,7 +23,7 @@ export function MarkAllPresentButton({ eventSessionId }: { eventSessionId: strin
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
-              await markAllPresent(eventSessionId);
+              await action(eventSessionId);
               setConfirming(false);
             })
           }

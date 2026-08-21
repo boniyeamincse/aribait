@@ -102,10 +102,13 @@ export async function updateInstructorEvent(
   return { ok: true };
 }
 
-export async function deleteInstructorEvent(eventId: string) {
+/** Plain form action like deleteInstructorEvent's siblings above that take
+ * no formData — the Delete button only renders for DRAFT, so this guard
+ * only matters for a race; there's no state to report it into. */
+export async function deleteInstructorEvent(eventId: string): Promise<void> {
   const { event } = await requireOwnedEvent(eventId);
   if (event.status !== "DRAFT") {
-    return { ok: false, error: "Only Draft Events can be deleted." } satisfies ActionResult;
+    return;
   }
   await prisma.event.delete({ where: { id: eventId } });
   revalidatePath("/instructor/events");

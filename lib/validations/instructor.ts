@@ -7,6 +7,7 @@ export const instructorSchema = z.object({
   password: z.string().min(8).max(72),
   title: z.string().max(120).optional(),
   bio: z.string().max(4000).optional(),
+  avatarUrl: z.string().url().max(500).optional(),
   company: z.string().max(120).optional(),
   phone: z.string().max(30).optional(),
   website: z.string().url().max(255).optional(),
@@ -16,3 +17,10 @@ export const instructorSchema = z.object({
 });
 
 export type InstructorInput = z.infer<typeof instructorSchema>;
+
+// Self-service profile edit (docs/instactor.md §2 "Instructor Profile") —
+// no email/password here; those are login credentials, changed via the
+// existing account-settings/reset-password flow, not this form.
+export const instructorProfileSchema = instructorSchema.omit({ email: true, password: true });
+
+export type InstructorProfileInput = z.infer<typeof instructorProfileSchema>;
