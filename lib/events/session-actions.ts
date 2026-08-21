@@ -11,7 +11,7 @@ import { writeAuditLog } from "@/lib/audit/log";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
-function parseSessionForm(formData: FormData) {
+export function parseSessionForm(formData: FormData) {
   return eventSessionSchema.safeParse({
     title: formData.get("title"),
     sequence: formData.get("sequence"),
@@ -31,7 +31,7 @@ function parseSessionForm(formData: FormData) {
  * returned object (Prisma treats an omitted/undefined key as "don't change
  * this field") when left blank, so an edit never wipes a previously-set
  * secret and never needs to display it back. */
-function encryptSessionSecrets<T extends { meetingUrl?: string; meetingPasscode?: string }>(
+export function encryptSessionSecrets<T extends { meetingUrl?: string; meetingPasscode?: string }>(
   data: T,
 ) {
   return {

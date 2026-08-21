@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import { SiteHeader } from "@/components/public/site-header";
+import { SiteFooter } from "@/components/public/site-footer";
 
 export default function AuthLayout({
   children,
@@ -7,42 +7,30 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-slate-950 font-sans text-slate-100 overflow-hidden">
-      {/* Ambient background */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute top-1/4 -left-1/4 h-[800px] w-[800px] rounded-full bg-indigo-600/20 blur-[120px] mix-blend-screen" />
-        <div className="absolute bottom-1/4 -right-1/4 h-[800px] w-[800px] rounded-full bg-cyan-500/20 blur-[120px] mix-blend-screen" />
+    <div className="flex min-h-screen flex-col bg-slate-950 font-sans text-slate-100 overflow-hidden">
+      {/* Light Header from Public Layout */}
+      <div className="relative z-50">
+        <SiteHeader />
       </div>
 
-      <div className="relative z-10 w-full max-w-md px-6 py-12 flex flex-col items-center">
-        {/* Logo */}
-        <Link href="/" className="mb-8 flex justify-center">
-          <Image
-            src="/logo.png"
-            alt="Ariba IT"
-            width={140}
-            height={42}
-            className="h-10 w-auto object-contain brightness-0 invert transition-transform hover:scale-105"
-            priority
-          />
-        </Link>
+      <div className="relative flex-1 flex flex-col items-center justify-center">
+        {/* Ambient background */}
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute top-1/4 -left-1/4 h-[800px] w-[800px] rounded-full bg-indigo-600/20 blur-[120px] mix-blend-screen" />
+          <div className="absolute bottom-1/4 -right-1/4 h-[800px] w-[800px] rounded-full bg-cyan-500/20 blur-[120px] mix-blend-screen" />
+        </div>
 
-        {/* Auth Page Content */}
-        <div className="w-full">
-          {children}
+        <div className="relative z-10 w-full max-w-md px-6 py-12 flex flex-col items-center">
+          {/* Auth Page Content */}
+          <div className="w-full">
+            {children}
+          </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 w-full p-6 text-center text-xs text-slate-500 z-10">
-        © {new Date().getFullYear()} Ariba IT ·{" "}
-        <Link href="/terms" className="hover:text-slate-300 transition-colors">
-          Terms
-        </Link>{" "}
-        ·{" "}
-        <Link href="/privacy" className="hover:text-slate-300 transition-colors">
-          Privacy
-        </Link>
+      {/* Light Footer from Public Layout */}
+      <div className="relative z-50">
+        <SiteFooter />
       </div>
     </div>
   );

@@ -7,6 +7,15 @@ export const EVENT_TYPES = [
   "SEMINAR",
 ] as const;
 
+export const EVENT_DELIVERY_MODES = ["ONLINE", "OFFLINE", "HYBRID"] as const;
+
+export const EVENT_SKILL_LEVELS = [
+  "BEGINNER",
+  "INTERMEDIATE",
+  "ADVANCED",
+  "ALL_LEVELS",
+] as const;
+
 const optionalText = z
   .string()
   .max(4000)
@@ -58,11 +67,30 @@ export const eventSchema = z
       .string()
       .optional()
       .transform((value) => (value ? Number(value) : undefined)),
+    deliveryMode: z.enum(EVENT_DELIVERY_MODES).default("ONLINE"),
+    location: z
+      .string()
+      .max(255)
+      .optional()
+      .transform((value) => (value ? value : undefined)),
+    skillLevel: z.enum(EVENT_SKILL_LEVELS).default("ALL_LEVELS"),
+    promoVideoUrl: z
+      .url()
+      .optional()
+      .or(z.literal(""))
+      .transform((value) => (value ? value : undefined)),
   })
   .refine((data) => data.endAt > data.startAt, {
     message: "Event end time must be after the start time.",
     path: ["endAt"],
   })
+  .refine(
+    (data) => data.deliveryMode === "ONLINE" || !!data.location,
+    {
+      message: "Location is required for offline or hybrid Events.",
+      path: ["location"],
+    },
+  )
   .refine((data) => data.capacity === undefined || data.capacity > 0, {
     message: "Capacity must be greater than zero when limited.",
     path: ["capacity"],

@@ -14,8 +14,11 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
-  if (user.role === "ADMIN" || user.role === "INSTRUCTOR") {
+  if (user.role === "ADMIN") {
     redirect("/admin");
+  }
+  if (user.role === "INSTRUCTOR") {
+    redirect("/instructor");
   }
 
   const initials = (user.name ?? user.email ?? "?")

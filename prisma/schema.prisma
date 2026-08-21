@@ -62,6 +62,8 @@ model User {
   reviews              Review[]
   auditLogs            AuditLog[]
   instructor           Instructor?
+  createdEvents        Event[]              @relation("EventCreatedBy")
+  approvedEvents       Event[]              @relation("EventApprovedBy")
 
   @@map("users")
 }
@@ -120,6 +122,10 @@ model Settings {
   bkashNagadReceivingMsisdn String   @default("01914638653") @map("bkash_nagad_receiving_msisdn")
   maintenanceMode           Boolean  @default(false) @map("maintenance_mode")
 
+  // Instructor self-serve Session scheduling bounds (docs/instactor.md §5).
+  minSessionDurationMinutes Int @default(15)  @map("min_session_duration_minutes")
+  maxSessionDurationMinutes Int @default(480) @map("max_session_duration_minutes")
+
   // Contact and social — shown in the public footer/contact page.
   contactEmail   String? @map("contact_email")
   contactPhone   String? @map("contact_phone")
@@ -160,9 +166,18 @@ model Category {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  events Event[]
+  events              Event[]
+  instructorCategories InstructorCategory[]
 
   @@map("categories")
+}
+
+enum InstructorVerificationStatus {
+  UNVERIFIED
+  VERIFIED
+  REJECTED
+
+  @@map("instructor_verification_status")
 }
 
 model Instructor {
@@ -183,14 +198,34 @@ model Instructor {
   twitterUrl  String?  @map("twitter_url")
   linkedinUrl String?  @map("linkedin_url")
   githubUrl   String?  @map("github_url")
+  // Instructor self-serve event eligibility gate (docs/instactor.md §1).
+  // A profile can be UNVERIFIED indefinitely (e.g. guest-speaker profiles
+  // with no login) — only a linked User attempting to create an Event
+  // actually checks this.
+  verificationStatus InstructorVerificationStatus @default(UNVERIFIED) @map("verification_status")
+  suspended          Boolean  @default(false)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   user          User?          @relation(fields: [userId], references: [id])
   events        Event[]
   eventSessions EventSession[]
+  categories    InstructorCategory[]
 
   @@map("instructors")
+}
+
+// Instructor expertise/categories (docs/instactor.md §1 eligibility field).
+model InstructorCategory {
+  id           String @id @default(cuid())
+  instructorId String @map("instructor_id")
+  categoryId   String @map("category_id")
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([instructorId, categoryId])
+  @@map("instructor_categories")
 }
 
 enum EventType {
@@ -204,6 +239,13 @@ enum EventType {
 
 enum EventStatus {
   DRAFT
+  // Instructor self-serve approval workflow (docs/instactor.md §6). Admin-
+  // created Events skip straight from DRAFT to PUBLISHED as before; these
+  // four are only entered via the instructor submit/admin-review flow.
+  PENDING_APPROVAL
+  CHANGES_REQUESTED
+  APPROVED
+  REJECTED
   PUBLISHED
   REGISTRATION_OPEN
   REGISTRATION_CLOSED
@@ -213,6 +255,23 @@ enum EventStatus {
   ARCHIVED
 
   @@map("event_status")
+}
+
+enum EventDeliveryMode {
+  ONLINE
+  OFFLINE
+  HYBRID
+
+  @@map("event_delivery_mode")
+}
+
+enum EventSkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ALL_LEVELS
+
+  @@map("event_skill_level")
 }
 
 model Event {
@@ -249,11 +308,28 @@ model Event {
   // (matches prior behavior for single-Session/short Events).
   minAttendanceSessions Int?       @map("min_attendance_sessions")
   status               EventStatus @default(DRAFT)
+  deliveryMode         EventDeliveryMode @default(ONLINE) @map("delivery_mode")
+  // Required when deliveryMode is OFFLINE or HYBRID (enforced in
+  // lib/instructors/event-actions.ts submission checklist).
+  location             String?
+  skillLevel           EventSkillLevel @default(ALL_LEVELS) @map("skill_level")
+  promoVideoUrl        String?     @map("promo_video_url")
+  // Instructor self-serve approval workflow (docs/instactor.md §7-§10).
+  // Null createdById means the Event predates this feature or was made by
+  // an Admin directly — those always skip the approval workflow.
+  createdById          String?     @map("created_by_id")
+  approvedById         String?     @map("approved_by_id")
+  approvedAt           DateTime?   @map("approved_at")
+  submittedAt          DateTime?   @map("submitted_at")
+  rejectionReason      String?     @db.Text @map("rejection_reason")
+  changeRequestNote    String?     @db.Text @map("change_request_note")
   createdAt            DateTime    @default(now()) @map("created_at")
   updatedAt            DateTime    @updatedAt @map("updated_at")
 
   category       Category        @relation(fields: [categoryId], references: [id])
   instructor     Instructor      @relation(fields: [instructorId], references: [id])
+  createdBy      User?           @relation("EventCreatedBy", fields: [createdById], references: [id])
+  approvedBy     User?           @relation("EventApprovedBy", fields: [approvedById], references: [id])
   sessions       EventSession[]
   registrations  Registration[]
   seatHolds      SeatHold[]
@@ -579,6 +655,11 @@ enum NotificationType {
   PAYMENT_CONFIRMED
   PAYMENT_FAILED
   CERTIFICATE_ISSUED
+  EVENT_SUBMITTED
+  EVENT_APPROVED
+  EVENT_CHANGES_REQUESTED
+  EVENT_REJECTED
+  EVENT_PUBLISHED_TO_INSTRUCTOR
 
   @@map("notification_type")
 }

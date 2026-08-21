@@ -9,7 +9,8 @@ import { MobileMenu } from "@/components/public/mobile-menu";
 export async function SiteHeader() {
   const session = await auth().catch(() => null);
   const isLoggedIn = !!session?.user;
-  const isAdmin = session?.user?.role === "ADMIN";
+  const role = session?.user?.role;
+  const dashboardHref = role === "ADMIN" ? "/admin" : role === "INSTRUCTOR" ? "/instructor" : "/dashboard";
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-slate-50/80 backdrop-blur-md">
@@ -44,7 +45,7 @@ export async function SiteHeader() {
           {isLoggedIn ? (
             <>
               <Link
-                href={isAdmin ? "/admin" : "/dashboard"}
+                href={dashboardHref}
                 className="text-slate-600 transition-colors hover:text-slate-900"
               >
                 Dashboard
@@ -76,7 +77,7 @@ export async function SiteHeader() {
         </nav>
 
         {/* Mobile hamburger — client component, shown only on mobile */}
-        <MobileMenu isLoggedIn={isLoggedIn} isAdmin={isAdmin} />
+        <MobileMenu isLoggedIn={isLoggedIn} dashboardHref={dashboardHref} />
       </div>
     </header>
   );

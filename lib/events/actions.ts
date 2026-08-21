@@ -27,7 +27,7 @@ async function notifyRegistrants(
   }
 }
 
-async function uniqueEventSlug(title: string) {
+export async function uniqueEventSlug(title: string) {
   const base = slugify(title);
   let slug = base;
   let suffix = 2;
@@ -62,6 +62,10 @@ function parseEventForm(formData: FormData) {
     termsAndRefundPolicy: formData.get("termsAndRefundPolicy") ?? undefined,
     classSchedule: formData.get("classSchedule") ?? undefined,
     minAttendanceSessions: formData.get("minAttendanceSessions") ?? undefined,
+    deliveryMode: formData.get("deliveryMode") ?? undefined,
+    location: formData.get("location") ?? undefined,
+    skillLevel: formData.get("skillLevel") ?? undefined,
+    promoVideoUrl: formData.get("promoVideoUrl") ?? "",
   });
 }
 
@@ -147,6 +151,7 @@ export async function publishEvent(eventId: string) {
   const event = await prisma.event.update({
     where: { id: eventId },
     data: { status: "PUBLISHED" },
+    include: { instructor: { select: { userId: true } } },
   });
   await writeAuditLog({
     actorId: admin.id,
@@ -155,6 +160,18 @@ export async function publishEvent(eventId: string) {
     targetId: eventId,
     summary: `Published "${event.title}"`,
   });
+
+  if (event.instructor.userId && event.createdById) {
+    // Only notify for instructor self-serve Events, not Admin-authored ones.
+    await sendNotification({
+      userId: event.instructor.userId,
+      type: "EVENT_PUBLISHED_TO_INSTRUCTOR",
+      title: `Event published: ${event.title}`,
+      body: `"${event.title}" is now live.`,
+      eventId,
+    });
+  }
+
   revalidatePath(`/admin/events/${eventId}`);
   revalidatePath("/admin/events");
   revalidatePath("/events");

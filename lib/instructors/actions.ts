@@ -7,6 +7,8 @@ import { requireAdmin } from "@/lib/permissions";
 import { instructorSchema } from "@/lib/validations/instructor";
 import { hashPassword } from "@/lib/security/password";
 import { slugify } from "@/lib/utils";
+import { writeAuditLog } from "@/lib/audit/log";
+import type { InstructorVerificationStatus } from "@/lib/generated/prisma/client";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -79,4 +81,29 @@ export async function createInstructor(
 
   revalidatePath("/admin/instructors");
   return { ok: true };
+}
+
+/** Instructor self-serve event eligibility gate (docs/instactor.md §1) —
+ * an Instructor stays UNVERIFIED (can't submit Events) until an admin
+ * explicitly flips this. */
+export async function setInstructorVerification(
+  instructorId: string,
+  status: InstructorVerificationStatus,
+) {
+  const admin = await requireAdmin();
+
+  const instructor = await prisma.instructor.update({
+    where: { id: instructorId },
+    data: { verificationStatus: status },
+  });
+
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "instructor.verify",
+    targetType: "Instructor",
+    targetId: instructorId,
+    summary: `Set "${instructor.name}" verification status to ${status}`,
+  });
+
+  revalidatePath("/admin/instructors");
 }

@@ -3,8 +3,15 @@ import { Mail, Phone, Building2, Globe, Briefcase, Code2, MessageSquare } from "
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminTable } from "@/components/admin/admin-table";
 import { prisma } from "@/lib/db/client";
+import { setInstructorVerification } from "@/lib/instructors/actions";
 
 import { InstructorForm } from "./instructor-form";
+
+const VERIFICATION_COLORS: Record<string, string> = {
+  UNVERIFIED: "bg-amber-500/15 text-amber-600 border-amber-500/30",
+  VERIFIED: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
+  REJECTED: "bg-red-500/15 text-red-600 border-red-500/30",
+};
 
 export default async function AdminInstructorsPage() {
   const instructors = await prisma.instructor.findMany({
@@ -124,6 +131,33 @@ export default async function AdminInstructorsPage() {
                 ) : (
                   <span className="text-xs text-slate-500">No login</span>
                 ),
+            },
+            {
+              key: "verification",
+              label: "Event Eligibility",
+              render: (i) => (
+                <div className="flex flex-col gap-1.5">
+                  <span
+                    className={`w-fit rounded-full border px-2 py-0.5 text-xs font-medium ${VERIFICATION_COLORS[i.verificationStatus]}`}
+                  >
+                    {i.verificationStatus}
+                  </span>
+                  {i.user && i.verificationStatus !== "VERIFIED" && (
+                    <form action={setInstructorVerification.bind(null, i.id, "VERIFIED")}>
+                      <button type="submit" className="text-xs text-blue-600 hover:underline">
+                        Verify
+                      </button>
+                    </form>
+                  )}
+                  {i.user && i.verificationStatus === "VERIFIED" && (
+                    <form action={setInstructorVerification.bind(null, i.id, "UNVERIFIED")}>
+                      <button type="submit" className="text-xs text-slate-500 hover:underline">
+                        Revoke
+                      </button>
+                    </form>
+                  )}
+                </div>
+              ),
             },
           ]}
         />

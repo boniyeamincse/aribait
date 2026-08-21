@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db/client";
 
 /**
  * Real (non-optimistic) authorization boundary. `proxy.ts` only checks
@@ -20,8 +21,26 @@ export async function requireUser() {
 
 export async function requireAdmin() {
   const user = await requireUser();
-  if (user.role !== "ADMIN" && user.role !== "INSTRUCTOR") {
+  if (user.role !== "ADMIN") {
     redirect("/dashboard");
   }
   return user;
+}
+
+/**
+ * Instructor shell gate — any active INSTRUCTOR can see their own
+ * dashboard. Eligibility to create/submit an Event (verified, not
+ * suspended, profile complete) is a separate, narrower check performed
+ * inline where it matters, not here.
+ */
+export async function requireInstructor() {
+  const user = await requireUser();
+  if (user.role !== "INSTRUCTOR") {
+    redirect("/dashboard");
+  }
+  const instructor = await prisma.instructor.findUnique({ where: { userId: user.id } });
+  if (!instructor) {
+    redirect("/dashboard");
+  }
+  return { user, instructor };
 }

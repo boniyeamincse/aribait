@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { EventForm } from "../../event-form";
 import { AttachCouponForm } from "../attach-coupon-form";
 import { AnnouncementForm } from "../announcement-form";
+import { ApprovalActions } from "../approval-actions";
 import { RemoveResourceButton, ResourceForm } from "../resource-form";
 import { ReviewModerationRow } from "../review-moderation";
 
@@ -35,8 +36,29 @@ export function OverviewTab({
 }) {
   return (
     <div className="flex max-w-2xl flex-col gap-8">
+      {event.status === "PENDING_APPROVAL" && (
+        <div className="flex flex-col gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+          <p className="text-sm font-medium text-amber-700">
+            This Event was submitted by its instructor and is awaiting your review.
+          </p>
+          <ApprovalActions eventId={event.id} />
+        </div>
+      )}
+      {event.status === "REJECTED" && event.rejectionReason && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">
+          <p className="font-medium">Rejected</p>
+          <p>{event.rejectionReason}</p>
+        </div>
+      )}
+      {event.status === "CHANGES_REQUESTED" && event.changeRequestNote && (
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 p-4 text-sm text-orange-700">
+          <p className="font-medium">Changes requested</p>
+          <p>{event.changeRequestNote}</p>
+        </div>
+      )}
+
       <div className="flex gap-2">
-        {event.status === "DRAFT" && (
+        {(event.status === "DRAFT" || event.status === "APPROVED") && (
           <form action={publishEvent.bind(null, event.id)}>
             <Button type="submit" size="sm">
               Publish

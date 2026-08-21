@@ -5,10 +5,10 @@ import Link from "next/link";
 
 interface MobileMenuProps {
   isLoggedIn: boolean;
-  isAdmin: boolean;
+  dashboardHref: string;
 }
 
-export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
+export function MobileMenu({ isLoggedIn, dashboardHref }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -61,7 +61,7 @@ export function MobileMenu({ isLoggedIn, isAdmin }: MobileMenuProps) {
             {isLoggedIn ? (
               <>
                 <Link
-                  href={isAdmin ? "/admin" : "/dashboard"}
+                  href={dashboardHref}
                   className="rounded-lg px-3 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                 >
                   Dashboard
