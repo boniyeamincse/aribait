@@ -52,19 +52,31 @@ export async function UpcomingEventsSection() {
             No upcoming Events published yet — check back soon.
           </p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap justify-center gap-6">
             {events.map((event) => {
               const tag = tagFor(event);
               return (
                 <Card
                   key={event.id}
-                  className="group relative h-full border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10"
+                  className="group relative h-full w-full overflow-hidden border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
                 >
                   <Link
                     href={`/events/${event.slug}`}
                     className="absolute inset-0 z-0"
                     aria-label={event.title}
                   />
+                  {event.thumbnailUrl ? (
+                    // Admin-entered arbitrary URL; next/image requires an allowlisted
+                    // remote pattern that doesn't exist for this codebase yet.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={event.thumbnailUrl} alt="" className="aspect-video w-full object-cover" />
+                  ) : (
+                    <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-blue-50 via-slate-50 to-emerald-50">
+                      <span className="text-sm font-semibold tracking-tight text-slate-400">
+                        {TYPE_LABELS[event.type] ?? event.type}
+                      </span>
+                    </div>
+                  )}
                   <CardHeader className="pb-3">
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <Badge

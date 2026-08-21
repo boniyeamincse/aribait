@@ -48,25 +48,29 @@ export function EventFilters({
   return (
     <form
       method="get"
-      className="flex flex-wrap items-end gap-3 rounded-lg border p-4"
+      className="flex flex-col gap-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
     >
-      <div className="flex flex-col gap-2">
-        <label htmlFor="q" className="text-xs text-muted-foreground">
+      <div>
+        <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase mb-4">Filter Events</h3>
+      </div>
+      
+      <div className="flex flex-col gap-2.5">
+        <label htmlFor="q" className="text-sm font-semibold text-slate-700">
           Search
         </label>
         <Input
           id="q"
           name="q"
-          placeholder="Keyword"
+          placeholder="Keyword..."
           defaultValue={defaultValues.q}
-          className="w-48"
+          className="w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors"
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-xs text-muted-foreground">Category</label>
+      <div className="flex flex-col gap-2.5">
+        <label className="text-sm font-semibold text-slate-700">Category</label>
         <Select name="category" defaultValue={defaultValues.category ?? "any"}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors">
             <SelectValue>
               {(value: string | null) =>
                 value && value !== "any"
@@ -87,10 +91,10 @@ export function EventFilters({
       </div>
 
       {showType && (
-        <div className="flex flex-col gap-2">
-          <label className="text-xs text-muted-foreground">Type</label>
+        <div className="flex flex-col gap-2.5">
+          <label className="text-sm font-semibold text-slate-700">Event Type</label>
           <Select name="type" defaultValue={defaultValues.type ?? "any"}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors">
               <SelectValue>
                 {(value: string | null) =>
                   value && value !== "any"
@@ -111,41 +115,41 @@ export function EventFilters({
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
-        <label className="text-xs text-muted-foreground">Pricing</label>
+      <div className="flex flex-col gap-2.5">
+        <label className="text-sm font-semibold text-slate-700">Pricing</label>
         <Select name="pricing" defaultValue={defaultValues.pricing ?? "any"}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors">
             <SelectValue>
-              {(value: string | null) => (value ? PRICING_LABELS[value] : "Any")}
+              {(value: string | null) => (value ? PRICING_LABELS[value] : "Any price")}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="any">Any</SelectItem>
-            <SelectItem value="free">Free</SelectItem>
-            <SelectItem value="paid">Paid</SelectItem>
+            <SelectItem value="any">Any price</SelectItem>
+            <SelectItem value="free">Free Events</SelectItem>
+            <SelectItem value="paid">Premium Events</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-xs text-muted-foreground">Sort</label>
+      <div className="flex flex-col gap-2.5 border-t border-slate-100 pt-5 mt-2">
+        <label className="text-sm font-semibold text-slate-700">Sort By</label>
         <Select name="sort" defaultValue={defaultValues.sort ?? "newest"}>
-          <SelectTrigger className="w-36">
+          <SelectTrigger className="w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors">
             <SelectValue>
-              {(value: string | null) => (value ? SORT_LABELS[value] : "Newest")}
+              {(value: string | null) => (value ? SORT_LABELS[value] : "Newest First")}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">Newest</SelectItem>
+            <SelectItem value="newest">Newest First</SelectItem>
             <SelectItem value="upcoming">Upcoming</SelectItem>
-            <SelectItem value="popular">Popular</SelectItem>
-            <SelectItem value="price">Price</SelectItem>
+            <SelectItem value="popular">Most Popular</SelectItem>
+            <SelectItem value="price">Price (Low to High)</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <Button type="submit" size="sm">
-        Apply
+      <Button type="submit" className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all active:scale-95">
+        Apply Filters
       </Button>
     </form>
   );

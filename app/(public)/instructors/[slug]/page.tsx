@@ -32,14 +32,16 @@ export default async function InstructorProfilePage({
       {instructor.bio && <p className="mt-4 max-w-2xl">{instructor.bio}</p>}
 
       <h2 className="mt-10 text-lg font-medium">Published Events</h2>
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mt-4 flex flex-wrap justify-center gap-4">
         {instructor.events.length === 0 && (
           <p className="text-sm text-muted-foreground">
             No published Events from this instructor yet.
           </p>
         )}
         {instructor.events.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <div key={event.id} className="w-full sm:w-[calc(50%-0.5rem)]">
+            <EventCard event={event} />
+          </div>
         ))}
       </div>
     </div>

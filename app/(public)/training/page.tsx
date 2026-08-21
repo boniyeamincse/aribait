@@ -44,14 +44,16 @@ export default async function TrainingPage({
         />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 flex flex-wrap justify-center gap-4">
         {events.length === 0 && (
           <p className="text-sm text-muted-foreground">
             No Training programs match your filters.
           </p>
         )}
         {events.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <div key={event.id} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]">
+            <EventCard event={event} />
+          </div>
         ))}
       </div>
     </div>

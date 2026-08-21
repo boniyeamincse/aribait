@@ -41,34 +41,40 @@ const FEATURES = [
 
 export function FeaturesSection() {
   return (
-    <section className="bg-slate-50 py-20">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-12 text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-600">
+    <section className="bg-white py-24 relative overflow-hidden">
+      {/* Subtle top/bottom borders */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+      
+      <div className="mx-auto max-w-7xl px-6 relative z-10">
+        <div className="mb-16 text-center">
+          <p className="mb-3 text-sm font-bold uppercase tracking-widest text-indigo-600">
             Platform Features
           </p>
-          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
-            Everything you need to learn and grow
+          <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl lg:text-5xl">
+            Everything you need to succeed
           </h2>
-          <p className="mt-3 text-slate-600">
+          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
             Built specifically for the Bangladeshi IT learner — professional,
-            secure, and convenient.
+            secure, and highly convenient.
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className="group rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:border-blue-500/40 hover:shadow-md"
+              className="group relative rounded-3xl border border-slate-100 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/5"
             >
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <f.icon className="h-5 w-5" strokeWidth={1.75} />
+              <div className="absolute top-0 right-0 p-6 opacity-[0.03] transition-opacity group-hover:opacity-[0.08] pointer-events-none">
+                <f.icon className="h-24 w-24 text-indigo-900" />
               </div>
-              <h3 className="mb-2 text-lg font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
+                <f.icon className="h-6 w-6" strokeWidth={2} />
+              </div>
+              <h3 className="mb-3 text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
                 {f.title}
               </h3>
-              <p className="text-sm leading-relaxed text-slate-600">
+              <p className="text-base leading-relaxed text-slate-600">
                 {f.description}
               </p>
             </div>

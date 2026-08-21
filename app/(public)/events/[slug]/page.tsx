@@ -191,8 +191,27 @@ export default async function EventDetailPage({
       })
     : [];
 
+  const coverImage = event.bannerUrl ?? event.thumbnailUrl;
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
+      {coverImage ? (
+        // Admin-entered arbitrary URL; next/image requires an allowlisted
+        // remote pattern that doesn't exist for this codebase yet.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={coverImage}
+          alt={event.title}
+          className="mb-6 aspect-video w-full rounded-2xl border border-slate-200 object-cover"
+        />
+      ) : (
+        <div className="mb-6 flex aspect-video w-full items-center justify-center rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 via-slate-50 to-emerald-50">
+          <span className="text-lg font-semibold tracking-tight text-slate-400">
+            {EVENT_TYPE_LABELS[event.type] ?? event.type}
+          </span>
+        </div>
+      )}
+
       <div className="flex items-center gap-2">
         <Badge variant="outline">
           {EVENT_TYPE_LABELS[event.type] ?? event.type}

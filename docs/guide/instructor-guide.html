@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইন্সট্রাক্টর গাইড - Ariba IT</title>
+    <style>
+        :root {
+            --primary-color: #059669;
+            --secondary-color: #047857;
+            --text-color: #334155;
+            --bg-color: #f0fdf4;
+            --card-bg: #ffffff;
+            --border-color: #d1fae5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid #ecfdf5;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .step-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .step-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #d1fae5;
+            color: var(--primary-color);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .note {
+            background-color: #ecfdf5;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Ariba IT - ইন্সট্রাক্টর গাইড</h1>
+        <p>শিক্ষক বা ট্রেইনার হিসেবে প্ল্যাটফর্মটি ব্যবহারের নির্দেশিকা</p>
+    </div>
+
+    <div class="card">
+        <h2>১. ইন্সট্রাক্টর অ্যাকাউন্ট কীভাবে পাবেন?</h2>
+        <p>Ariba IT-তে যে কেউ চাইলেই ইন্সট্রাক্টর হতে পারেন না। এটি অ্যাডমিন নিয়ন্ত্রিত একটি প্রসেস।</p>
+        <ul class="step-list">
+            <li>অ্যাডমিন আপনার জন্য একটি <strong>ইন্সট্রাক্টর প্রোফাইল ও লগ-ইন ক্রেডেনশিয়াল</strong> তৈরি করে দেবেন।</li>
+            <li>অ্যাডমিনের দেওয়া ইমেইল ও পাসওয়ার্ড দিয়ে ওয়েবসাইটে <strong>লগ-ইন</strong> করুন।</li>
+            <li>লগ-ইন করার পর আপনার ড্যাশবোর্ডের মেনুগুলো স্টুডেন্টদের থেকে আলাদা দেখাবে।</li>
+        </ul>
+        <div class="note">
+            <strong>নোট:</strong> আপনার প্রোফাইলটি যদি <b>Unverified</b> থাকে, তবে ইভেন্ট তৈরি করার আগে অবশ্যই অ্যাডমিনের সাথে যোগাযোগ করে প্রোফাইল ভেরিফাই (Verify) করে নিতে হবে।
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>২. নতুন ইভেন্ট (কোর্স) তৈরি করা</h2>
+        <p>একজন ভেরিফাইড ইন্সট্রাক্টর হিসেবে আপনি নিজেই নতুন কোর্স তৈরি করতে পারবেন।</p>
+        <ul class="step-list">
+            <li>ড্যাশবোর্ড থেকে <strong>"My Events"</strong> মেনুতে গিয়ে <strong>"Create Event"</strong>-এ ক্লিক করুন।</li>
+            <li>ইভেন্টের টাইটেল, ডেসক্রিপশন, ছবি, প্রাইস (ফ্রি বা পেইড), এবং ক্যাটাগরি পূরণ করুন।</li>
+            <li>ইভেন্ট তৈরি হলে <strong>"Sessions"</strong> ট্যাবে গিয়ে ক্লাসের শিডিউল (তারিখ, সময়, জুম লিংক) যুক্ত করুন।</li>
+            <li>সবকিছু ঠিক থাকলে <strong>"Submit for Approval"</strong>-এ ক্লিক করুন।</li>
+        </ul>
+        <p><em>*আপনার তৈরি করা ইভেন্ট সরাসরি পাবলিশ হবে না। অ্যাডমিন এটি রিভিউ করে অ্যাপ্রুভ (Approve) করলেই স্টুডেন্টরা দেখতে পাবে।</em></p>
+    </div>
+
+    <div class="card">
+        <h2>৩. ক্লাস পরিচালনা ও অ্যাটেনডেন্স (Attendance)</h2>
+        <p>ইভেন্ট পাবলিশ হওয়ার পর স্টুডেন্টরা ভর্তি হলে আপনি ক্লাস পরিচালনা করতে পারবেন।</p>
+        <ul class="step-list">
+            <li>আপনার ইভেন্টের <strong>"Sessions"</strong> ট্যাব থেকে ক্লাসের দিন জুম বা গুগল মিটের লিংকে জয়েন করুন।</li>
+            <li>ক্লাস শেষে <strong>"Attendance"</strong> ট্যাবে গিয়ে কে কে উপস্থিত ছিল, তা মার্ক (Present/Absent/Late) করে দিন।</li>
+            <li>স্টুডেন্টদের কোনো স্টাডি মেটেরিয়ালস (PDF/Slides) দিতে চাইলে <strong>"Resources"</strong> ট্যাব ব্যবহার করুন।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৪. আর্নিং ও পেআউট (Earnings & Payouts)</h2>
+        <p>পেইড কোর্স থেকে আপনার কত টাকা আয় হলো তা আপনি সহজেই দেখতে পারবেন।</p>
+        <ul class="step-list">
+            <li>ড্যাশবোর্ডের <strong>"Earnings"</strong> সেকশনে আপনার মোট আয় এবং বকেয়া (Pending) ব্যালেন্স দেখতে পাবেন।</li>
+            <li>কোর্স শেষ হওয়ার পর অ্যাডমিন আপনার পেমেন্ট ক্লিয়ার করে দিলে এটি আপনার অ্যাকাউন্টে পেআউট (Payout) হিসেবে আপডেট হবে।</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

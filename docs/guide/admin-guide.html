@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন গাইড - Ariba IT</title>
+    <style>
+        :root {
+            --primary-color: #6d28d9;
+            --secondary-color: #5b21b6;
+            --text-color: #334155;
+            --bg-color: #f5f3ff;
+            --card-bg: #ffffff;
+            --border-color: #ede9fe;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid #f5f3ff;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .step-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 15px;
+        }
+
+        .step-list li::before {
+            content: "➤";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .highlight {
+            background-color: #ede9fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .note {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+            color: #92400e;
+        }
+        
+        .danger-note {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Ariba IT - সম্পূর্ণ অ্যাডমিন গাইড</h1>
+        <p>সুপার অ্যাডমিন হিসেবে সিস্টেম পরিচালনার বিস্তারিত ও পূর্ণাঙ্গ নির্দেশিকা</p>
+    </div>
+
+    <div class="card">
+        <h2>১. ড্যাশবোর্ড ও ওভারভিউ (Dashboard Overview)</h2>
+        <p>অ্যাডমিন হিসেবে লগ-ইন করার পর আপনি <span class="highlight">/admin</span> প্যানেলে প্রবেশ করবেন। এটি আপনার পুরো ওয়েবসাইটের কন্ট্রোল রুম।</p>
+        <ul class="step-list">
+            <li><strong>স্ট্যাটিস্টিকস:</strong> ড্যাশবোর্ডে আপনি সিস্টেমের মোট রেভিনিউ (আয়), এক্টিভ স্টুডেন্ট সংখ্যা, মোট লাইভ ইভেন্ট এবং নতুন রেজিস্ট্রেশনের গ্রাফ দেখতে পাবেন।</li>
+            <li><strong>কুইক অ্যাকশন:</strong> পেন্ডিং পেমেন্ট বা নতুন ইভেন্ট অ্যাপ্রুভালের জন্য কোনো রিকোয়েস্ট আসলে তা ড্যাশবোর্ডের উপরে নোটিফিকেশন হিসেবে শো করবে।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>২. ইউজার ও স্টুডেন্ট ম্যানেজমেন্ট (User Management)</h2>
+        <p>প্ল্যাটফর্মে রেজিস্টার করা সকল ইউজারের ডেটা এখান থেকে নিয়ন্ত্রণ করা যায়।</p>
+        <ul class="step-list">
+            <li><strong>স্টুডেন্ট লিস্ট দেখা:</strong> <b>Students</b> মেনুতে ক্লিক করলে ওয়েবসাইটের সকল স্টুডেন্টের তালিকা দেখা যাবে।</li>
+            <li><strong>প্রোফাইল চেক করা:</strong> যেকোনো স্টুডেন্টের নামের ওপর ক্লিক করে তার এনরোল (Enroll) করা কোর্স, পেমেন্ট হিস্ট্রি এবং অ্যাটেনডেন্স চেক করতে পারবেন।</li>
+            <li><strong>সাসপেন্ড বা ব্লক:</strong> যদি কোনো ইউজার স্প্যামিং বা রুলস ব্রেক করে, তবে তার অ্যাকাউন্ট <b>Suspend</b> বা <b>Deactivate</b> করতে পারবেন। এতে সে আর লগ-ইন করতে পারবে না।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৩. ইন্সট্রাক্টর (শিক্ষক) ম্যানেজমেন্ট</h2>
+        <p>ইন্সট্রাক্টররা নিজে নিজে ওয়েবসাইটের মাধ্যমে অ্যাকাউন্ট খুলতে পারে না। এটি অ্যাডমিনকে তৈরি করে দিতে হয়।</p>
+        <ul class="step-list">
+            <li><strong>নতুন ইন্সট্রাক্টর যোগ করা:</strong> <b>Instructors > Add New</b> এ গিয়ে ইন্সট্রাক্টরের নাম, ইমেইল, বায়ো, ক্যাটাগরি এবং একটি পাসওয়ার্ড সেট করে অ্যাকাউন্ট তৈরি করে দিন। এই ইমেইল ও পাসওয়ার্ডটি উক্ত শিক্ষককে সরবরাহ করুন।</li>
+            <li><strong>ভেরিফিকেশন স্ট্যাটাস:</strong> কোনো ইন্সট্রাক্টর ইভেন্ট (কোর্স) তৈরি করতে চাইলে, প্রথমে অ্যাডমিনকে তার প্রোফাইল চেক করে স্ট্যাটাস <span class="highlight">VERIFIED</span> করে দিতে হবে। ভেরিফাইড না হলে তারা ইভেন্ট সাবমিট করতে পারবে না।</li>
+            <li><strong>ইন্সট্রাক্টর সাসপেন্ড করা:</strong> প্রয়োজনে যেকোনো ইন্সট্রাক্টরের অ্যাকাউন্ট সাসপেন্ড করা যাবে।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৪. ইভেন্ট তৈরি ও পাবলিশিং (Event Management)</h2>
+        <p>প্ল্যাটফর্মে দুইভাবে ইভেন্ট তৈরি হতে পারে: অ্যাডমিন নিজে তৈরি করতে পারেন অথবা ইন্সট্রাক্টর সাবমিট করতে পারেন।</p>
+        
+        <h3>অ্যাডমিন নিজে তৈরি করলে:</h3>
+        <ul class="step-list">
+            <li>অ্যাডমিন <b>Events > Create New</b> থেকে ইভেন্ট তৈরি করলে সেটি সরাসরি পাবলিশ হয়ে যাবে। অ্যাডমিনকে কারো অ্যাপ্রুভালের জন্য অপেক্ষা করতে হয় না।</li>
+        </ul>
+
+        <h3>ইন্সট্রাক্টর ইভেন্ট সাবমিট করলে (Approval Workflow):</h3>
+        <ul class="step-list">
+            <li>ইন্সট্রাক্টর ইভেন্ট সাবমিট করলে সেটি <b>Pending Approval</b> লিস্টে চলে আসবে।</li>
+            <li>অ্যাডমিন ইভেন্টের বিবরণ, ছবি, প্রাইস (ফ্রি/পেইড) এবং সেশন/শিডিউল চেক করবেন।</li>
+            <li>সব ঠিক থাকলে <strong>Approve & Publish</strong> বাটনে ক্লিক করলে তা ওয়েবসাইটে লাইভ হবে।</li>
+            <li>কোনো ভুল থাকলে <strong>Request Changes</strong> বাটনে ক্লিক করে নোট লিখে দিতে পারবেন (যেমন: "কভার ফটো পরিবর্তন করুন")। তখন সেটি ইন্সট্রাক্টরের কাছে ফেরত যাবে।</li>
+            <li>একেবারে বাতিল করতে চাইলে রিজন (Reason) লিখে <strong>Reject</strong> করতে পারবেন।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৫. পেমেন্ট ও রেজিস্ট্রেশন ভেরিফিকেশন (Payment Processing)</h2>
+        <p>যেহেতু প্ল্যাটফর্মটিতে বর্তমানে ম্যানুয়াল বিকাশ/নগদ পেমেন্ট সিস্টেম রয়েছে, তাই অ্যাডমিনকে পেমেন্ট ভেরিফাই করতে হবে।</p>
+        <ul class="step-list">
+            <li>স্টুডেন্ট যখন পেমেন্ট করে ফর্ম সাবমিট করে, তখন রেজিস্ট্রেশনের স্ট্যাটাস থাকে <span class="highlight">PENDING_PAYMENT</span>।</li>
+            <li>অ্যাডমিন <b>Payments</b> বা <b>Registrations</b> মেনুতে গিয়ে পেন্ডিং রিকোয়েস্টগুলো চেক করবেন।</li>
+            <li>স্টুডেন্টের দেওয়া ট্রানজেকশন আইডি (TrxID) এবং আপলোড করা পেমেন্ট প্রুফ (Screenshot) মিলিয়ে দেখুন। আপনার মার্চেন্ট বা পার্সোনাল নাম্বারে টাকা এসেছে কিনা তা নিশ্চিত হোন।</li>
+            <li>টাকা পেয়ে থাকলে <strong>Approve (Mark as Confirmed)</strong> বাটনে ক্লিক করুন। এতে স্টুডেন্টের সিট কনফার্ম হয়ে যাবে এবং সে কোর্সের অ্যাক্সেস পাবে।</li>
+            <li>ভুল বা ফেইক পেমেন্ট হলে <strong>Reject / Cancel</strong> বাটনে ক্লিক করে তা বাতিল করে দিন।</li>
+        </ul>
+        <div class="note">
+            <strong>সিট হোল্ড (Seat Hold):</strong> পেমেন্ট চলাকালীন ১৫ মিনিটের জন্য একটি সিট হোল্ড বা বুক হয়ে থাকে। ১৫ মিনিটের মধ্যে পেমেন্ট সাবমিট না করলে সিটটি অটোমেটিক্যালি অন্য স্টুডেন্টের জন্য রিলিজ হয়ে যায়।
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>৬. কুপন ও ডিসকাউন্ট (Coupons & Discounts)</h2>
+        <p>প্রমোশনাল অফার চালানোর জন্য অ্যাডমিন ডিসকাউন্ট তৈরি করতে পারবেন।</p>
+        <ul class="step-list">
+            <li><b>Discounts</b> মেনুতে গিয়ে নতুন কুপন কোড (যেমন: EID50, WELCOME20) তৈরি করুন।</li>
+            <li>ডিসকাউন্টটি কি পার্সেন্টেজ (যেমন: ২০%) নাকি ফিক্সড এমাউন্ট (যেমন: ৫০০ টাকা) তা নির্ধারণ করুন।</li>
+            <li>কুপনটি কি পুরো ওয়েবসাইটের সব কোর্সের জন্য (Sitewide), নাকি নির্দিষ্ট কোনো কোর্সের জন্য, তা সিলেক্ট করুন।</li>
+            <li>কুপনের মেয়াদ (Expiry Date) এবং কতজন ব্যবহার করতে পারবে (Max Usage) তা সেট করে দিন।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৭. সার্টিফিকেট ও অ্যাটেনডেন্স (Certificates & Attendance)</h2>
+        <ul class="step-list">
+            <li>সাধারণত ইন্সট্রাক্টররা ক্লাসের পর স্টুডেন্টদের অ্যাটেনডেন্স (উপস্থিতি) দিয়ে থাকেন। তবে অ্যাডমিন চাইলে যেকোনো সেশনে গিয়ে যেকোনো স্টুডেন্টকে Present, Absent বা Late মার্ক করতে পারবেন।</li>
+            <li>কোর্স শেষে অ্যাডমিন চাইলে স্টুডেন্টদের জন্য <strong>Certificate Issue</strong> বা জেনারেট করতে পারবেন। ইস্যু করা সার্টিফিকেটগুলোর কিউআর (QR) কোড দিয়ে পাবলিকলি ভেরিফাই করা যাবে।</li>
+            <li>কোনো কারণে সার্টিফিকেট বাতিল করতে চাইলে <strong>Revoke Certificate</strong> অপশন ব্যবহার করা যাবে।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৮. প্ল্যাটফর্ম সেটিংস (System Settings)</h2>
+        <p>ওয়েবসাইটের কোর সেটিংসগুলো অ্যাডমিন ప্যানেলের <b>Settings</b> মেনু থেকে আপডেট করা যাবে:</p>
+        <ul class="step-list">
+            <li><strong>পেমেন্ট নাম্বার:</strong> পেমেন্ট রিসিভ করার বিকাশ/নগদ নাম্বার (Bkash/Nagad Receiving MSISDN) এখান থেকে চেঞ্জ করা যাবে। ওয়েবসাইট জুড়ে এই নাম্বারটিই পেমেন্ট পেজে দেখাবে।</li>
+            <li><strong>টাইম জোন ও কারেন্সি:</strong> ডিফল্ট টাইম জোন (Asia/Dhaka) এবং কারেন্সি (BDT) সেট করা যায়।</li>
+            <li><strong>জয়েন উইন্ডো (Join Window):</strong> ক্লাস শুরু হওয়ার কত মিনিট আগে (যেমন: ২০ মিনিট) এবং কত মিনিট পর পর্যন্ত (যেমন: ১৫ মিনিট) স্টুডেন্টরা ক্লাসে জয়েন করার বাটন দেখতে পাবে তা সেট করা যায়।</li>
+            <li><strong>পলিসি আপডেট:</strong> ওয়েবসাইটের Terms and Conditions, Privacy Policy, এবং Refund Policy-এর টেক্সট এখান থেকেই পরিবর্তন করা যাবে।</li>
+        </ul>
+        <div class="danger-note">
+            <strong>সতর্কতা:</strong> Maintenance Mode অন করলে সাধারণ ইউজাররা আর ওয়েবসাইটে ঢুকতে পারবে না। শুধুমাত্র ইমার্জেন্সি আপডেটের সময় এটি ব্যবহার করবেন।
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>৯. অডিট লগ (Audit Logs)</h2>
+        <p>পুরো সিস্টেমে কে কখন কী পরিবর্তন করেছে তার সম্পূর্ণ হিস্ট্রি অ্যাডমিন দেখতে পারবেন।</p>
+        <ul class="step-list">
+            <li><b>Audit Logs</b> মেনুতে গেলে দেখা যাবে কোন অ্যাডমিন কোন ইভেন্ট অ্যাপ্রুভ করেছে, অথবা কোন ইন্সট্রাক্টর কবে ইভেন্ট সাবমিট করেছে।</li>
+            <li>এটি সিস্টেমের নিরাপত্তা নিশ্চিত করে এবং কোনো ভুল হলে তা ট্র্যাক করতে সাহায্য করে।</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

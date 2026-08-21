@@ -3,43 +3,46 @@ import Image from "next/image";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50 w-full z-10 relative">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="bg-slate-950 w-full z-10 relative">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-2">
             <Image
               src="/logo.png"
               alt="Ariba IT"
-              width={120}
-              height={36}
-              className="mb-4 h-9 w-auto object-contain"
+              width={140}
+              height={42}
+              className="mb-6 h-10 w-auto object-contain brightness-0 invert"
             />
-            <p className="max-w-xs text-sm leading-relaxed text-slate-600">
+            <p className="max-w-sm text-base leading-relaxed text-slate-400">
               Bangladesh&apos;s premier live IT and cybersecurity training
               platform. Expert-led sessions via Zoom, Google Meet & Teams.
             </p>
-            <p className="mt-4 text-sm text-slate-500">
-              01914638653 (bKash/Nagad)
-            </p>
+            <div className="mt-8 flex flex-col gap-2">
+              <p className="text-sm font-semibold text-slate-300 uppercase tracking-widest">Contact Support</p>
+              <p className="text-lg font-bold text-white">
+                01914-638653 <span className="text-sm font-normal text-slate-500">(bKash/Nagad)</span>
+              </p>
+            </div>
           </div>
 
           {/* Platform links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-700">
+            <h3 className="mb-6 text-sm font-bold uppercase tracking-widest text-white">
               Platform
             </h3>
-            <ul className="space-y-2 text-sm text-slate-500">
+            <ul className="space-y-4 text-base font-medium text-slate-400">
               {[
-                { label: "Browse Events", href: "/events" },
-                { label: "Training Programs", href: "/training" },
-                { label: "Schedule", href: "/schedule" },
-                { label: "Instructors", href: "/instructors" },
+                { label: "Browse Courses", href: "/events" },
+                { label: "Certifications", href: "/training" },
+                { label: "Class Schedule", href: "/schedule" },
+                { label: "Expert Mentors", href: "/instructors" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="transition-colors hover:text-slate-900"
+                    className="transition-colors hover:text-indigo-400"
                   >
                     {link.label}
                   </Link>
@@ -50,21 +53,21 @@ export function SiteFooter() {
 
           {/* Legal links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-700">
+            <h3 className="mb-6 text-sm font-bold uppercase tracking-widest text-white">
               Company
             </h3>
-            <ul className="space-y-2 text-sm text-slate-500">
+            <ul className="space-y-4 text-base font-medium text-slate-400">
               {[
                 { label: "About Us", href: "/about" },
-                { label: "Contact", href: "/contact" },
-                { label: "Terms & Conditions", href: "/terms" },
+                { label: "Contact Us", href: "/contact" },
+                { label: "Terms of Service", href: "/terms" },
                 { label: "Privacy Policy", href: "/privacy" },
                 { label: "Refund Policy", href: "/refund-policy" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="transition-colors hover:text-slate-900"
+                    className="transition-colors hover:text-indigo-400"
                   >
                     {link.label}
                   </Link>
@@ -74,12 +77,12 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row">
-          <p className="text-xs text-slate-600">
+        <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-slate-800 pt-8 sm:flex-row">
+          <p className="text-sm text-slate-500 font-medium">
             © {new Date().getFullYear()} Ariba IT. All rights reserved.
           </p>
-          <p className="text-xs text-slate-600">
-            Live classes · Training · Cybersecurity · Bangladesh
+          <p className="text-sm text-slate-500 font-medium flex items-center gap-2">
+            Made with <span className="text-red-500">♥</span> in Bangladesh
           </p>
         </div>
       </div>

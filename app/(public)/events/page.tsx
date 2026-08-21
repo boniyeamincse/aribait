@@ -31,28 +31,39 @@ export default async function EventsPage({
   ]);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
-      <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
-      <p className="mt-2 text-muted-foreground">
-        Browse published live classes, training programs and workshops.
-      </p>
-
-      <div className="mt-6">
-        <EventFilters
-          categories={categories}
-          defaultValues={{ q, category, type, pricing, sort }}
-        />
+    <div className="mx-auto max-w-7xl px-6 py-16">
+      <div className="mb-10">
+        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Explore IT Training Events</h1>
+        <p className="mt-3 text-lg text-slate-600 max-w-2xl">
+          Browse our live classes, training programs, and workshops designed to level up your tech career.
+        </p>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {events.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            No Events match your filters.
-          </p>
-        )}
-        {events.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+        {/* Sidebar Filters */}
+        <div className="lg:col-span-1">
+          <EventFilters
+            categories={categories}
+            defaultValues={{ q, category, type, pricing, sort }}
+          />
+        </div>
+
+        {/* Event Cards Grid */}
+        <div className="lg:col-span-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {events.length === 0 && (
+              <div className="col-span-full py-20 text-center">
+                <p className="text-lg font-medium text-slate-500">
+                  No Events match your filters.
+                </p>
+                <p className="text-sm text-slate-400 mt-1">Try adjusting your search criteria.</p>
+              </div>
+            )}
+            {events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

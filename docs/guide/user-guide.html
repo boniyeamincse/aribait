@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইউজার গাইড - Ariba IT</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #64748b;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid #eff6ff;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .step-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .step-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #dbeafe;
+            color: var(--primary-color);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .highlight {
+            background-color: #fef08a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .btn-demo {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .note {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Ariba IT - ব্যবহারকারী গাইড</h1>
+        <p>প্ল্যাটফর্মটি কীভাবে ব্যবহার করবেন তার সম্পূর্ণ নির্দেশিকা</p>
+    </div>
+
+    <div class="card">
+        <h2>১. নতুন অ্যাকাউন্ট খোলা (Registration)</h2>
+        <p>আপনি যদি আমাদের প্ল্যাটফর্মে নতুন হয়ে থাকেন, তবে প্রথমেই আপনাকে একটি অ্যাকাউন্ট খুলতে হবে।</p>
+        <ul class="step-list">
+            <li>ওয়েবসাইটের উপরে ডানদিকে থাকা <strong>"Register"</strong> বাটনে ক্লিক করুন।</li>
+            <li>আপনার পুরো নাম, সঠিক ইমেইল এড্রেস এবং একটি পাসওয়ার্ড দিন।</li>
+            <li>Terms and Conditions বক্সে টিক দিয়ে <strong>"Create account"</strong>-এ ক্লিক করুন।</li>
+        </ul>
+        <div class="note">
+            <strong>নোট:</strong> জীবনে একবার অ্যাকাউন্ট খুললেই হবে। এরপর থেকে শুধু লগ-ইন করলেই আপনি সব কাজ করতে পারবেন।
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>২. লগ-ইন করা (Log In)</h2>
+        <p>আপনার যদি আগে থেকেই অ্যাকাউন্ট থাকে, তবে নিচে দেওয়া ধাপে লগ-ইন করুন:</p>
+        <ul class="step-list">
+            <li>ওয়েবসাইটের উপরে <strong>"Login"</strong> বাটনে ক্লিক করুন।</li>
+            <li>আপনার ইমেইল এবং পাসওয়ার্ড দিয়ে <strong>"Sign in to Dashboard"</strong> বাটনে ক্লিক করুন।</li>
+        </ul>
+        <p>পাসওয়ার্ড ভুলে গেলে <span class="highlight">Forgot password?</span> অপশনে ক্লিক করে পাসওয়ার্ড রিসেট করতে পারবেন।</p>
+    </div>
+
+    <div class="card">
+        <h2>৩. নতুন ইভেন্ট বা কোর্সে ভর্তি হওয়া (Booking an Event)</h2>
+        <p>অ্যাকাউন্ট খোলার পর আপনি যেকোনো কোর্সে ভর্তি হতে পারবেন।</p>
+        <ul class="step-list">
+            <li>ওয়েবসাইটের মেনু থেকে <strong>"Events"</strong> বা <strong>"Training"</strong>-এ যান।</li>
+            <li>আপনার পছন্দের ইভেন্টটিতে ক্লিক করে বিস্তারিত দেখুন।</li>
+            <li>সবকিছু ঠিক থাকলে <strong>"Book Now"</strong> বা <strong>"Enroll"</strong> বাটনে ক্লিক করুন।</li>
+            <li>কোর্সটি যদি পেইড (Paid) হয়, তবে আপনাকে পেমেন্ট করার অপশন (যেমন: bKash, Nagad) দেখানো হবে। পেমেন্ট করার পর ট্রানজেকশন আইডি (TrxID) দিয়ে সাবমিট করুন।</li>
+            <li>অ্যাডমিন আপনার পেমেন্ট ভেরিফাই করলেই আপনার সিট কনফার্ম হয়ে যাবে!</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>৪. স্টুডেন্ট ড্যাশবোর্ড (Student Dashboard)</h2>
+        <p>আপনি যেসব কোর্সে ভর্তি হয়েছেন, তার সবকিছু ড্যাশবোর্ডে পাবেন।</p>
+        <ul class="step-list">
+            <li>লগ-ইন করার পর মেনু থেকে <strong>"Dashboard"</strong>-এ ক্লিক করুন।</li>
+            <li>এখানে আপনার কেনা বা বুক করা সব ইভেন্ট দেখতে পাবেন।</li>
+            <li>লাইভ ক্লাসের সময় হলে ড্যাশবোর্ড থেকেই <strong>Zoom / Google Meet</strong> এর ক্লাসে জয়েন করার অপশন পেয়ে যাবেন।</li>
+            <li>কোর্স শেষে এখান থেকেই আপনার <strong>সার্টিফিকেট (Certificate)</strong> ডাউনলোড করতে পারবেন।</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>সহায়তা বা সাপোর্ট</h2>
+        <p>যেকোনো টেকনিক্যাল সমস্যায় বা পেমেন্ট নিয়ে সমস্যা হলে আমাদের সাথে যোগাযোগ করুন:</p>
+        <p>📞 ফোন: 01914638653<br>
+           📧 ইমেইল: support@aribait.com</p>
+    </div>
+</div>
+
+</body>
+</html>

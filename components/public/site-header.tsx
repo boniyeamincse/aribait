@@ -13,40 +13,42 @@ export async function SiteHeader() {
   const dashboardHref = role === "ADMIN" ? "/admin" : role === "INSTRUCTOR" ? "/instructor" : "/dashboard";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-slate-50/80 backdrop-blur-md">
-      <div className="flex items-center justify-between px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-50 border-b border-white/20 bg-white/80 backdrop-blur-xl shadow-sm">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+        <Link href="/" className="flex items-center gap-2 shrink-0 group">
           <Image
             src="/logo.png"
             alt="Ariba IT Logo"
-            width={62}
-            height={34}
-            className="h-8 w-auto object-contain"
+            width={72}
+            height={40}
+            className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
             priority
           />
         </Link>
 
         {/* Desktop nav — hidden on mobile */}
-        <nav className="hidden sm:flex items-center gap-5 text-sm">
-          <Link href="/" className="text-slate-600 transition-colors hover:text-slate-900">
+        <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+          <Link href="/" className="transition-colors hover:text-indigo-600">
             Home
           </Link>
-          <Link href="/events" className="text-slate-600 transition-colors hover:text-slate-900">
-            Events
+          <Link href="/events" className="transition-colors hover:text-indigo-600">
+            Courses
           </Link>
-          <Link href="/training" className="text-slate-600 transition-colors hover:text-slate-900">
-            Training
+          <Link href="/training" className="transition-colors hover:text-indigo-600">
+            Certifications
           </Link>
-          <Link href="/schedule" className="text-slate-600 transition-colors hover:text-slate-900">
-            Schedule
+          <Link href="/instructors" className="transition-colors hover:text-indigo-600">
+            Mentors
           </Link>
+        </nav>
 
+        <div className="hidden md:flex items-center gap-4">
           {isLoggedIn ? (
             <>
               <Link
                 href={dashboardHref}
-                className="text-slate-600 transition-colors hover:text-slate-900"
+                className="text-sm font-semibold text-slate-600 transition-colors hover:text-indigo-600"
               >
                 Dashboard
               </Link>
@@ -55,7 +57,7 @@ export async function SiteHeader() {
                   type="submit"
                   variant="outline"
                   size="sm"
-                  className="border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                  className="rounded-full border-slate-300 px-5 text-sm font-bold text-slate-700 hover:bg-slate-100"
                 >
                   Log out
                 </Button>
@@ -63,21 +65,23 @@ export async function SiteHeader() {
             </>
           ) : (
             <>
-              <Link href="/login" className="text-slate-600 transition-colors hover:text-slate-900">
+              <Link href="/login" className="text-sm font-bold text-slate-700 transition-colors hover:text-indigo-600 px-3">
                 Log in
               </Link>
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-3 py-1.5 text-sm font-medium text-slate-900 transition-all hover:from-blue-400 hover:to-green-500"
+                className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-700 hover:-translate-y-0.5"
               >
-                Register
+                Get Started
               </Link>
             </>
           )}
-        </nav>
+        </div>
 
         {/* Mobile hamburger — client component, shown only on mobile */}
-        <MobileMenu isLoggedIn={isLoggedIn} dashboardHref={dashboardHref} />
+        <div className="md:hidden">
+          <MobileMenu isLoggedIn={isLoggedIn} dashboardHref={dashboardHref} />
+        </div>
       </div>
     </header>
   );
