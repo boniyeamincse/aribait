@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db/client";
 import { requireAdmin } from "@/lib/permissions";
 import { writeAuditLog } from "@/lib/audit/log";
 import { settingsSchema } from "@/lib/validations/settings";
+import { sendMail } from "@/lib/email";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -155,4 +156,47 @@ export async function revokeAdmin(formData: FormData): Promise<ActionResult> {
 
   revalidatePath("/admin/settings");
   return { ok: true };
+}
+
+export async function sendTestEmail(formData: FormData): Promise<ActionResult> {
+  const currentAdmin = await requireAdmin();
+  const email = formData.get("email") as string;
+  
+  if (!email || typeof email !== "string") {
+    return { ok: false, error: "Test email address is required." };
+  }
+
+  try {
+    const settings = await prisma.settings.findUnique({ where: { id: 1 } });
+    if (!settings) throw new Error("Settings not found");
+
+    const subject = settings.registrationEmailSubject || "Test Email from Ariba IT";
+    let body = settings.registrationEmailTemplate || "This is a test email.";
+    
+    // Replace dummy variables
+    body = body.replace(/{{name}}/g, "Test User");
+    body = body.replace(/{{event_title}}/g, "Ariba IT Launch");
+    body = body.replace(/{{date}}/g, new Date().toLocaleDateString());
+
+    await sendMail({
+      to: email,
+      subject: `[TEST] ${subject}`,
+      text: body,
+      // simple HTML conversion for markdown-like text
+      html: `<div style="font-family: sans-serif; white-space: pre-wrap;">${body.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`
+    });
+
+    await writeAuditLog({
+      actorId: currentAdmin.id,
+      action: "settings.email_test",
+      targetType: "Settings",
+      targetId: "1",
+      summary: `Sent test email to ${email}`,
+    });
+
+    return { ok: true };
+  } catch (error: any) {
+    console.error("Test email failed:", error);
+    return { ok: false, error: error.message || "Failed to send test email" };
+  }
 }

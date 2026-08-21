@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-
+import { Bell } from "lucide-react";
 import { redirect } from "next/navigation";
+import { Toaster } from "sonner";
 
 import { requireUser } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
@@ -23,9 +24,11 @@ export default async function DashboardLayout({
     redirect("/instructor");
   }
 
-  // Session.user.image is JWT-derived and never refreshes after an upload
-  // (Credentials authorize() doesn't return `image`) — read it fresh instead.
-  const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { image: true } });
+  const [dbUser, settings, unreadCount] = await Promise.all([
+    prisma.user.findUnique({ where: { id: user.id }, select: { image: true } }),
+    prisma.settings.findUnique({ where: { id: 1 }, select: { siteLogoUrl: true, siteName: true } }),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
 
   const initials = (user.name ?? user.email ?? "?")
     .split(" ")
@@ -36,12 +39,13 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-full flex-col bg-slate-50">
+      <Toaster richColors position="top-right" />
       {/* Top header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-4 py-3 backdrop-blur-md sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur-md sm:px-6 shadow-sm">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
-            src="/logo.png"
-            alt="Ariba IT"
+            src={settings?.siteLogoUrl || "/logo.png"}
+            alt={settings?.siteName || "Ariba IT"}
             width={62}
             height={34}
             className="h-8 w-auto object-contain"
@@ -50,18 +54,31 @@ export default async function DashboardLayout({
         </Link>
 
         <div className="flex items-center gap-3">
-          {/* User badge */}
-          <div className="flex items-center gap-2">
+          {/* Notification bell */}
+          <Link
+            href="/dashboard/notifications"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition-colors"
+          >
+            <Bell size={18} />
+            {unreadCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </Link>
+
+          {/* User info */}
+          <div className="flex items-center gap-2.5">
             <AvatarBadge
               image={dbUser?.image}
               initials={initials}
-              className="h-8 w-8 text-xs bg-gradient-to-br from-blue-500 to-green-600"
+              className="h-8 w-8 text-xs bg-gradient-to-br from-indigo-500 to-purple-600"
             />
             <div className="hidden flex-col sm:flex">
-              <span className="text-xs font-medium text-slate-900 leading-tight">
+              <span className="text-xs font-semibold text-slate-900 leading-tight">
                 {user.name ?? "Student"}
               </span>
-              <span className="text-xs text-slate-500 leading-tight">{user.email}</span>
+              <span className="text-[10px] text-slate-500 leading-tight">{user.email}</span>
             </div>
           </div>
 
@@ -70,7 +87,7 @@ export default async function DashboardLayout({
               type="submit"
               variant="outline"
               size="sm"
-              className="border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 text-xs"
+              className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 text-xs rounded-full px-4"
             >
               Log out
             </Button>
