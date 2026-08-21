@@ -133,6 +133,7 @@ model Settings {
   whatsappUrl    String? @map("whatsapp_url")
   facebookUrl    String? @map("facebook_url")
   linkedinUrl    String? @map("linkedin_url")
+  youtubeUrl     String? @map("youtube_url")
 
   // Transactional email sender identity & SMTP configuration
   emailFromName    String? @map("email_from_name")
@@ -141,6 +142,10 @@ model Settings {
   smtpPort         Int?    @map("smtp_port")
   smtpUser         String? @map("smtp_user")
   smtpPassword     String? @map("smtp_password")
+
+  // Email Templates
+  registrationEmailTemplate String? @db.Text @map("registration_email_template")
+  certificateEmailTemplate  String? @db.Text @map("certificate_email_template")
 
   // Rendered as-is (plain text/markdown, no HTML) on the public
   // /terms, /privacy and /refund-policy pages.

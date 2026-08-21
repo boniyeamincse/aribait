@@ -1,7 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { prisma } from "@/lib/db/client";
+import { Facebook, Linkedin, Youtube, MessageCircle } from "lucide-react";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const settings = await prisma.settings.findUnique({ where: { id: 1 } });
+
   return (
     <footer className="bg-slate-950 w-full z-10 relative">
       <div className="mx-auto max-w-7xl px-6 py-16">
@@ -10,7 +14,7 @@ export function SiteFooter() {
           <div className="lg:col-span-2">
             <Image
               src="/logo.png"
-              alt="Ariba IT"
+              alt={settings?.siteName || "Ariba IT"}
               width={140}
               height={42}
               className="mb-6 h-10 w-auto object-contain brightness-0 invert"
@@ -22,8 +26,37 @@ export function SiteFooter() {
             <div className="mt-8 flex flex-col gap-2">
               <p className="text-sm font-semibold text-slate-300 uppercase tracking-widest">Contact Support</p>
               <p className="text-lg font-bold text-white">
-                01914-638653 <span className="text-sm font-normal text-slate-500">(bKash/Nagad)</span>
+                {settings?.contactPhone || "01914-638653"} <span className="text-sm font-normal text-slate-500">(bKash/Nagad)</span>
               </p>
+              {settings?.contactEmail && (
+                <a href={`mailto:${settings.contactEmail}`} className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                  {settings.contactEmail}
+                </a>
+              )}
+            </div>
+
+            {/* Social Icons */}
+            <div className="mt-6 flex items-center gap-4">
+              {settings?.facebookUrl && (
+                <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-indigo-400 transition-colors">
+                  <Facebook size={20} />
+                </a>
+              )}
+              {settings?.linkedinUrl && (
+                <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-indigo-400 transition-colors">
+                  <Linkedin size={20} />
+                </a>
+              )}
+              {settings?.youtubeUrl && (
+                <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-red-500 transition-colors">
+                  <Youtube size={22} />
+                </a>
+              )}
+              {settings?.whatsappUrl && (
+                <a href={settings.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                  <MessageCircle size={20} />
+                </a>
+              )}
             </div>
           </div>
 
@@ -79,7 +112,7 @@ export function SiteFooter() {
 
         <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-slate-800 pt-8 sm:flex-row">
           <p className="text-sm text-slate-500 font-medium">
-            © {new Date().getFullYear()} Ariba IT. All rights reserved.
+            © {new Date().getFullYear()} {settings?.siteName || "Ariba IT"}. All rights reserved.
           </p>
           <p className="text-sm text-slate-500 font-medium flex items-center gap-2">
             Made with <span className="text-red-500">♥</span> in Bangladesh

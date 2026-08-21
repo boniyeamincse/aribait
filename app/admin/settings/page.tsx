@@ -122,7 +122,7 @@ export default async function AdminSettingsPage(
         <SettingsSection description="Contact details and social links shown in the public footer and contact page.">
           <SettingsForm
             settings={settings}
-            visible={["contactEmail", "contactPhone", "facebookUrl", "linkedinUrl"]}
+            visible={["contactEmail", "contactPhone", "facebookUrl", "linkedinUrl", "youtubeUrl"]}
           />
         </SettingsSection>
       )}
@@ -200,7 +200,7 @@ export default async function AdminSettingsPage(
         <SettingsSection description="Sender identity used on every transactional email and full SMTP configuration for outgoing emails.">
           <SettingsForm 
             settings={settings} 
-            visible={["emailFromName", "emailFromAddress", "smtpHost", "smtpPort", "smtpUser", "smtpPassword"]} 
+            visible={["emailFromName", "emailFromAddress", "smtpHost", "smtpPort", "smtpUser", "smtpPassword", "registrationEmailTemplate", "certificateEmailTemplate"]} 
           />
           <InfoCard>
             This SMTP configuration will be used to send all system emails including password resets, 

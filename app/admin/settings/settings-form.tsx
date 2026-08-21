@@ -19,12 +19,15 @@ type Settings = {
   whatsappUrl: string | null;
   facebookUrl: string | null;
   linkedinUrl: string | null;
+  youtubeUrl: string | null;
   emailFromName: string | null;
   emailFromAddress: string | null;
   smtpHost: string | null;
   smtpPort: number | null;
   smtpUser: string | null;
   smtpPassword: string | null;
+  registrationEmailTemplate: string | null;
+  certificateEmailTemplate: string | null;
   termsContent: string | null;
   privacyContent: string | null;
   refundContent: string | null;
@@ -45,12 +48,15 @@ const FIELD_KEYS = [
   "whatsappUrl",
   "facebookUrl",
   "linkedinUrl",
+  "youtubeUrl",
   "emailFromName",
   "emailFromAddress",
   "smtpHost",
   "smtpPort",
   "smtpUser",
   "smtpPassword",
+  "registrationEmailTemplate",
+  "certificateEmailTemplate",
   "termsContent",
   "privacyContent",
   "refundContent",
@@ -229,6 +235,18 @@ export function SettingsForm({
           />
         </label>
       )}
+      {isVisible("youtubeUrl") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-600">YouTube URL</span>
+          <input
+            type="url"
+            name="youtubeUrl"
+            defaultValue={settings.youtubeUrl ?? ""}
+            placeholder="https://youtube.com/@aribait"
+            className={inputClass()}
+          />
+        </label>
+      )}
       {isVisible("emailFromName") && (
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="text-slate-600">Email sender name</span>
@@ -299,6 +317,34 @@ export function SettingsForm({
             />
           </label>
         </div>
+      )}
+
+      {isVisible("registrationEmailTemplate") && (
+        <label className="flex flex-col gap-1.5 text-sm mt-4">
+          <span className="text-slate-600 font-semibold">Registration Email Template</span>
+          <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{date}}"} for dynamic values.</p>
+          <textarea
+            name="registrationEmailTemplate"
+            defaultValue={settings.registrationEmailTemplate ?? ""}
+            rows={5}
+            placeholder="Hi {{name}}, your registration for {{event_title}} is confirmed..."
+            className={inputClass()}
+          />
+        </label>
+      )}
+
+      {isVisible("certificateEmailTemplate") && (
+        <label className="flex flex-col gap-1.5 text-sm mt-2">
+          <span className="text-slate-600 font-semibold">Certificate Email Template</span>
+          <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{certificate_link}}"} for dynamic values.</p>
+          <textarea
+            name="certificateEmailTemplate"
+            defaultValue={settings.certificateEmailTemplate ?? ""}
+            rows={5}
+            placeholder="Congratulations {{name}}, your certificate for {{event_title}} is ready..."
+            className={inputClass()}
+          />
+        </label>
       )}
 
       {isVisible("termsContent") && (
