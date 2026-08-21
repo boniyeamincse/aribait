@@ -57,7 +57,7 @@ const FIELD_KEYS = [
 ] as const satisfies readonly (keyof Settings)[];
 
 function inputClass() {
-  return "w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none";
+  return "w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:outline-none transition-all";
 }
 
 function hiddenValue(value: string | number | boolean | null) {
@@ -76,7 +76,7 @@ export function SettingsForm({
   const isVisible = (key: keyof Settings) => visible.includes(key);
 
   return (
-    <form action={action} className="flex max-w-lg flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6">
+    <form action={action} className="flex w-full max-w-2xl flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       {isVisible("siteName") && (
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="text-slate-600">Site name</span>
@@ -101,7 +101,7 @@ export function SettingsForm({
             type="checkbox"
             name="maintenanceMode"
             defaultChecked={settings.maintenanceMode}
-            className="size-4 rounded border-slate-300 bg-slate-50"
+            className="size-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
           />
           <span className="text-slate-700">Maintenance mode</span>
         </label>
@@ -349,7 +349,7 @@ export function SettingsForm({
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-4 py-2 text-sm font-semibold text-slate-900 hover:from-blue-400 hover:to-green-500 disabled:opacity-50"
+        className="self-start rounded-xl bg-gradient-to-r from-indigo-600 to-emerald-500 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-indigo-500 hover:to-emerald-400 disabled:opacity-50 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
       >
         {pending ? "Saving…" : "Save changes"}
       </button>

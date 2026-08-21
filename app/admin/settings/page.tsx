@@ -70,44 +70,47 @@ export default async function AdminSettingsPage(
         description="Platform-wide configuration. Changes take effect immediately."
       />
 
-      {/* Tab navigation */}
-      <div className="flex flex-wrap gap-1 rounded-2xl border border-slate-200 bg-white p-2">
-        {TABS.map((t) => {
-          const Icon = t.icon;
-          const isActive = t.id === tab;
-          return (
-            <a
-              key={t.id}
-              href={`/admin/settings?tab=${t.id}`}
-              className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all ${
-                isActive
-                  ? "bg-gradient-to-r from-emerald-500/15 to-indigo-500/10 text-indigo-900 border border-indigo-500/20"
-                  : "text-slate-500 hover:bg-indigo-50/50 hover:text-indigo-700"
-              }`}
-            >
-              <Icon size={14} strokeWidth={isActive ? 2 : 1.5} />
-              <span className="hidden sm:inline">{t.label}</span>
-            </a>
-          );
-        })}
-      </div>
-
-      {/* Active tab heading */}
-      <div className="flex items-center gap-3">
-        {(() => {
-          const Icon = activeTab.icon;
-          return (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/15 to-indigo-500/10 border border-indigo-500/20">
-              <Icon size={18} className="text-indigo-600" />
-            </div>
-          );
-        })()}
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">{activeTab.label}</h2>
+      <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* Tab navigation (Sidebar on desktop) */}
+        <div className="w-full md:w-64 shrink-0 flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+          {TABS.map((t) => {
+            const Icon = t.icon;
+            const isActive = t.id === tab;
+            return (
+              <a
+                key={t.id}
+                href={`/admin/settings?tab=${t.id}`}
+                className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+                  isActive
+                    ? "bg-gradient-to-r from-emerald-500/15 to-indigo-500/10 text-indigo-900 border border-indigo-500/20 shadow-sm"
+                    : "text-slate-600 hover:bg-indigo-50/50 hover:text-indigo-700"
+                }`}
+              >
+                <Icon size={16} className={isActive ? "text-indigo-600" : "text-slate-400"} strokeWidth={isActive ? 2 : 1.75} />
+                <span>{t.label}</span>
+              </a>
+            );
+          })}
         </div>
-      </div>
 
-      {/* ── Tab content ── */}
+        {/* Main Content Area */}
+        <div className="flex-1 min-w-0 flex flex-col gap-6">
+          {/* Active tab heading */}
+          <div className="flex items-center gap-4 border-b border-slate-200 pb-4">
+            {(() => {
+              const Icon = activeTab.icon;
+              return (
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/15 to-indigo-500/10 border border-indigo-500/20 shadow-sm">
+                  <Icon size={22} className="text-indigo-600" />
+                </div>
+              );
+            })()}
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900">{activeTab.label}</h2>
+            </div>
+          </div>
+
+          {/* ── Tab content ── */}
 
       {tab === "general" && (
         <SettingsSection description="Site name and branding displayed across all public and dashboard pages.">
@@ -379,6 +382,8 @@ export default async function AdminSettingsPage(
           )}
         </SettingsSection>
       )}
+        </div>
+      </div>
     </div>
   );
 }
