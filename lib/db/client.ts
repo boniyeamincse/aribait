@@ -9,7 +9,7 @@ import { PrismaClient } from "@/lib/generated/prisma/client";
 neonConfig.webSocketConstructor = ws;
 
 const globalForPrisma = globalThis as unknown as {
-  prisma_v2: PrismaClient | undefined;
+  prisma_v3: PrismaClient | undefined;
 };
 
 function createPrismaClient() {
@@ -19,8 +19,8 @@ function createPrismaClient() {
   return new PrismaClient({ adapter });
 }
 
-export const prisma = globalForPrisma.prisma_v2 ?? createPrismaClient();
+export const prisma = globalForPrisma.prisma_v3 ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma_v2 = prisma;
+  globalForPrisma.prisma_v3 = prisma;
 }

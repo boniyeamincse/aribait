@@ -145,7 +145,9 @@ model Settings {
   smtpPassword     String? @map("smtp_password")
 
   // Email Templates
+  registrationEmailSubject  String? @map("registration_email_subject")
   registrationEmailTemplate String? @db.Text @map("registration_email_template")
+  certificateEmailSubject   String? @map("certificate_email_subject")
   certificateEmailTemplate  String? @db.Text @map("certificate_email_template")
 
   // Certificate Settings

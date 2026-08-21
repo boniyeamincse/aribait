@@ -27,7 +27,9 @@ export type Settings = {
   smtpPort: number | null;
   smtpUser: string | null;
   smtpPassword: string | null;
+  registrationEmailSubject: string | null;
   registrationEmailTemplate: string | null;
+  certificateEmailSubject: string | null;
   certificateEmailTemplate: string | null;
   certificateSignatoryName: string | null;
   certificateSignatoryDesignation: string | null;
@@ -59,7 +61,9 @@ const FIELD_KEYS = [
   "smtpPort",
   "smtpUser",
   "smtpPassword",
+  "registrationEmailSubject",
   "registrationEmailTemplate",
+  "certificateEmailSubject",
   "certificateEmailTemplate",
   "certificateSignatoryName",
   "certificateSignatoryDesignation",
@@ -341,11 +345,21 @@ export function SettingsForm({
       )}
 
       {isVisible("registrationEmailTemplate") && (
-        <label className="flex flex-col gap-1.5 text-sm mt-4">
-          <span className="text-slate-600 font-semibold">Registration Email Template</span>
-          <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{date}}"} for dynamic values.</p>
-          <textarea
-            name="registrationEmailTemplate"
+        <div className="flex flex-col gap-4 mt-6 border-t border-slate-100 pt-6">
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-600 font-semibold">Registration Email Subject</span>
+            <input
+              name="registrationEmailSubject"
+              defaultValue={settings.registrationEmailSubject || "Registration Confirmed: {{event_title}}"}
+              placeholder="e.g. Registration Confirmed: {{event_title}}"
+              className={inputClass()}
+            />
+          </label>
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-600 font-semibold">Registration Email Body</span>
+            <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{date}}"} for dynamic values.</p>
+            <textarea
+              name="registrationEmailTemplate"
             defaultValue={settings.registrationEmailTemplate || `Dear {{name}},
 
 Congratulations! Your registration for **{{event_title}}** has been successfully confirmed.
@@ -369,14 +383,25 @@ Learn. Practice. Build Your IT Career.`}
             className={inputClass()}
           />
         </label>
+        </div>
       )}
 
       {isVisible("certificateEmailTemplate") && (
-        <label className="flex flex-col gap-1.5 text-sm mt-2">
-          <span className="text-slate-600 font-semibold">Certificate Email Template</span>
-          <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{certificate_link}}"} for dynamic values.</p>
-          <textarea
-            name="certificateEmailTemplate"
+        <div className="flex flex-col gap-4 mt-6 border-t border-slate-100 pt-6">
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-600 font-semibold">Certificate Email Subject</span>
+            <input
+              name="certificateEmailSubject"
+              defaultValue={settings.certificateEmailSubject || "Your Certificate for {{event_title}} is Ready!"}
+              placeholder="e.g. Your Certificate for {{event_title}} is Ready!"
+              className={inputClass()}
+            />
+          </label>
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-slate-600 font-semibold">Certificate Email Body</span>
+            <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{certificate_link}}"} for dynamic values.</p>
+            <textarea
+              name="certificateEmailTemplate"
             defaultValue={settings.certificateEmailTemplate || `Dear {{name}},
 
 Congratulations on successfully completing **{{event_title}}**!
@@ -396,6 +421,7 @@ Learn. Practice. Build Your IT Career.`}
             className={inputClass()}
           />
         </label>
+        </div>
       )}
 
       {isVisible("certificateSignatoryName") && (
