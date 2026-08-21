@@ -9,6 +9,7 @@ import {
   ArrowRight,
   TrendingUp,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 
 import { prisma } from "@/lib/db/client";
@@ -144,7 +145,7 @@ export default async function DashboardOverviewPage() {
 
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="text-indigo-200 text-sm font-medium">{greeting} 👋</p>
+            <p className="text-indigo-200 text-sm font-medium flex items-center gap-1.5"><Sparkles size={14} />{greeting},</p>
             <h1 className="text-2xl font-bold mt-0.5">{firstName}!</h1>
             <p className="text-indigo-200 text-sm mt-1">
               {enrolledEvents > 0
