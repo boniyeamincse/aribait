@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db/client";
 import { requireOwnedEvent } from "@/lib/instructors/ownership";
-import { parseSessionForm, encryptSessionSecrets } from "@/lib/events/session-actions";
+import { parseSessionForm, encryptSessionSecrets } from "@/lib/events/session-form-helpers";
 import { validateSessionSchedule } from "@/lib/events/session-validation";
 import { writeAuditLog } from "@/lib/audit/log";
 
