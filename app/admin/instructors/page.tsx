@@ -9,16 +9,19 @@ import { InstructorForm } from "./instructor-form";
 export default async function AdminInstructorsPage() {
   const instructors = await prisma.instructor.findMany({
     orderBy: { name: "asc" },
-    include: { _count: { select: { events: true } } },
+    include: {
+      _count: { select: { events: true } },
+      user: { select: { status: true } },
+    },
   });
 
   return (
     <div className="flex flex-col gap-8">
-      <AdminPageHeader 
-        title="Instructors" 
-        description="Manage instructor profiles, contact information, and social links." 
+      <AdminPageHeader
+        title="Instructors"
+        description="Create instructor accounts (login + profile) and manage contact info and social links."
       />
-      
+
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="mb-4 text-sm font-semibold text-slate-900">Add New Instructor</h2>
         <InstructorForm />
@@ -109,6 +112,18 @@ export default async function AdminInstructorsPage() {
                   {i._count.events} Event{i._count.events === 1 ? "" : "s"}
                 </span>
               ),
+            },
+            {
+              key: "account",
+              label: "Account",
+              render: (i) =>
+                i.user ? (
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-600">
+                    {i.user.status}
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-500">No login</span>
+                ),
             },
           ]}
         />

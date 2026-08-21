@@ -20,7 +20,7 @@ export async function requireUser() {
 
 export async function requireAdmin() {
   const user = await requireUser();
-  if (user.role !== "ADMIN") {
+  if (user.role !== "ADMIN" && user.role !== "INSTRUCTOR") {
     redirect("/dashboard");
   }
   return user;

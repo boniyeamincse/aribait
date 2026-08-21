@@ -21,6 +21,7 @@ datasource db {
 
 enum UserRole {
   STUDENT
+  INSTRUCTOR
   ADMIN
 
   @@map("user_role")
@@ -60,6 +61,7 @@ model User {
   eventResources       EventResource[]
   reviews              Review[]
   auditLogs            AuditLog[]
+  instructor           Instructor?
 
   @@map("users")
 }
@@ -165,6 +167,10 @@ model Category {
 
 model Instructor {
   id        String   @id @default(cuid())
+  // Linked login account (Auth.js User, role INSTRUCTOR). Optional — a
+  // profile can exist without a login (e.g. a guest speaker credited on an
+  // Event but never signed in).
+  userId    String?  @unique @map("user_id")
   name      String
   slug      String   @unique
   title     String?
@@ -180,6 +186,7 @@ model Instructor {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  user          User?          @relation(fields: [userId], references: [id])
   events        Event[]
   eventSessions EventSession[]
 

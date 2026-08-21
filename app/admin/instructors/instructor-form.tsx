@@ -24,11 +24,37 @@ export function InstructorForm() {
         </div>
       </div>
       
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" placeholder="instructor@example.com" />
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <p className="mb-3 text-xs font-medium text-slate-600">
+          Login credentials — the instructor signs in with these.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="instructor@example.com"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              maxLength={72}
+              placeholder="At least 8 characters"
+            />
+          </div>
         </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="flex flex-col gap-2">
           <Label htmlFor="phone">Phone</Label>
           <Input id="phone" name="phone" placeholder="+880 1..." />

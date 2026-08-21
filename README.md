@@ -22,19 +22,22 @@ Use this account to experience the platform as a student—registering for cours
 * **Password:** `Student@1234`
 * **Access URL:** `/dashboard`
 
+### Instructor Account
+
+Use this account to sign in as an instructor. Created via the admin "Add New Instructor" form (`/admin/instructors`), which creates a login (role `INSTRUCTOR`) and profile together.
+
+* **Email:** `instructor@aribait.com`
+* **Password:** `Instructor@1234`
+* **Access URL:** `/dashboard`
+
 ### Personal Accounts (Your Credentials)
 
 If you prefer to use your personal accounts for testing emails and actual use:
 
 **Admin:**
 * **Email:** `boniyeamin.cse@gmail.com`
-* **Password:** `Care@#$%17189`
+* **Password:** `bKwhu_apT-6e`
 
 **Student:**
 * **Email:** `boni.ielts@gmail.com`
 * **Password:** *(Your personal password)*
-
-
-
-Email: boniyeamin.cse@gmail.com
-- Password: bKwhu_apT-6e

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/client";
 import { requireAdmin } from "@/lib/permissions";
 import { instructorSchema } from "@/lib/validations/instructor";
+import { hashPassword } from "@/lib/security/password";
 import { slugify } from "@/lib/utils";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -22,9 +23,10 @@ export async function createInstructor(
 
   const parsed = instructorSchema.safeParse({
     name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
     title: getStr("title"),
     bio: getStr("bio"),
-    email: getStr("email"),
     company: getStr("company"),
     phone: getStr("phone"),
     website: getStr("website"),
@@ -33,19 +35,48 @@ export async function createInstructor(
     githubUrl: getStr("githubUrl"),
   });
   if (!parsed.success) {
-    return { ok: false, error: "Please enter valid instructor information (e.g. valid URLs/emails)." };
+    return {
+      ok: false,
+      error: "Please enter valid instructor information (name, email, an 8+ character password, and valid URLs).",
+    };
   }
+  const { password, ...profile } = parsed.data;
 
-  const slug = slugify(parsed.data.name);
-  const existing = await prisma.instructor.findUnique({ where: { slug } });
-  if (existing) {
+  const slug = slugify(profile.name);
+  const [existingSlug, existingEmail] = await Promise.all([
+    prisma.instructor.findUnique({ where: { slug } }),
+    prisma.user.findUnique({ where: { email: profile.email } }),
+  ]);
+  if (existingSlug) {
     return {
       ok: false,
       error: "An instructor with this name already exists.",
     };
   }
+  if (existingEmail) {
+    return {
+      ok: false,
+      error: "An account with this email already exists.",
+    };
+  }
 
-  await prisma.instructor.create({ data: { ...parsed.data, slug } });
+  const passwordHash = await hashPassword(password);
+  await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        name: profile.name,
+        email: profile.email,
+        passwordHash,
+        role: "INSTRUCTOR",
+        status: "ACTIVE",
+        emailVerified: new Date(),
+      },
+    });
+    await tx.instructor.create({
+      data: { ...profile, slug, userId: user.id },
+    });
+  });
+
   revalidatePath("/admin/instructors");
   return { ok: true };
 }

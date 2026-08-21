@@ -22,6 +22,12 @@ export default async function ProfilePage() {
     .join("")
     .toUpperCase();
 
+  const ROLE_LABELS: Record<string, string> = {
+    ADMIN: "Administrator",
+    INSTRUCTOR: "Instructor",
+    STUDENT: "Student",
+  };
+
   const STATUS_COLORS: Record<string, string> = {
     ACTIVE: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
     PENDING: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
@@ -69,7 +75,7 @@ export default async function ProfilePage() {
             <p className="mt-1 text-xs text-slate-600">
               Role:{" "}
               <span className="font-medium text-slate-600">
-                {user.role === "ADMIN" ? "Administrator" : "Student"}
+                {ROLE_LABELS[user.role] ?? user.role}
               </span>
             </p>
           </div>
@@ -97,7 +103,7 @@ export default async function ProfilePage() {
             {[
               { label: "Full Name", value: user.name ?? "Not set" },
               { label: "Email Address", value: user.email ?? "—" },
-              { label: "Account Role", value: user.role === "ADMIN" ? "Administrator" : "Student" },
+              { label: "Account Role", value: ROLE_LABELS[user.role] ?? user.role },
               { label: "Account Status", value: user.status },
             ].map(({ label, value }) => (
               <div key={label} className="flex flex-col gap-0.5">

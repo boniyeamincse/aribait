@@ -29,9 +29,9 @@ export function QuickCreate() {
           <DropdownMenuLabel>Create New</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem render={<Link href="/admin/events/new">Event</Link>} />
-          <DropdownMenuItem render={<Link href="/admin/instructors/new">Instructor</Link>} />
-          <DropdownMenuItem render={<Link href="/admin/categories/new">Category</Link>} />
-          <DropdownMenuItem render={<Link href="/admin/discounts/new">Coupon</Link>} />
+          <DropdownMenuItem render={<Link href="/admin/instructors">Instructor</Link>} />
+          <DropdownMenuItem render={<Link href="/admin/categories">Category</Link>} />
+          <DropdownMenuItem render={<Link href="/admin/discounts">Coupon</Link>} />
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
