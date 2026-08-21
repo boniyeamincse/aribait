@@ -4,8 +4,9 @@ import { useActionState } from "react";
 
 import { updateSettings } from "@/lib/settings/actions";
 
-type Settings = {
+export type Settings = {
   siteName: string;
+  siteLogoUrl: string | null;
   defaultTimeZone: string;
   currency: string;
   seatHoldMinutes: number;
@@ -37,6 +38,7 @@ type Settings = {
 
 const FIELD_KEYS = [
   "siteName",
+  "siteLogoUrl",
   "defaultTimeZone",
   "currency",
   "seatHoldMinutes",
@@ -93,6 +95,21 @@ export function SettingsForm({
           <input name="siteName" defaultValue={settings.siteName} className={inputClass()} required />
         </label>
       )}
+
+      {isVisible("siteLogoUrl") && (
+        <label className="flex flex-col gap-1.5 text-sm mt-2">
+          <span className="text-slate-600 font-semibold">Site Logo URL</span>
+          <p className="text-xs text-slate-500 mb-1">Recommended size: 280x80 px (PNG with transparent background).</p>
+          <input
+            type="url"
+            name="siteLogoUrl"
+            defaultValue={settings.siteLogoUrl ?? ""}
+            placeholder="e.g. https://example.com/logo.png"
+            className={inputClass()}
+          />
+        </label>
+      )}
+
       {isVisible("defaultTimeZone") && (
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="text-slate-600">Default time zone</span>

@@ -12,7 +12,7 @@ export async function SiteFooter() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Image
-              src="/logo.png"
+              src={settings?.siteLogoUrl || "/logo.png"}
               alt={settings?.siteName || "Ariba IT"}
               width={140}
               height={42}

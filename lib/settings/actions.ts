@@ -17,6 +17,7 @@ export async function updateSettings(
 
   const parsed = settingsSchema.safeParse({
     siteName: formData.get("siteName"),
+    siteLogoUrl: formData.get("siteLogoUrl") ?? "",
     defaultTimeZone: formData.get("defaultTimeZone"),
     currency: formData.get("currency"),
     seatHoldMinutes: formData.get("seatHoldMinutes"),

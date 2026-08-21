@@ -6,8 +6,14 @@ import { logout } from "@/lib/auth/logout-action";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/public/mobile-menu";
 
+import { prisma } from "@/lib/db/client";
+
 export async function SiteHeader() {
-  const session = await auth().catch(() => null);
+  const [session, settings] = await Promise.all([
+    auth().catch(() => null),
+    prisma.settings.findUnique({ where: { id: 1 }, select: { siteLogoUrl: true, siteName: true } }),
+  ]);
+  
   const isLoggedIn = !!session?.user;
   const role = session?.user?.role;
   const dashboardHref = role === "ADMIN" ? "/admin" : role === "INSTRUCTOR" ? "/instructor" : "/dashboard";
@@ -18,8 +24,8 @@ export async function SiteHeader() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0 group">
           <Image
-            src="/logo.png"
-            alt="Ariba IT Logo"
+            src={settings?.siteLogoUrl || "/logo.png"}
+            alt={settings?.siteName || "Ariba IT Logo"}
             width={72}
             height={40}
             className="h-10 w-auto object-contain transition-transform group-hover:scale-105"

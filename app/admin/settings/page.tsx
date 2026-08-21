@@ -119,8 +119,8 @@ export default async function AdminSettingsPage(
           {/* ── Tab content ── */}
 
       {tab === "general" && (
-        <SettingsSection description="Site name and branding displayed across all public and dashboard pages.">
-          <SettingsForm settings={settings} visible={["siteName"]} />
+        <SettingsSection description="Core platform identity and display settings.">
+          <SettingsForm settings={settings} visible={["siteName", "siteLogoUrl"]} />
         </SettingsSection>
       )}
 

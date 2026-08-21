@@ -114,6 +114,7 @@ model VerificationToken {
 model Settings {
   id                        Int      @id @default(1)
   siteName                  String   @default("Ariba IT") @map("site_name")
+  siteLogoUrl               String?  @map("site_logo_url")
   defaultTimeZone           String   @default("Asia/Dhaka") @map("default_time_zone")
   currency                  String   @default("BDT")
   seatHoldMinutes           Int      @default(15) @map("seat_hold_minutes")

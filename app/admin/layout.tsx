@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Toaster } from "sonner";
 
 import { requireAdmin } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
@@ -27,9 +28,12 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await requireAdmin();
-  const unreadCount = await prisma.notification.count({
-    where: { userId: user.id, readAt: null },
-  });
+  const [unreadCount, settings] = await Promise.all([
+    prisma.notification.count({
+      where: { userId: user.id, readAt: null },
+    }),
+    prisma.settings.findUnique({ where: { id: 1 }, select: { siteLogoUrl: true, siteName: true } }),
+  ]);
 
   const initials = (user.name ?? user.email ?? "A")
     .split(" ")
@@ -40,6 +44,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
+      <Toaster richColors position="top-right" />
       {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
         <div className="flex flex-1 items-center gap-3 md:gap-6">
@@ -47,8 +52,8 @@ export default async function AdminLayout({
           <AdminMobileNav />
           <Link href="/" className="hidden shrink-0 md:flex">
             <Image
-              src="/logo.png"
-              alt="Ariba IT"
+              src={settings?.siteLogoUrl || "/logo.png"}
+              alt={settings?.siteName || "Ariba IT"}
               width={62}
               height={34}
               className="h-8 w-auto object-contain"

@@ -25,6 +25,7 @@ function optionalUrl() {
 
 export const settingsSchema = z.object({
   siteName: z.string().min(2).max(120),
+  siteLogoUrl: optionalUrl(),
   defaultTimeZone: z.string().min(2).max(60),
   currency: z.string().min(2).max(10),
   seatHoldMinutes: z.coerce.number().int().min(1).max(180),
