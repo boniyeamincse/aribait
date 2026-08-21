@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/permissions";
 import { prisma } from "@/lib/db/client";
+import { updateOwnPhoto } from "@/lib/dashboard/profile-actions";
+import { AvatarUploadForm } from "@/components/shared/avatar-upload-form";
 
 export const metadata: Metadata = {
   title: "My Profile — Ariba IT",
@@ -8,12 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
-  const user = await requireUser();
+  const sessionUser = await requireUser();
 
-  // Fetch registration count for summary
-  const totalRegistrations = await prisma.registration.count({
-    where: { userId: user.id },
-  });
+  // Session.user.image is JWT-derived and never refreshes after an upload
+  // (Credentials authorize() doesn't return `image`) — read it fresh instead.
+  const [totalRegistrations, dbUser] = await Promise.all([
+    prisma.registration.count({ where: { userId: sessionUser.id } }),
+    prisma.user.findUniqueOrThrow({ where: { id: sessionUser.id }, select: { image: true } }),
+  ]);
+  const user = { ...sessionUser, image: dbUser.image };
 
   const initials = (user.name ?? user.email ?? "?")
     .split(" ")
@@ -55,9 +60,7 @@ export default async function ProfilePage() {
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
           {/* Avatar */}
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-green-600 text-2xl font-bold text-slate-900 shadow-lg shadow-blue-500/20">
-            {initials}
-          </div>
+          <AvatarUploadForm action={updateOwnPhoto} currentImage={user.image ?? null} fallbackText={initials} />
 
           {/* Info */}
           <div className="flex flex-1 flex-col gap-1 text-center sm:text-left">

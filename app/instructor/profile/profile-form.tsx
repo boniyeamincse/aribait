@@ -12,7 +12,6 @@ type ProfileValues = {
   name: string;
   title: string | null;
   bio: string | null;
-  avatarUrl: string | null;
   company: string | null;
   phone: string | null;
   website: string | null;
@@ -48,11 +47,6 @@ export function InstructorProfileForm({ defaultValues }: { defaultValues: Profil
           <Label htmlFor="title">Title</Label>
           <Input id="title" name="title" {...field("title")} />
         </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="avatarUrl">Profile photo URL</Label>
-        <Input id="avatarUrl" name="avatarUrl" type="url" {...field("avatarUrl")} />
       </div>
 
       <div className="flex flex-col gap-2">

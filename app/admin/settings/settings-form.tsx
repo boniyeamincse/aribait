@@ -346,9 +346,26 @@ export function SettingsForm({
           <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{date}}"} for dynamic values.</p>
           <textarea
             name="registrationEmailTemplate"
-            defaultValue={settings.registrationEmailTemplate ?? ""}
-            rows={5}
-            placeholder="Hi {{name}}, your registration for {{event_title}} is confirmed..."
+            defaultValue={settings.registrationEmailTemplate || `Dear {{name}},
+
+Congratulations! Your registration for **{{event_title}}** has been successfully confirmed.
+
+Event Details:
+
+* Event: {{event_title}}
+* Date: {{date}}
+* Organized by: Ariba IT Academy
+
+You can log in to your Ariba IT Academy Student Dashboard to view the event schedule, session details, learning materials, payment information, and joining instructions.
+
+Please make sure you join the session on time. We will send you another reminder before the event begins.
+
+If you need any assistance, please contact the Ariba IT Academy support team.
+
+Best regards,
+**Ariba IT Academy Team**
+Learn. Practice. Build Your IT Career.`}
+            rows={12}
             className={inputClass()}
           />
         </label>
@@ -360,9 +377,22 @@ export function SettingsForm({
           <p className="text-xs text-slate-500 mb-1">Use {"{{name}}"}, {"{{event_title}}"}, {"{{certificate_link}}"} for dynamic values.</p>
           <textarea
             name="certificateEmailTemplate"
-            defaultValue={settings.certificateEmailTemplate ?? ""}
-            rows={5}
-            placeholder="Congratulations {{name}}, your certificate for {{event_title}} is ready..."
+            defaultValue={settings.certificateEmailTemplate || `Dear {{name}},
+
+Congratulations on successfully completing **{{event_title}}**!
+
+Your certificate of completion is now ready. You can view or download it using the link below:
+
+**Download Certificate:** {{certificate_link}}
+
+You can also access your certificate anytime from your Ariba IT Academy Student Dashboard.
+
+Thank you for learning with Ariba IT Academy. We wish you continued success in your IT career.
+
+Best regards,
+**Ariba IT Academy Team**
+Learn. Practice. Build Your IT Career.`}
+            rows={12}
             className={inputClass()}
           />
         </label>

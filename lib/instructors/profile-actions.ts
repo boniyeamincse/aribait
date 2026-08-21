@@ -5,8 +5,26 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/client";
 import { requireInstructor } from "@/lib/permissions";
 import { instructorProfileSchema } from "@/lib/validations/instructor";
+import { readPhotoUpload } from "@/lib/uploads/profile-photo";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
+
+export async function updateOwnInstructorPhoto(
+  _prevState: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const { instructor } = await requireInstructor();
+
+  const file = formData.get("photo");
+  const result = await readPhotoUpload(file instanceof File ? file : null);
+  if (!result.ok) return result;
+
+  await prisma.instructor.update({ where: { id: instructor.id }, data: { avatarUrl: result.dataUrl } });
+
+  revalidatePath("/instructor/profile");
+  revalidatePath("/instructor");
+  return { ok: true };
+}
 
 /** Self-service profile edit (docs/instactor.md §2 "Instructor Profile").
  * Deliberately does not touch email/password (login credentials) or slug
@@ -26,7 +44,6 @@ export async function updateOwnInstructorProfile(
     name: formData.get("name"),
     title: getStr("title"),
     bio: getStr("bio"),
-    avatarUrl: getStr("avatarUrl"),
     company: getStr("company"),
     phone: getStr("phone"),
     website: getStr("website"),
