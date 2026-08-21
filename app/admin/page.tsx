@@ -37,9 +37,9 @@ const SESSION_STATUS_COLORS: Record<string, string> = {
 };
 
 const URGENCY_BORDER: Record<string, string> = {
-  high: "border-l-red-500",
-  medium: "border-l-amber-500",
-  low: "border-l-blue-500",
+  high: "border-l-rose-500 bg-rose-50/40 border-rose-100",
+  medium: "border-l-amber-500 bg-amber-50/40 border-amber-100",
+  low: "border-l-indigo-500 bg-indigo-50/40 border-indigo-100",
 };
 
 function timeInDhaka(date: Date) {
@@ -129,16 +129,17 @@ export default async function AdminOverviewPage() {
         {kpiCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="rounded-2xl border border-slate-200 bg-white p-5 flex flex-col justify-between">
+            <div key={card.label} className="rounded-2xl border border-slate-200 bg-white p-5 flex flex-col justify-between shadow-sm transition-all hover:shadow-md hover:border-indigo-100 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-indigo-500 opacity-80" />
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold uppercase tracking-widest text-slate-500">
                   {card.label}
                 </span>
-                <Icon size={16} className="text-slate-600" />
+                <Icon size={16} className="text-indigo-500/70" />
               </div>
               <div>
                 <p className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">{card.value}</p>
-                <Link href={card.href} className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                <Link href={card.href} className="mt-3 flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
                   View details <span aria-hidden="true">&rarr;</span>
                 </Link>
               </div>
@@ -163,9 +164,9 @@ export default async function AdminOverviewPage() {
                 href={item.href}
                 className={`flex items-start gap-3 rounded-xl border border-slate-200 border-l-4 bg-white p-4 text-sm text-slate-700 transition-colors hover:bg-slate-100/60 shadow-sm ${URGENCY_BORDER[item.urgency]}`}
               >
-                <AlertCircle size={18} className="mt-0.5 shrink-0 text-slate-500" />
-                <span className="flex-1">{item.label}</span>
-                <span className="text-blue-400">&rarr;</span>
+                <AlertCircle size={18} className="mt-0.5 shrink-0 text-slate-600 opacity-70" />
+                <span className="flex-1 font-medium">{item.label}</span>
+                <span className="text-indigo-500 group-hover:translate-x-0.5 transition-transform">&rarr;</span>
               </Link>
             ))}
           </div>
@@ -189,7 +190,7 @@ export default async function AdminOverviewPage() {
                   <Link href={`/admin/events/${s.eventId}`} className="text-slate-900 hover:underline font-medium">
                     {s.title}
                   </Link>
-                  {!s.hasMeetingLink && <span className="text-[10px] uppercase tracking-wider font-semibold text-amber-400">Missing link</span>}
+                  {!s.hasMeetingLink && <span className="inline-flex w-fit items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-amber-700 border border-amber-200/50 uppercase">Missing link</span>}
                 </div>
               ),
             },
@@ -256,7 +257,7 @@ export default async function AdminOverviewPage() {
               <div
                 key={d.date}
                 title={`${d.date}: ${d.count}`}
-                className="flex-1 rounded-t bg-gradient-to-t from-blue-500 to-green-500 hover:opacity-80 transition-opacity"
+                className="flex-1 rounded-t bg-gradient-to-t from-indigo-500 to-emerald-400 hover:opacity-80 transition-opacity"
                 style={{ height: `${Math.max(4, (d.count / maxRegistrationCount) * 100)}%` }}
               />
             ))}
@@ -272,7 +273,7 @@ export default async function AdminOverviewPage() {
               <div key={d.label} className="flex flex-1 flex-col justify-end items-center gap-2 h-full">
                 <div
                   title={formatBdtAmount(d.revenueBdt)}
-                  className="w-full rounded-t bg-gradient-to-t from-blue-500 to-green-500 hover:opacity-80 transition-opacity"
+                  className="w-full rounded-t bg-gradient-to-t from-indigo-500 to-emerald-400 hover:opacity-80 transition-opacity"
                   style={{ height: `${Math.max(4, (d.revenueBdt / maxRevenue) * 100)}%` }}
                 />
                 <span className="text-xs text-slate-500 font-medium">{d.label}</span>

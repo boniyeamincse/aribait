@@ -117,13 +117,13 @@ export function AdminNav({
                 onClick={onNavigate}
                 className={
                   isActive
-                    ? "flex items-center gap-3 rounded-lg border border-green-500/20 bg-gradient-to-r from-green-500/15 to-blue-500/10 px-3 py-2.5 text-sm font-medium text-slate-900"
-                    : "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-500 transition-colors hover:bg-slate-100/60 hover:text-slate-800"
+                    ? "flex items-center gap-3 rounded-lg border border-indigo-500/20 bg-gradient-to-r from-emerald-500/15 to-indigo-500/10 px-3 py-2.5 text-sm font-semibold text-indigo-900"
+                    : "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-indigo-50/50 hover:text-indigo-700"
                 }
               >
                 <Icon
                   size={16}
-                  className={isActive ? "text-green-400" : "text-slate-600"}
+                  className={isActive ? "text-indigo-600" : "text-slate-400"}
                   strokeWidth={isActive ? 2 : 1.75}
                 />
                 <span className="flex-1">{item.label}</span>

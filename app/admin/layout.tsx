@@ -67,7 +67,7 @@ export default async function AdminLayout({
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900 shadow-md ring-offset-2 transition-all hover:ring-2 hover:ring-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300">
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-indigo-600 text-xs font-bold text-white shadow-sm ring-offset-2 transition-all hover:ring-2 hover:ring-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
                   {initials}
                 </button>
               }
