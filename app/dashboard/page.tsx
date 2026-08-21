@@ -59,7 +59,7 @@ export default async function DashboardOverviewPage() {
       where: { userId: user.id, status: "CONFIRMED" },
       take: 4,
       orderBy: { createdAt: "desc" },
-      include: { event: { select: { title: true, slug: true, type: true, startDate: true } } },
+      include: { event: { select: { title: true, slug: true, type: true, startAt: true } } },
     }),
     prisma.eventSession.findFirst({
       where: {

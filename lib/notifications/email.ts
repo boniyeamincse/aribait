@@ -12,6 +12,7 @@ export async function sendEmail(params: {
   to: string;
   subject: string;
   text: string;
+  html?: string;
 }) {
   const settings = await prisma.settings.findUnique({ where: { id: 1 } });
   const fromName = settings?.emailFromName ?? "Ariba IT";
@@ -46,5 +47,6 @@ export async function sendEmail(params: {
     to: params.to,
     subject: params.subject,
     text: params.text,
+    html: params.html,
   });
 }

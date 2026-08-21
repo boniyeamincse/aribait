@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 
 import { prisma } from "@/lib/db/client";
 import { sendEmail } from "@/lib/notifications/email";
+import { renderEmailHtml } from "@/lib/notifications/email-template";
 import { hashPassword } from "@/lib/security/password";
 import { loginSchema, passwordSchema, registerSchema } from "@/lib/validations/auth";
 import { safeRedirectPath } from "@/lib/utils";
@@ -70,7 +71,17 @@ export async function registerStudent(
   await sendEmail({
     to: email,
     subject: "Verify your Ariba IT account",
-    text: `Welcome to Ariba IT. Verify your email: ${verifyUrl}`,
+    text: `Welcome to Ariba IT, ${name}. Verify your email: ${verifyUrl}`,
+    html: renderEmailHtml({
+      heading: `Welcome, ${name} 👋`,
+      bodyHtml: `
+        <p style="margin:0 0 12px;">Thanks for creating an Ariba IT account. Confirm your email address to unlock registrations, live sessions, and certificates.</p>
+        <p style="margin:0;">This link expires in <strong>24 hours</strong>.</p>
+      `,
+      ctaLabel: "Verify my email",
+      ctaUrl: verifyUrl,
+      footerNote: "If you didn't create this account, you can safely ignore this email.",
+    }),
   });
 
   return { ok: true };
@@ -122,6 +133,16 @@ export async function requestPasswordReset(
       to: email,
       subject: "Reset your Ariba IT password",
       text: `Reset your password: ${resetUrl}`,
+      html: renderEmailHtml({
+        heading: `Reset your password${user.name ? `, ${user.name}` : ""}`,
+        bodyHtml: `
+          <p style="margin:0 0 12px;">We received a request to reset the password for your Ariba IT account (${email}).</p>
+          <p style="margin:0;">This link expires in <strong>1 hour</strong>.</p>
+        `,
+        ctaLabel: "Reset password",
+        ctaUrl: resetUrl,
+        footerNote: "If you didn't request this, you can safely ignore this email — your password won't change.",
+      }),
     });
   }
 

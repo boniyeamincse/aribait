@@ -25,12 +25,12 @@ export async function sendMail({
     host: settings.smtpHost,
     port: settings.smtpPort || 465,
     secure: (settings.smtpPort || 465) === 465,
-    family: 4, // force IPv4
+    // family: 4, // IPv4 only — uncomment if IPv6 causes ENETUNREACH
     auth: {
       user: settings.smtpUser,
       pass: settings.smtpPassword,
     },
-  });
+  } as nodemailer.TransportOptions);
 
   const from = settings.emailFromName
     ? `"${settings.emailFromName}" <${settings.emailFromAddress || settings.smtpUser}>`
