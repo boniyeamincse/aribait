@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { User, Shield, Lock, KeyRound, CalendarDays, Award, CreditCard, Info } from "lucide-react";
+
 import { requireUser } from "@/lib/permissions";
 import { prisma } from "@/lib/db/client";
 import { updateOwnPhoto } from "@/lib/dashboard/profile-actions";
@@ -57,7 +59,7 @@ export default async function ProfilePage() {
       </div>
 
       {/* Profile card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
           {/* Avatar */}
           <AvatarUploadForm action={updateOwnPhoto} currentImage={user.image ?? null} fallbackText={initials} />
@@ -98,9 +100,9 @@ export default async function ProfilePage() {
       {/* Details grid */}
       <div className="grid gap-6 sm:grid-cols-2">
         {/* Account information */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-blue-400">
-            <span>👤</span> Account Information
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-indigo-600">
+            <User size={16} /> Account Information
           </h3>
           <dl className="flex flex-col gap-4">
             {[
@@ -120,17 +122,17 @@ export default async function ProfilePage() {
         </div>
 
         {/* Security */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-green-400">
-            <span>🔐</span> Security
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-emerald-600">
+            <Shield size={16} /> Security
           </h3>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-medium uppercase tracking-wider text-slate-600">
                 Password
               </span>
-              <span className="text-sm text-slate-600">
-                ••••••••••••
+              <span className="flex items-center gap-1.5 text-sm text-slate-600">
+                <Lock size={12} /> ••••••••••••
               </span>
             </div>
             <div className="flex flex-col gap-0.5">
@@ -139,41 +141,45 @@ export default async function ProfilePage() {
               </span>
               <span className="text-sm text-slate-500">Not enabled</span>
             </div>
-            <div className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
-              💡 Contact support to update your name, email, or password.
+            <div className="mt-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
+              <Info size={14} className="mt-0.5 shrink-0 text-slate-400" />
+              Contact support to update your name, email, or password.
             </div>
           </div>
         </div>
       </div>
 
       {/* Platform info */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-emerald-400">
-          <span>📋</span> Platform
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-indigo-600">
+          <KeyRound size={16} /> Platform
         </h3>
         <div className="grid gap-4 sm:grid-cols-3">
           {[
             {
-              icon: "📅",
+              icon: CalendarDays,
               label: "Live Sessions",
               desc: "Join from your Sessions page",
+              color: "text-emerald-500",
             },
             {
-              icon: "🏆",
+              icon: Award,
               label: "Certificates",
               desc: "Download after course completion",
+              color: "text-amber-500",
             },
             {
-              icon: "💳",
+              icon: CreditCard,
               label: "Payments",
               desc: "bKash & Nagad supported",
+              color: "text-sky-500",
             },
           ].map((item) => (
             <div
               key={item.label}
               className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
             >
-              <span className="text-2xl">{item.icon}</span>
+              <item.icon size={22} className={`shrink-0 ${item.color}`} />
               <div>
                 <p className="text-sm font-semibold text-slate-900">{item.label}</p>
                 <p className="text-xs text-slate-500">{item.desc}</p>
