@@ -11,14 +11,18 @@ const OPTIONS = [
   { value: "EXCUSED", label: "Excused", activeClass: "border-slate-500/40 bg-slate-500/20 text-slate-700" },
 ] as const;
 
+type Status = (typeof OPTIONS)[number]["value"];
+
 export function AttendanceMarkRow({
   registrationId,
   eventSessionId,
   currentStatus,
+  action = markAttendance,
 }: {
   registrationId: string;
   eventSessionId: string;
   currentStatus: string | null;
+  action?: (registrationId: string, eventSessionId: string, status: Status) => Promise<unknown>;
 }) {
   const [pending, startTransition] = useTransition();
 
@@ -33,7 +37,7 @@ export function AttendanceMarkRow({
             disabled={pending}
             onClick={() =>
               startTransition(async () => {
-                await markAttendance(registrationId, eventSessionId, option.value);
+                await action(registrationId, eventSessionId, option.value);
               })
             }
             className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${

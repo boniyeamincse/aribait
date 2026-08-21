@@ -15,20 +15,20 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
     <form action={formAction} className="flex flex-col gap-5">
       {callbackUrl && <input type="hidden" name="callbackUrl" value={callbackUrl} />}
       <div className="flex flex-col gap-2.5">
-        <Label htmlFor="email" className="text-slate-300 font-medium">Email Address</Label>
+        <Label htmlFor="email" className="text-slate-700 font-medium">Email Address</Label>
         <Input 
           id="email" 
           name="email" 
           type="email" 
-          className="bg-slate-950/50 border-slate-700/50 text-white placeholder:text-slate-500 focus-visible:ring-indigo-500 focus-visible:border-indigo-500 h-11 transition-all"
+          className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500 focus-visible:border-blue-500 h-11 transition-all"
           placeholder="name@example.com"
           required 
         />
       </div>
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password" className="text-slate-300 font-medium">Password</Label>
-          <Link href="/forgot-password" className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+          <Label htmlFor="password" className="text-slate-700 font-medium">Password</Label>
+          <Link href="/forgot-password" className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
             Recover password
           </Link>
         </div>
@@ -36,7 +36,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
           id="password" 
           name="password" 
           type="password" 
-          className="bg-slate-950/50 border-slate-700/50 text-white placeholder:text-slate-500 focus-visible:ring-indigo-500 focus-visible:border-indigo-500 h-11 transition-all"
+          className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500 focus-visible:border-blue-500 h-11 transition-all"
           placeholder="••••••••"
           required 
         />

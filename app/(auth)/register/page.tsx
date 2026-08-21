@@ -40,7 +40,7 @@ export default async function RegisterPage({ searchParams }: PageProps<"/registe
         Already have an account?{" "}
         <Link
           href={loginHref}
-          className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
+          className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
         >
           Log in
         </Link>
