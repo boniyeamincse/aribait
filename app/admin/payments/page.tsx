@@ -26,9 +26,21 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
   const searchParams = await props.searchParams;
   const statusParam = typeof searchParams.status === "string" ? searchParams.status : "PENDING";
   const activeTab = TABS.find((t) => t.status === statusParam) ?? TABS[0];
+  const query = typeof searchParams.q === "string" ? searchParams.q : "";
 
   const transactions = await prisma.paymentTransaction.findMany({
-    where: activeTab.status ? { status: activeTab.status } : undefined,
+    where: {
+      ...(activeTab.status ? { status: activeTab.status } : {}),
+      ...(query
+        ? {
+            OR: [
+              { senderMsisdn: { contains: query, mode: "insensitive" } },
+              { trxId: { contains: query, mode: "insensitive" } },
+              { payment: { registration: { user: { name: { contains: query, mode: "insensitive" } } } } },
+            ],
+          }
+        : {}),
+    },
     orderBy: { createdAt: "desc" },
     include: {
       payment: { include: { registration: { include: { user: true, event: true } } } },
@@ -43,10 +55,14 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
         {TABS.map((tab) => {
           const isActive = tab.label === activeTab.label;
           const Icon = tab.icon;
+          const tabStatus = tab.status ?? "ALL";
+          const href = query
+            ? `/admin/payments?status=${tabStatus}&q=${encodeURIComponent(query)}`
+            : `/admin/payments?status=${tabStatus}`;
           return (
             <Link
               key={tab.label}
-              href={tab.status ? `/admin/payments?status=${tab.status}` : "/admin/payments?status=ALL"}
+              href={href}
               className={
                 isActive
                   ? "flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-blue-400 px-4 py-2.5 text-sm font-medium text-slate-900 bg-slate-100/20"
@@ -60,23 +76,44 @@ export default async function AdminPaymentsPage(props: PageProps<"/admin/payment
         })}
       </div>
 
+      <form className="flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+        <input type="hidden" name="status" value={activeTab.status ?? "ALL"} />
+        <input
+          type="text"
+          name="q"
+          defaultValue={query}
+          placeholder="Search by name, number, or TrxID…"
+          className="min-w-48 flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="rounded-lg bg-gradient-to-r from-blue-500 to-green-600 px-4 py-2 text-sm font-semibold text-slate-900 hover:from-blue-400 hover:to-green-500"
+        >
+          Search
+        </button>
+      </form>
+
       <AdminTable
         rowKey={(tx) => tx.id}
         rows={transactions}
         emptyMessage={
-          activeTab.status === "PENDING" ? "Nothing pending review." : "No transactions in this view."
+          query
+            ? "No transactions match this search."
+            : activeTab.status === "PENDING"
+              ? "Nothing pending review."
+              : "No transactions in this view."
         }
         columns={[
           {
             key: "student",
             label: "Student",
             render: (tx) => (
-              <div>
+              <Link href={`/admin/students/${tx.payment.registration.user.id}`} className="block hover:underline">
                 <p className="font-medium text-slate-900">
                   {tx.payment.registration.user.name ?? tx.payment.registration.user.email}
                 </p>
                 <p className="text-xs text-slate-500">{tx.payment.registration.user.email}</p>
-              </div>
+              </Link>
             ),
           },
           {

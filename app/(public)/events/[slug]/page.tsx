@@ -160,7 +160,7 @@ export default async function EventDetailPage({
   const event = await getPublishedEventBySlug(slug);
   if (!event) notFound();
 
-  const session = await auth();
+  const session = await auth().catch(() => null);
   const existingRegistration = session?.user
     ? await prisma.registration.findUnique({
         where: { userId_eventId: { userId: session.user.id, eventId: event.id } },

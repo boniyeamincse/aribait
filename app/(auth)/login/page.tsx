@@ -15,14 +15,16 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
     : "/register";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8 w-full max-w-sm mx-auto">
       {/* Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-black/30">
+      <div className="relative z-10 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-8 sm:p-10 shadow-2xl backdrop-blur-xl ring-1 ring-white/5">
         {/* Header */}
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            {callbackUrl ? "Sign in to continue your booking." : "Access your Ariba IT dashboard."}
+        <div className="mb-8 text-center space-y-2">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
+            Welcome back
+          </h1>
+          <p className="text-sm font-medium text-slate-400">
+            {callbackUrl ? "Sign in to continue your booking." : "Access your secure Ariba IT dashboard."}
           </p>
         </div>
 
@@ -30,18 +32,18 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       </div>
 
       {/* Footer links */}
-      <div className="flex flex-col items-center gap-2 text-sm text-slate-500">
+      <div className="flex flex-col items-center gap-3 text-sm text-slate-400">
         <Link
           href="/forgot-password"
-          className="hover:text-slate-700 transition-colors"
+          className="hover:text-white transition-colors duration-200"
         >
           Forgot password?
         </Link>
-        <p>
+        <p className="text-slate-500">
           No account?{" "}
           <Link
             href={registerHref}
-            className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
+            className="font-semibold text-indigo-400 hover:text-indigo-300 hover:underline underline-offset-4 transition-all duration-200"
           >
             Register free
           </Link>

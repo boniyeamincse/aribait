@@ -56,60 +56,67 @@ export async function UpcomingEventsSection() {
             {events.map((event) => {
               const tag = tagFor(event);
               return (
-                <Link
+                <Card
                   key={event.id}
-                  href={`/events/${event.slug}`}
-                  className="group block"
+                  className="group relative h-full border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10"
                 >
-                  <Card className="h-full border-slate-200 bg-white transition-all duration-300 group-hover:-translate-y-1 group-hover:border-blue-500/50 group-hover:shadow-xl group-hover:shadow-blue-500/10">
-                    <CardHeader className="pb-3">
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <Badge
-                          variant="outline"
-                          className="border-slate-300 text-slate-600"
-                        >
-                          {TYPE_LABELS[event.type] ?? event.type}
-                        </Badge>
-                        <span
-                          className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${TAG_COLORS[tag]}`}
-                        >
-                          {tag}
-                        </span>
-                      </div>
-                      <CardTitle className="text-lg text-slate-900 group-hover:text-blue-700 transition-colors">
-                        {event.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-3">
-                      <p className="line-clamp-2 text-sm text-slate-600">
-                        {event.shortDescription}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
-                        <span>{event.category.name}</span>
-                        <span>·</span>
-                        <span>{event.instructor.name}</span>
-                        <span>·</span>
-                        <span>
-                          {event._count.sessions} session
-                          {event._count.sessions === 1 ? "" : "s"}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between border-t border-slate-200 pt-3">
-                        <span className="text-xs text-slate-500">
-                          {event.startAt.toLocaleString("en-GB", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
-                        </span>
-                        <span className="text-sm font-bold text-blue-600">
-                          {event.priceBdt === 0
-                            ? "Free"
-                            : `৳${event.priceBdt.toLocaleString()}`}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                  <Link
+                    href={`/events/${event.slug}`}
+                    className="absolute inset-0 z-0"
+                    aria-label={event.title}
+                  />
+                  <CardHeader className="pb-3">
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <Badge
+                        variant="outline"
+                        className="border-slate-300 text-slate-600"
+                      >
+                        {TYPE_LABELS[event.type] ?? event.type}
+                      </Badge>
+                      <span
+                        className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${TAG_COLORS[tag]}`}
+                      >
+                        {tag}
+                      </span>
+                    </div>
+                    <CardTitle className="text-lg text-slate-900 group-hover:text-blue-700 transition-colors">
+                      {event.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-col gap-3">
+                    <p className="line-clamp-2 text-sm text-slate-600">
+                      {event.shortDescription}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <span>{event.category.name}</span>
+                      <span>·</span>
+                      <Link
+                        href={`/instructors/${event.instructor.slug}`}
+                        className="relative z-10 hover:text-blue-700 hover:underline"
+                      >
+                        {event.instructor.name}
+                      </Link>
+                      <span>·</span>
+                      <span>
+                        {event._count.sessions} session
+                        {event._count.sessions === 1 ? "" : "s"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-slate-200 pt-3">
+                      <span className="text-xs text-slate-500">
+                        {event.startAt.toLocaleString("en-GB", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </span>
+                      <span className="text-sm font-bold text-blue-600">
+                        {event.priceBdt === 0
+                          ? "Free"
+                          : `৳${event.priceBdt.toLocaleString()}`}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

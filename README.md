@@ -33,3 +33,8 @@ If you prefer to use your personal accounts for testing emails and actual use:
 **Student:**
 * **Email:** `boni.ielts@gmail.com`
 * **Password:** *(Your personal password)*
+
+
+
+Email: boniyeamin.cse@gmail.com
+- Password: bKwhu_apT-6e

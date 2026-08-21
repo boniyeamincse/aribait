@@ -12,6 +12,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
     signIn: "/login",
   },
+  logger: {
+    error(error) {
+      // Stale/invalid session cookies (e.g. signed with a rotated
+      // AUTH_SECRET) fail to decrypt on every request. auth() already
+      // treats this as "no session" — no need to spam the console.
+      if (error.name === "JWTSessionError") return;
+      console.error(error);
+    },
+  },
   providers: [
     Credentials({
       credentials: {
