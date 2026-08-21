@@ -39,6 +39,8 @@ export async function updateSettings(
     smtpPassword: formData.get("smtpPassword") ?? "",
     registrationEmailTemplate: formData.get("registrationEmailTemplate") ?? "",
     certificateEmailTemplate: formData.get("certificateEmailTemplate") ?? "",
+    certificateSignatoryName: formData.get("certificateSignatoryName") ?? "",
+    certificateSignatoryDesignation: formData.get("certificateSignatoryDesignation") ?? "",
     termsContent: formData.get("termsContent") ?? "",
     privacyContent: formData.get("privacyContent") ?? "",
     refundContent: formData.get("refundContent") ?? "",

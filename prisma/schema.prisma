@@ -147,6 +147,10 @@ model Settings {
   registrationEmailTemplate String? @db.Text @map("registration_email_template")
   certificateEmailTemplate  String? @db.Text @map("certificate_email_template")
 
+  // Certificate Settings
+  certificateSignatoryName        String? @map("certificate_signatory_name")
+  certificateSignatoryDesignation String? @map("certificate_signatory_designation")
+
   // Rendered as-is (plain text/markdown, no HTML) on the public
   // /terms, /privacy and /refund-policy pages.
   termsContent   String? @db.Text @map("terms_content")

@@ -28,6 +28,8 @@ type Settings = {
   smtpPassword: string | null;
   registrationEmailTemplate: string | null;
   certificateEmailTemplate: string | null;
+  certificateSignatoryName: string | null;
+  certificateSignatoryDesignation: string | null;
   termsContent: string | null;
   privacyContent: string | null;
   refundContent: string | null;
@@ -57,6 +59,8 @@ const FIELD_KEYS = [
   "smtpPassword",
   "registrationEmailTemplate",
   "certificateEmailTemplate",
+  "certificateSignatoryName",
+  "certificateSignatoryDesignation",
   "termsContent",
   "privacyContent",
   "refundContent",
@@ -342,6 +346,30 @@ export function SettingsForm({
             defaultValue={settings.certificateEmailTemplate ?? ""}
             rows={5}
             placeholder="Congratulations {{name}}, your certificate for {{event_title}} is ready..."
+            className={inputClass()}
+          />
+        </label>
+      )}
+
+      {isVisible("certificateSignatoryName") && (
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-slate-600 font-semibold">Signatory Name</span>
+          <input
+            name="certificateSignatoryName"
+            defaultValue={settings.certificateSignatoryName ?? ""}
+            placeholder="e.g. Boni Yeamin"
+            className={inputClass()}
+          />
+        </label>
+      )}
+
+      {isVisible("certificateSignatoryDesignation") && (
+        <label className="flex flex-col gap-1.5 text-sm mt-2">
+          <span className="text-slate-600 font-semibold">Signatory Designation</span>
+          <input
+            name="certificateSignatoryDesignation"
+            defaultValue={settings.certificateSignatoryDesignation ?? ""}
+            placeholder="e.g. Founder & CEO, Ariba IT"
             className={inputClass()}
           />
         </label>

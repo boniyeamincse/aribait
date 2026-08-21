@@ -240,15 +240,18 @@ export default async function AdminSettingsPage(
 
       {tab === "certificates" && (
         <SettingsSection description="Certificate template, numbering, and QR verification configuration.">
+          <SettingsForm 
+            settings={settings} 
+            visible={["certificateSignatoryName", "certificateSignatoryDesignation"]} 
+          />
           <InfoCard>
             Certificate template design and custom numbering format are fixed 
             for the MVP. The certificate number uses a{" "}
-            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs text-blue-400">
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs text-indigo-400">
               CERT-YYYYMM-XXXXXX
             </code>{" "}
-            pattern with a random QR verification token. Template customization 
-            (logo, color, signatory) can be added to this settings model in a 
-            future phase.
+            pattern with a random QR verification token. 
+            <strong> Logo and Signature image uploads</strong> can be added in a future phase.
           </InfoCard>
           <div className="grid gap-3 sm:grid-cols-2">
             {[

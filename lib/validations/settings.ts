@@ -49,6 +49,8 @@ export const settingsSchema = z.object({
   smtpPassword: optionalText(300),
   registrationEmailTemplate: optionalText(10_000),
   certificateEmailTemplate: optionalText(10_000),
+  certificateSignatoryName: optionalText(100),
+  certificateSignatoryDesignation: optionalText(100),
   termsContent: optionalText(20_000),
   privacyContent: optionalText(20_000),
   refundContent: optionalText(20_000),
