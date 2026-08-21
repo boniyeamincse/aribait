@@ -81,8 +81,8 @@ export default async function AdminSettingsPage(
               href={`/admin/settings?tab=${t.id}`}
               className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-gradient-to-r from-green-500/20 to-blue-500/10 text-slate-900 border border-green-500/20"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                  ? "bg-gradient-to-r from-emerald-500/15 to-indigo-500/10 text-indigo-900 border border-indigo-500/20"
+                  : "text-slate-500 hover:bg-indigo-50/50 hover:text-indigo-700"
               }`}
             >
               <Icon size={14} strokeWidth={isActive ? 2 : 1.5} />
@@ -97,8 +97,8 @@ export default async function AdminSettingsPage(
         {(() => {
           const Icon = activeTab.icon;
           return (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500/20 to-blue-500/10 border border-green-500/20">
-              <Icon size={18} className="text-green-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/15 to-indigo-500/10 border border-indigo-500/20">
+              <Icon size={18} className="text-indigo-600" />
             </div>
           );
         })()}
@@ -275,8 +275,8 @@ export default async function AdminSettingsPage(
         <SettingsSection description="Active admin accounts. Full role-based permissions are planned for Phase 6.">
           <div className="rounded-2xl border border-slate-200 bg-white p-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/10 border border-green-500/20">
-                <Users size={18} className="text-green-400" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                <Users size={18} className="text-emerald-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">{adminCount}</p>
@@ -410,7 +410,7 @@ function InfoCard({ children }: { children: React.ReactNode }) {
 
 function HintCard({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
-    <div className="flex max-w-2xl items-start gap-3 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-sm text-blue-300">
+    <div className="flex max-w-2xl items-start gap-3 rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-4 text-sm text-indigo-700">
       <span className="text-lg">{icon}</span>
       <p>{children}</p>
     </div>

@@ -11,7 +11,7 @@ import {
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { formatBdt } from "@/lib/utils";
-import { Download, BarChart2, PieChart, Users, TrendingUp } from "lucide-react";
+import { Download, BarChart2, PieChart, Users, TrendingUp, Award } from "lucide-react";
 
 function ReportCard({ title, children, icon: Icon }: { title: string; children: React.ReactNode; icon?: React.ElementType }) {
   return (
