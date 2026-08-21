@@ -20,6 +20,8 @@ import {
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { prisma } from "@/lib/db/client";
 import { SettingsForm } from "./settings-form";
+import { AdminManagement } from "./admin-management";
+import { requireAdmin } from "@/lib/permissions";
 
 export const metadata: Metadata = {
   title: "Settings — Ariba IT Admin",
@@ -56,9 +58,13 @@ export default async function AdminSettingsPage(
       ? (searchParams.tab as TabId)
       : "general";
 
-  const [settings, adminCount] = await Promise.all([
+  const currentAdmin = await requireAdmin();
+  const [settings, admins] = await Promise.all([
     prisma.settings.upsert({ where: { id: 1 }, update: {}, create: { id: 1 } }),
-    prisma.user.count({ where: { role: "ADMIN" } }),
+    prisma.user.findMany({ 
+      where: { role: "ADMIN" },
+      select: { id: true, name: true, email: true, image: true }
+    }),
   ]);
 
   const activeTab = TABS.find((t) => t.id === tab)!;
@@ -278,34 +284,8 @@ export default async function AdminSettingsPage(
       )}
 
       {tab === "admins" && (
-        <SettingsSection description="Active admin accounts. Full role-based permissions are planned for Phase 6.">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                <Users size={18} className="text-emerald-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{adminCount}</p>
-                <p className="text-sm text-slate-500">
-                  Admin account{adminCount === 1 ? "" : "s"} active
-                </p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm text-slate-500">
-              Every admin account currently has full access. Granular roles 
-              (Event Manager, Finance Admin, Support Admin, Viewer) are planned 
-              per{" "}
-              <span className="text-slate-600">idea.md §18</span>.
-            </p>
-          </div>
-          <InfoCard>
-            To promote a student to admin or revoke access, update the{" "}
-            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs text-blue-400">
-              role
-            </code>{" "}
-            field directly in the database until the Admin User Management UI 
-            is built.
-          </InfoCard>
+        <SettingsSection description="Manage admin accounts. Full role-based permissions (Event Manager, Finance, Viewer) are planned for Phase 6.">
+          <AdminManagement admins={admins} currentAdminId={currentAdmin.id} />
         </SettingsSection>
       )}
 

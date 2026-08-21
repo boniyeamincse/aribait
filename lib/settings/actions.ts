@@ -85,3 +85,71 @@ export async function updateSettings(
   revalidatePath("/", "layout");
   return { ok: true };
 }
+
+export async function promoteToAdmin(formData: FormData): Promise<ActionResult> {
+  const currentAdmin = await requireAdmin();
+  const email = formData.get("email") as string;
+  
+  if (!email || typeof email !== "string") {
+    return { ok: false, error: "Email is required." };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return { ok: false, error: "No user found with this email address." };
+  }
+
+  if (user.role === "ADMIN") {
+    return { ok: false, error: "User is already an admin." };
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { role: "ADMIN" },
+  });
+
+  await writeAuditLog({
+    actorId: currentAdmin.id,
+    action: "admin.promoted",
+    targetType: "User",
+    targetId: user.id,
+    summary: `Promoted ${user.email} to ADMIN`,
+  });
+
+  revalidatePath("/admin/settings");
+  return { ok: true };
+}
+
+export async function revokeAdmin(formData: FormData): Promise<ActionResult> {
+  const currentAdmin = await requireAdmin();
+  const userId = formData.get("userId") as string;
+  
+  if (!userId || typeof userId !== "string") {
+    return { ok: false, error: "User ID is required." };
+  }
+
+  if (currentAdmin.id === userId) {
+    return { ok: false, error: "You cannot revoke your own admin access." };
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    return { ok: false, error: "User not found." };
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { role: "STUDENT" },
+  });
+
+  await writeAuditLog({
+    actorId: currentAdmin.id,
+    action: "admin.revoked",
+    targetType: "User",
+    targetId: user.id,
+    summary: `Revoked ADMIN role from ${user.email}`,
+  });
+
+  revalidatePath("/admin/settings");
+  return { ok: true };
+}
