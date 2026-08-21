@@ -5,13 +5,14 @@ import { requireInstructor } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
 import { Button } from "@/components/ui/button";
 import { InstructorNav } from "@/components/instructor/instructor-nav";
+import { AvatarBadge } from "@/components/shared/avatar-badge";
 
 export default async function InstructorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = await requireInstructor();
+  const { user, instructor } = await requireInstructor();
 
   const initials = (user.name ?? user.email ?? "I")
     .split(" ")
@@ -32,9 +33,11 @@ export default async function InstructorLayout({
             <span className="text-sm font-medium text-slate-900 leading-tight">{user.name ?? "Instructor"}</span>
             <span className="text-xs text-slate-500 leading-tight">{user.email}</span>
           </div>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-xs font-bold text-slate-900">
-            {initials}
-          </div>
+          <AvatarBadge
+            image={instructor.avatarUrl}
+            initials={initials}
+            className="h-8 w-8 text-xs bg-gradient-to-br from-green-500 to-blue-600"
+          />
           <form action={logout}>
             <Button type="submit" variant="outline" size="sm" className="border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
               Log out

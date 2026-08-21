@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 import { updateSettings } from "@/lib/settings/actions";
 
@@ -90,6 +91,14 @@ export function SettingsForm({
 }) {
   const [state, action, pending] = useActionState(updateSettings, null);
   const isVisible = (key: keyof Settings) => visible.includes(key);
+
+  useEffect(() => {
+    if (state?.ok) {
+      toast.success("Settings saved successfully!");
+    } else if (state?.ok === false) {
+      toast.error(state.error || "Failed to save settings");
+    }
+  }, [state]);
 
   return (
     <form action={action} className="flex w-full max-w-2xl flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -491,7 +500,6 @@ Learn. Practice. Build Your IT Career.`}
       )}
 
       {state?.ok === false && <p className="text-sm text-red-400">{state.error}</p>}
-      {state?.ok === true && <p className="text-sm text-emerald-400">Saved.</p>}
 
       <button
         type="submit"

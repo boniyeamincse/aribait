@@ -28,11 +28,14 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await requireAdmin();
-  const [unreadCount, settings] = await Promise.all([
+  // Session.user.image is JWT-derived and never refreshes after an upload
+  // (Credentials authorize() doesn't return `image`) — read it fresh instead.
+  const [unreadCount, settings, dbUser] = await Promise.all([
     prisma.notification.count({
       where: { userId: user.id, readAt: null },
     }),
     prisma.settings.findUnique({ where: { id: 1 }, select: { siteLogoUrl: true, siteName: true } }),
+    prisma.user.findUnique({ where: { id: user.id }, select: { image: true } }),
   ]);
 
   const initials = (user.name ?? user.email ?? "A")
@@ -72,8 +75,13 @@ export default async function AdminLayout({
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-indigo-600 text-xs font-bold text-white shadow-sm ring-offset-2 transition-all hover:ring-2 hover:ring-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-                  {initials}
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 to-indigo-600 text-xs font-bold text-white shadow-sm ring-offset-2 transition-all hover:ring-2 hover:ring-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                  {dbUser?.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={dbUser.image} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    initials
+                  )}
                 </button>
               }
             />

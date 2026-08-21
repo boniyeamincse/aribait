@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 
 import { requireUser } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
+import { prisma } from "@/lib/db/client";
 import { Button } from "@/components/ui/button";
 import { DashboardNav } from "@/components/dashboard/dashboard-nav";
+import { AvatarBadge } from "@/components/shared/avatar-badge";
 
 export default async function DashboardLayout({
   children,
@@ -20,6 +22,10 @@ export default async function DashboardLayout({
   if (user.role === "INSTRUCTOR") {
     redirect("/instructor");
   }
+
+  // Session.user.image is JWT-derived and never refreshes after an upload
+  // (Credentials authorize() doesn't return `image`) — read it fresh instead.
+  const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { image: true } });
 
   const initials = (user.name ?? user.email ?? "?")
     .split(" ")
@@ -46,9 +52,11 @@ export default async function DashboardLayout({
         <div className="flex items-center gap-3">
           {/* User badge */}
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-green-600 text-xs font-bold text-slate-900">
-              {initials}
-            </div>
+            <AvatarBadge
+              image={dbUser?.image}
+              initials={initials}
+              className="h-8 w-8 text-xs bg-gradient-to-br from-blue-500 to-green-600"
+            />
             <div className="hidden flex-col sm:flex">
               <span className="text-xs font-medium text-slate-900 leading-tight">
                 {user.name ?? "Student"}
