@@ -1,8 +1,11 @@
+import { Shield } from "lucide-react";
+
 import { requireInstructor } from "@/lib/permissions";
 import { isEligibleToCreateEvents } from "@/lib/instructors/eligibility";
 import { updateOwnInstructorPhoto } from "@/lib/instructors/profile-actions";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AvatarUploadForm } from "@/components/shared/avatar-upload-form";
+import { ChangePasswordForm } from "@/components/shared/change-password-form";
 
 import { InstructorProfileForm } from "./profile-form";
 
@@ -55,6 +58,19 @@ export default async function InstructorProfilePage() {
           githubUrl: instructor.githubUrl,
         }}
       />
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-emerald-600">
+          <Shield size={16} /> Security
+        </h3>
+        <div className="flex flex-col gap-4">
+          <ChangePasswordForm />
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Two-Factor Auth</span>
+            <span className="text-sm text-slate-500">Not enabled</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
