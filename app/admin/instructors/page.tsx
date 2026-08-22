@@ -3,7 +3,7 @@ import { Mail, Phone, Building2, Globe, Briefcase, Code2, MessageSquare } from "
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminTable } from "@/components/admin/admin-table";
 import { prisma } from "@/lib/db/client";
-import { setInstructorVerification } from "@/lib/instructors/actions";
+import { setInstructorVerification, setInstructorAccountStatus } from "@/lib/instructors/actions";
 
 import { AddInstructorDialog } from "./add-instructor-dialog";
 
@@ -11,6 +11,35 @@ const VERIFICATION_COLORS: Record<string, string> = {
   UNVERIFIED: "bg-amber-500/15 text-amber-600 border-amber-500/30",
   VERIFIED: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
   REJECTED: "bg-red-500/15 text-red-600 border-red-500/30",
+};
+
+const ACCOUNT_STATUS_COLORS: Record<string, string> = {
+  PENDING: "bg-amber-500/15 text-amber-600 border-amber-500/30",
+  ACTIVE: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
+  SUSPENDED: "bg-red-500/15 text-red-600 border-red-500/30",
+  DEACTIVATED: "bg-slate-500/15 text-slate-600 border-slate-500/30",
+};
+
+// Which account-status actions are offered from the current status
+const ACCOUNT_STATUS_ACTIONS: Record<
+  string,
+  { label: string; newStatus: "ACTIVE" | "SUSPENDED" | "DEACTIVATED"; className: string }[]
+> = {
+  PENDING: [
+    { label: "Activate", newStatus: "ACTIVE", className: "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" },
+    { label: "Deactivate", newStatus: "DEACTIVATED", className: "border-slate-300 bg-white text-slate-500 hover:bg-slate-100" },
+  ],
+  ACTIVE: [
+    { label: "Suspend", newStatus: "SUSPENDED", className: "border-red-300 bg-red-50 text-red-700 hover:bg-red-100" },
+    { label: "Deactivate", newStatus: "DEACTIVATED", className: "border-slate-300 bg-white text-slate-500 hover:bg-slate-100" },
+  ],
+  SUSPENDED: [
+    { label: "Reactivate", newStatus: "ACTIVE", className: "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" },
+    { label: "Deactivate", newStatus: "DEACTIVATED", className: "border-slate-300 bg-white text-slate-500 hover:bg-slate-100" },
+  ],
+  DEACTIVATED: [
+    { label: "Reactivate", newStatus: "ACTIVE", className: "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" },
+  ],
 };
 
 export default async function AdminInstructorsPage() {
@@ -126,9 +155,25 @@ export default async function AdminInstructorsPage() {
               label: "Account",
               render: (i) =>
                 i.user ? (
-                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-600">
-                    {i.user.status}
-                  </span>
+                  <div className="flex flex-col gap-1.5">
+                    <span
+                      className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-semibold ${ACCOUNT_STATUS_COLORS[i.user.status]}`}
+                    >
+                      {i.user.status}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(ACCOUNT_STATUS_ACTIONS[i.user.status] ?? []).map((a) => (
+                        <form key={a.newStatus} action={setInstructorAccountStatus.bind(null, i.userId!, a.newStatus)}>
+                          <button
+                            type="submit"
+                            className={`rounded-md border px-2.5 py-1 text-xs font-semibold transition-all active:scale-95 ${a.className}`}
+                          >
+                            {a.label}
+                          </button>
+                        </form>
+                      ))}
+                    </div>
+                  </div>
                 ) : (
                   <span className="text-xs text-slate-500">No login</span>
                 ),

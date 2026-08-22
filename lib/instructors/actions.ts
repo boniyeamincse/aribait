@@ -8,7 +8,7 @@ import { instructorSchema } from "@/lib/validations/instructor";
 import { hashPassword } from "@/lib/security/password";
 import { slugify } from "@/lib/utils";
 import { writeAuditLog } from "@/lib/audit/log";
-import type { InstructorVerificationStatus } from "@/lib/generated/prisma/client";
+import type { InstructorVerificationStatus, UserStatus } from "@/lib/generated/prisma/client";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -103,6 +103,32 @@ export async function setInstructorVerification(
     targetType: "Instructor",
     targetId: instructorId,
     summary: `Set "${instructor.name}" verification status to ${status}`,
+  });
+
+  revalidatePath("/admin/instructors");
+}
+
+/** Activate/Suspend/Deactivate an instructor's login account (User.status). */
+export async function setInstructorAccountStatus(userId: string, newStatus: UserStatus) {
+  const admin = await requireAdmin();
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId, role: "INSTRUCTOR" },
+    select: { id: true, email: true, status: true },
+  });
+  if (!user) return;
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { status: newStatus },
+  });
+
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "instructor.status_change",
+    targetType: "User",
+    targetId: userId,
+    summary: `Changed status of ${user.email} from ${user.status} → ${newStatus}`,
   });
 
   revalidatePath("/admin/instructors");
