@@ -46,6 +46,7 @@ export default async function AdminEventDetailPage(
     prisma.event.findUnique({
       where: { id },
       include: {
+        instructor: true,
         sessions: { orderBy: { sequence: "asc" } },
         discountEvents: { include: { discount: true } },
         resources: { orderBy: { createdAt: "asc" } },
@@ -61,19 +62,71 @@ export default async function AdminEventDetailPage(
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">{event.title}</h1>
-          <p className="text-sm text-slate-600">
-            /events/{event.slug} · {formatBdt(event.priceBdt)} · {event._count.registrations} registration
-            {event._count.registrations === 1 ? "" : "s"}
-          </p>
+      {/* Premium Header / Hero Section */}
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        {/* Cover Background */}
+        <div 
+          className="absolute inset-0 h-32 w-full opacity-20 bg-cover bg-center"
+          style={{ 
+            backgroundImage: event.thumbnailUrl 
+              ? `url(${event.thumbnailUrl})` 
+              : "linear-gradient(to right, #4f46e5, #06b6d4)" 
+          }}
+        />
+        <div className="absolute inset-0 h-32 w-full bg-gradient-to-b from-white/10 to-white" />
+        
+        {/* Content */}
+        <div className="relative p-6 pt-12 sm:p-8 sm:pt-16">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <span className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${
+                  event.status === "PUBLISHED" ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
+                  event.status === "DRAFT" ? "bg-slate-100 text-slate-700 border-slate-200" :
+                  event.status === "PENDING_APPROVAL" ? "bg-amber-100 text-amber-700 border-amber-200" :
+                  "bg-indigo-100 text-indigo-700 border-indigo-200"
+                } border`}>
+                  {event.status.replace(/_/g, " ")}
+                </span>
+                <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700">
+                  {event.type}
+                </span>
+              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
+                {event.title}
+              </h1>
+              <p className="flex items-center gap-2 text-sm font-medium text-slate-600">
+                <a 
+                  href={`/events/${event.slug}`} 
+                  target="_blank" 
+                  className="flex items-center gap-1 text-indigo-600 hover:underline"
+                >
+                  <Activity size={14} /> /events/{event.slug}
+                </a>
+                <span>·</span>
+                <span>{event.instructor.name}</span>
+              </p>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="flex shrink-0 gap-4 rounded-xl border border-slate-200 bg-white/60 p-3 backdrop-blur-md">
+              <div className="flex flex-col px-3">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Price</span>
+                <span className="text-lg font-bold text-slate-900">{formatBdt(event.priceBdt)}</span>
+              </div>
+              <div className="h-10 w-px bg-slate-200" />
+              <div className="flex flex-col px-3">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Registrations</span>
+                <span className="text-lg font-bold text-slate-900">
+                  {event._count.registrations} <span className="text-sm font-normal text-slate-500">/ {event.capacity}</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
-          {event.status.replace(/_/g, " ")}
-        </span>
       </div>
 
+      {/* Tabs Navigation */}
       <TabBar tabs={TABS} active={tab} baseHref={`/admin/events/${event.id}`} />
 
       {tab === "overview" && (
