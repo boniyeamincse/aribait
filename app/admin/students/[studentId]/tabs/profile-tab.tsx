@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 
 import { StatusBadge } from "@/components/admin/status-badge";
-import { changeStudentStatus } from "@/lib/admin/student-actions";
+import { changeStudentStatus, promoteToInstructor } from "@/lib/admin/student-actions";
 import type { User } from "@/lib/generated/prisma/client";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -56,6 +56,7 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
 
 export function ProfileTab({ student }: { student: User }) {
   const [isPending, startTransition] = useTransition();
+  const [isPromoting, startPromoteTransition] = useTransition();
   const actions = STATUS_ACTIONS[student.status] ?? [];
 
   function handleStatusChange(newStatus: string) {
@@ -66,6 +67,23 @@ export function ProfileTab({ student }: { student: User }) {
       );
       if (result.ok) {
         toast.success(`Status updated to ${newStatus}.`);
+      } else {
+        toast.error(result.error);
+      }
+    });
+  }
+
+  function handlePromote() {
+    if (
+      !confirm(
+        `Promote ${student.name ?? student.email} to Instructor?\n\nThis will:\n• Change their role to INSTRUCTOR\n• Create an Instructor profile (UNVERIFIED)\n• They will need to be verified separately to create events\n\nContinue?`,
+      )
+    )
+      return;
+    startPromoteTransition(async () => {
+      const result = await promoteToInstructor(student.id);
+      if (result.ok) {
+        toast.success("User promoted to Instructor! Go to /admin/instructors to verify them.");
       } else {
         toast.error(result.error);
       }
@@ -134,6 +152,28 @@ export function ProfileTab({ student }: { student: User }) {
               platform access.
             </p>
           )}
+        </div>
+      )}
+
+      {/* Promote to Instructor */}
+      {student.role === "STUDENT" && (
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-5">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-indigo-500">
+            Promote to Instructor
+          </p>
+          <p className="mb-4 text-xs text-slate-500">
+            Changes this user&apos;s role to <strong>Instructor</strong>. An Instructor profile
+            will be created automatically. You must then go to{" "}
+            <strong>/admin/instructors</strong> and click <strong>Verify</strong> to allow them
+            to create events.
+          </p>
+          <button
+            onClick={handlePromote}
+            disabled={isPromoting}
+            className="rounded-lg border border-indigo-400 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 transition-all hover:bg-indigo-100 active:scale-95 disabled:opacity-50"
+          >
+            {isPromoting ? "Promoting…" : "🎓 Promote to Instructor"}
+          </button>
         </div>
       )}
     </div>

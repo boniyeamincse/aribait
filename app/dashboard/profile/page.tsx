@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { User, Shield, Lock, KeyRound, CalendarDays, Award, CreditCard, Info } from "lucide-react";
+import { User, Shield, KeyRound, CalendarDays, Award, CreditCard, Info } from "lucide-react";
 
 import { requireUser } from "@/lib/permissions";
 import { prisma } from "@/lib/db/client";
 import { updateOwnPhoto } from "@/lib/dashboard/profile-actions";
 import { AvatarUploadForm } from "@/components/shared/avatar-upload-form";
+import { ChangePasswordForm } from "@/components/shared/change-password-form";
 
 export const metadata: Metadata = {
   title: "My Profile — Ariba IT",
@@ -125,14 +126,7 @@ export default async function ProfilePage() {
             <Shield size={16} /> Security
           </h3>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-medium uppercase tracking-wider text-slate-600">
-                Password
-              </span>
-              <span className="flex items-center gap-1.5 text-sm text-slate-600">
-                <Lock size={12} /> ••••••••••••
-              </span>
-            </div>
+            <ChangePasswordForm />
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-medium uppercase tracking-wider text-slate-600">
                 Two-Factor Auth
@@ -141,7 +135,7 @@ export default async function ProfilePage() {
             </div>
             <div className="mt-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
               <Info size={14} className="mt-0.5 shrink-0 text-slate-400" />
-              Contact support to update your name, email, or password.
+              Contact support to update your name or email.
             </div>
           </div>
         </div>

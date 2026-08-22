@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { User, Shield, Lock, Info } from "lucide-react";
+import { User, Shield } from "lucide-react";
 
 import { requireAdmin } from "@/lib/permissions";
 import { updateOwnPhoto } from "@/lib/dashboard/profile-actions";
 import { AvatarUploadForm } from "@/components/shared/avatar-upload-form";
+import { ChangePasswordForm } from "@/components/shared/change-password-form";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 
 export const metadata: Metadata = {
@@ -79,19 +80,10 @@ export default async function AdminProfilePage() {
             <Shield size={16} /> Security
           </h3>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Password</span>
-              <span className="flex items-center gap-1.5 text-sm text-slate-600">
-                <Lock size={12} /> ••••••••••••
-              </span>
-            </div>
+            <ChangePasswordForm />
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-medium uppercase tracking-wider text-slate-600">Two-Factor Auth</span>
               <span className="text-sm text-slate-500">Not enabled</span>
-            </div>
-            <div className="mt-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
-              <Info size={14} className="mt-0.5 shrink-0 text-slate-400" />
-              Use &quot;Forgot password&quot; on the login page to change your password.
             </div>
           </div>
         </div>

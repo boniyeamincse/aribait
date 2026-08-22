@@ -138,23 +138,32 @@ export default async function AdminInstructorsPage() {
               render: (i) => (
                 <div className="flex flex-col gap-1.5">
                   <span
-                    className={`w-fit rounded-full border px-2 py-0.5 text-xs font-medium ${VERIFICATION_COLORS[i.verificationStatus]}`}
+                    className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-semibold ${VERIFICATION_COLORS[i.verificationStatus]}`}
                   >
                     {i.verificationStatus}
                   </span>
                   {i.user && i.verificationStatus !== "VERIFIED" && (
                     <form action={setInstructorVerification.bind(null, i.id, "VERIFIED")}>
-                      <button type="submit" className="text-xs text-blue-600 hover:underline">
-                        Verify
+                      <button
+                        type="submit"
+                        className="rounded-md border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 transition-all hover:bg-emerald-100 active:scale-95"
+                      >
+                        ✓ Verify
                       </button>
                     </form>
                   )}
                   {i.user && i.verificationStatus === "VERIFIED" && (
                     <form action={setInstructorVerification.bind(null, i.id, "UNVERIFIED")}>
-                      <button type="submit" className="text-xs text-slate-500 hover:underline">
+                      <button
+                        type="submit"
+                        className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-500 transition-all hover:bg-red-50 hover:border-red-300 hover:text-red-600 active:scale-95"
+                      >
                         Revoke
                       </button>
                     </form>
+                  )}
+                  {!i.user && (
+                    <span className="text-xs text-slate-400 italic">No login account</span>
                   )}
                 </div>
               ),
