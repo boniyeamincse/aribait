@@ -82,7 +82,7 @@ export function FormWizard({
   }
 
   return (
-    <form ref={formRef} action={action} className="flex max-w-2xl flex-col gap-6">
+    <form ref={formRef} action={action} className="flex w-full flex-col gap-6">
       <div className="flex items-start gap-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:gap-2">
         {steps.map((step, i) => {
           const isCurrent = i === currentStep;
