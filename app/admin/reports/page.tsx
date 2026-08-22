@@ -30,7 +30,7 @@ function ReportList({
   rows,
   emptyMessage,
 }: {
-  rows: { key: string; label: string; value: string }[];
+  rows: { key: string; label: string; value: React.ReactNode }[];
   emptyMessage: string;
 }) {
   if (rows.length === 0) {
@@ -70,15 +70,15 @@ export default async function AdminReportsPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 max-w-7xl mx-auto w-full">
       <AdminPageHeader
         title="Reports & Analytics"
         description="Operational, financial, and student reporting across the platform."
         actions={
           <Button
             size="sm"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm gap-2"
-            render={<a href="/api/admin/reports/registrations-csv"><Download size={16} /> Export CSV</a>}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm gap-2 px-4"
+            render={<a href="/api/admin/reports/registrations-csv"><Download size={16} /> Export CSV Report</a>}
             nativeButton={false}
           />
         }
@@ -96,7 +96,13 @@ export default async function AdminReportsPage() {
               rows={registrationsByEvent.map((row) => ({
                 key: row.eventId,
                 label: row.title,
-                value: `${row.confirmed} confirmed · ${row.waitlisted} waitlisted · ${row.completed} completed · ${row.cancelled} cancelled`,
+                value: (
+                  <div className="flex gap-2">
+                    <span className="text-emerald-600 font-semibold">{row.confirmed} confirmed</span>
+                    <span className="text-slate-400">·</span>
+                    <span className="text-indigo-600 font-semibold">{row.completed} completed</span>
+                  </div>
+                ),
               }))}
             />
           </ReportCard>
@@ -107,91 +113,82 @@ export default async function AdminReportsPage() {
               rows={attendanceCompletion.map((row) => ({
                 key: row.title,
                 label: row.title,
-                value: `${row.completionRatePct}% completed · ${row.attendanceRatePct}% attended`,
+                value: (
+                  <div className="flex gap-2">
+                    <span className="text-indigo-600 font-semibold">{row.completionRatePct}% completed</span>
+                    <span className="text-slate-400">·</span>
+                    <span className="text-emerald-600 font-semibold">{row.attendanceRatePct}% attended</span>
+                  </div>
+                ),
               }))}
             />
-          </ReportCard>
-
-          <ReportCard title="Certificate Issuance" icon={Award}>
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-              <div>
-                <p className="text-3xl font-extrabold text-slate-900">
-                  {certificates.issued}
-                </p>
-                <p className="text-sm font-medium text-slate-500 mt-1">Issued Certificates</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xl font-bold text-rose-600">
-                  {certificates.revoked}
-                </p>
-                <p className="text-sm font-medium text-slate-500 mt-1">Revoked</p>
-              </div>
-            </div>
           </ReportCard>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 mt-4">
+      <div className="flex flex-col gap-4 mt-2">
         <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
           <PieChart className="h-5 w-5 text-emerald-500" />
           <h2 className="text-base font-semibold uppercase tracking-widest text-slate-900">Financial Performance</h2>
         </div>
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <ReportCard title="Revenue by Event" icon={TrendingUp}>
-            <ReportList
-              emptyMessage="No paid payments yet."
-              rows={revenueByEvent.map((row) => ({
-                key: row.title,
-                label: row.title,
-                value: `${formatBdt(row.revenueBdt)} · ${row.count} payment${row.count === 1 ? "" : "s"}`,
-              }))}
-            />
-          </ReportCard>
+        
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <ReportCard title="Revenue by Event" icon={TrendingUp}>
+              <ReportList
+                emptyMessage="No paid payments yet."
+                rows={revenueByEvent.map((row) => ({
+                  key: row.title,
+                  label: row.title,
+                  value: (
+                    <div className="flex gap-3 items-center">
+                      <span className="font-bold text-slate-900 bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-md">{formatBdt(row.revenueBdt)}</span>
+                      <span className="text-xs text-slate-500">{row.count} payment{row.count === 1 ? "" : "s"}</span>
+                    </div>
+                  ),
+                }))}
+              />
+            </ReportCard>
+          </div>
 
-          <ReportCard title="Discount Usage" icon={TrendingUp}>
-            <ReportList
-              emptyMessage="No coupons created yet."
-              rows={discountUsage.map((row) => ({
-                key: row.code,
-                label: row.code,
-                value: `${row.redemptions} used · ${formatBdt(row.totalDiscountBdt)} given`,
-              }))}
-            />
-          </ReportCard>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-6">
             <ReportCard title="Enrollment Split" icon={PieChart}>
-              <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-xl">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-600 font-medium">Free</span>
-                  <span className="text-lg font-bold text-slate-900">{pricingSplit.free}</span>
+              <div className="flex flex-col gap-3 p-5 bg-slate-50/50 rounded-xl border border-slate-100">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-slate-600 font-medium">Free</span>
+                    <span className="font-bold text-slate-900">{pricingSplit.free}</span>
+                  </div>
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-400 h-full rounded-full transition-all" style={{ width: pricingSplit.free + pricingSplit.paid > 0 ? `${(pricingSplit.free / (pricingSplit.free + pricingSplit.paid)) * 100}%` : '0%' }}></div>
+                  </div>
                 </div>
-                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-emerald-400 h-full" style={{ width: pricingSplit.free + pricingSplit.paid > 0 ? `${(pricingSplit.free / (pricingSplit.free + pricingSplit.paid)) * 100}%` : '0%' }}></div>
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-slate-600 font-medium">Paid</span>
-                  <span className="text-lg font-bold text-slate-900">{pricingSplit.paid}</span>
-                </div>
-                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-indigo-500 h-full" style={{ width: pricingSplit.free + pricingSplit.paid > 0 ? `${(pricingSplit.paid / (pricingSplit.free + pricingSplit.paid)) * 100}%` : '0%' }}></div>
+                
+                <div className="flex flex-col gap-1 mt-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-slate-600 font-medium">Paid</span>
+                    <span className="font-bold text-slate-900">{pricingSplit.paid}</span>
+                  </div>
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div className="bg-indigo-500 h-full rounded-full transition-all" style={{ width: pricingSplit.free + pricingSplit.paid > 0 ? `${(pricingSplit.paid / (pricingSplit.free + pricingSplit.paid)) * 100}%` : '0%' }}></div>
+                  </div>
                 </div>
               </div>
             </ReportCard>
 
             <ReportCard title="Payment Success" icon={PieChart}>
-              <div className="flex flex-col justify-center h-full gap-3 p-4 bg-slate-50 rounded-xl">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-emerald-600">Paid</span>
-                  <span className="font-bold text-emerald-700">{paymentRates.paid}</span>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="flex flex-col items-center justify-center p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <span className="text-xl font-bold text-emerald-700">{paymentRates.paid}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mt-1">Paid</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-rose-600">Failed</span>
-                  <span className="font-bold text-rose-700">{paymentRates.failed}</span>
+                <div className="flex flex-col items-center justify-center p-3 bg-amber-50 rounded-xl border border-amber-100">
+                  <span className="text-xl font-bold text-amber-700">{paymentRates.pending}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 mt-1">Pending</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-amber-600">Pending</span>
-                  <span className="font-bold text-amber-700">{paymentRates.pending}</span>
+                <div className="flex flex-col items-center justify-center p-3 bg-rose-50 rounded-xl border border-rose-100">
+                  <span className="text-xl font-bold text-rose-700">{paymentRates.failed}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 mt-1">Failed</span>
                 </div>
               </div>
             </ReportCard>
@@ -199,11 +196,12 @@ export default async function AdminReportsPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 mt-4">
+      <div className="flex flex-col gap-4 mt-2">
         <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
           <Users className="h-5 w-5 text-indigo-500" />
-          <h2 className="text-base font-semibold uppercase tracking-widest text-slate-900">Instructors & Students</h2>
+          <h2 className="text-base font-semibold uppercase tracking-widest text-slate-900">Instructors & Certificates</h2>
         </div>
+        
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <ReportCard title="Instructor Performance" icon={Users}>
             <ReportList
@@ -211,9 +209,27 @@ export default async function AdminReportsPage() {
               rows={instructorPerformance.map((row) => ({
                 key: row.name,
                 label: row.name,
-                value: `${row.eventCount} Event${row.eventCount === 1 ? "" : "s"} · ${row.registrationCount} registrations${row.avgRating !== null ? ` · ${row.avgRating}/5 avg rating` : ""}`,
+                value: (
+                  <div className="flex gap-2 text-xs">
+                    <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium">{row.eventCount} Events</span>
+                    <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">{row.registrationCount} Students</span>
+                  </div>
+                ),
               }))}
             />
+          </ReportCard>
+
+          <ReportCard title="Certificate Analytics" icon={Award}>
+            <div className="grid grid-cols-2 gap-4 h-full">
+              <div className="flex flex-col items-center justify-center p-6 bg-slate-50/80 rounded-2xl border border-slate-100">
+                <p className="text-4xl font-extrabold text-indigo-600">{certificates.issued}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">Total Issued</p>
+              </div>
+              <div className="flex flex-col items-center justify-center p-6 bg-rose-50/50 rounded-2xl border border-rose-100">
+                <p className="text-4xl font-extrabold text-rose-600">{certificates.revoked}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-rose-500 mt-2">Revoked</p>
+              </div>
+            </div>
           </ReportCard>
         </div>
       </div>
