@@ -12,15 +12,13 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
-  const sessionUser = await requireUser();
+  // requireUser() already reads status/image fresh from the DB on every
+  // request (see lib/permissions), not from the JWT.
+  const user = await requireUser();
 
-  // Session.user.image is JWT-derived and never refreshes after an upload
-  // (Credentials authorize() doesn't return `image`) — read it fresh instead.
-  const [totalRegistrations, dbUser] = await Promise.all([
-    prisma.registration.count({ where: { userId: sessionUser.id } }),
-    prisma.user.findUniqueOrThrow({ where: { id: sessionUser.id }, select: { image: true } }),
-  ]);
-  const user = { ...sessionUser, image: dbUser.image };
+  const totalRegistrations = await prisma.registration.count({
+    where: { userId: user.id },
+  });
 
   const initials = (user.name ?? user.email ?? "?")
     .split(" ")

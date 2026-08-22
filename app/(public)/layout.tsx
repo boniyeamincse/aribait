@@ -1,7 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
 import { SiteHeader } from "@/components/public/site-header";
 import { SiteFooter } from "@/components/public/site-footer";
+import { WhatsAppFloatingButton } from "@/components/public/whatsapp-button";
 
 export default function PublicLayout({
   children,
@@ -13,6 +12,7 @@ export default function PublicLayout({
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />
+      <WhatsAppFloatingButton />
     </div>
   );
 }

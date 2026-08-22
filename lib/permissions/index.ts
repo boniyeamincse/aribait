@@ -13,6 +13,23 @@ export async function requireUser() {
   if (!session?.user) {
     redirect("/login");
   }
+
+  // session.user.status/image are JWT-derived and only refresh on next
+  // login — an admin suspending this user, or the user uploading a photo,
+  // wouldn't be reflected until then. Read both fresh on every request so
+  // the suspension check below (the actual security boundary) can't be
+  // bypassed by a stale token, and every caller gets a live status/image
+  // for free instead of re-querying it themselves.
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { status: true, image: true },
+  });
+  if (!dbUser) {
+    redirect("/login");
+  }
+  session.user.status = dbUser.status;
+  session.user.image = dbUser.image;
+
   if (session.user.status === "SUSPENDED" || session.user.status === "DEACTIVATED") {
     redirect("/login?error=AccountSuspended");
   }

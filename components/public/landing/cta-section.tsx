@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Rocket, Check } from "lucide-react";
+import { WhatsAppInlineButton } from "@/components/public/whatsapp-button";
 
 export function CtaSection() {
   return (
@@ -37,7 +38,21 @@ export function CtaSection() {
           >
             Browse Events
           </Link>
+          <WhatsAppInlineButton />
         </div>
+
+        {/* WhatsApp contact nudge */}
+        <p className="mt-5 text-sm text-slate-400">
+          Have questions?{" "}
+          <a
+            href="https://wa.me/message/JBAEE53GPYDYF1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-[#25D366] underline-offset-2 hover:underline"
+          >
+            Message Boni Security on WhatsApp →
+          </a>
+        </p>
 
         {/* Trust badges */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm font-medium text-slate-400">

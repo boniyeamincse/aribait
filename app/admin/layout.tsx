@@ -28,14 +28,13 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await requireAdmin();
-  // Session.user.image is JWT-derived and never refreshes after an upload
-  // (Credentials authorize() doesn't return `image`) — read it fresh instead.
-  const [unreadCount, settings, dbUser] = await Promise.all([
+  // user.image is already fresh — requireAdmin() -> requireUser() reads it
+  // from the DB on every request, not from the JWT (see lib/permissions).
+  const [unreadCount, settings] = await Promise.all([
     prisma.notification.count({
       where: { userId: user.id, readAt: null },
     }),
     prisma.settings.findUnique({ where: { id: 1 }, select: { siteLogoUrl: true, siteName: true } }),
-    prisma.user.findUnique({ where: { id: user.id }, select: { image: true } }),
   ]);
 
   const initials = (user.name ?? user.email ?? "A")
@@ -76,9 +75,9 @@ export default async function AdminLayout({
             <DropdownMenuTrigger
               render={
                 <button className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 to-indigo-600 text-xs font-bold text-white shadow-sm ring-offset-2 transition-all hover:ring-2 hover:ring-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-                  {dbUser?.image ? (
+                  {user.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={dbUser.image} alt="" className="h-full w-full object-cover" />
+                    <img src={user.image} alt="" className="h-full w-full object-cover" />
                   ) : (
                     initials
                   )}
@@ -92,7 +91,7 @@ export default async function AdminLayout({
                   <span className="text-xs font-normal text-slate-500">{user.email}</span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem render={<Link href="/dashboard/profile">Profile</Link>} />
+                <DropdownMenuItem render={<Link href="/admin/profile">Profile</Link>} />
                 <DropdownMenuItem render={<Link href="/admin/settings">Settings</Link>} />
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

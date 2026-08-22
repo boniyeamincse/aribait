@@ -24,8 +24,9 @@ export default async function DashboardLayout({
     redirect("/instructor");
   }
 
-  const [dbUser, settings, unreadCount] = await Promise.all([
-    prisma.user.findUnique({ where: { id: user.id }, select: { image: true } }),
+  // user.image is already fresh — requireUser() reads it from the DB on
+  // every request, not from the JWT (see lib/permissions).
+  const [settings, unreadCount] = await Promise.all([
     prisma.settings.findUnique({ where: { id: 1 }, select: { siteLogoUrl: true, siteName: true } }),
     prisma.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
@@ -70,7 +71,7 @@ export default async function DashboardLayout({
           {/* User info */}
           <div className="flex items-center gap-2.5">
             <AvatarBadge
-              image={dbUser?.image}
+              image={user.image}
               initials={initials}
               className="h-8 w-8 text-xs bg-gradient-to-br from-indigo-500 to-purple-600"
             />
