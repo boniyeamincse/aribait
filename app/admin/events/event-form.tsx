@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextarea } from "@/components/shared/rich-textarea";
+import { FormWizard } from "@/components/shared/form-wizard";
 import { toDatetimeLocalValue } from "@/lib/utils";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -38,11 +39,13 @@ export function EventForm({
   instructors,
   submitLabel,
   defaultValues,
+  mode = "flat",
 }: {
   action: EventFormAction;
   categories: { id: string; name: string }[];
   instructors: { id: string; name: string }[];
   submitLabel: string;
+  mode?: "flat" | "wizard";
   defaultValues?: {
     title: string;
     shortDescription: string;
@@ -70,8 +73,8 @@ export function EventForm({
 }) {
   const [state, formAction, pending] = useActionState(action, null);
 
-  return (
-    <form action={formAction} className="flex max-w-2xl flex-col gap-4">
+  const stepBasics = (
+    <>
       <div className="flex flex-col gap-2">
         <Label htmlFor="title">Title</Label>
         <Input
@@ -108,216 +111,230 @@ export function EventForm({
           defaultValue={defaultValues?.description}
         />
       </div>
+    </>
+  );
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="type">Event type</Label>
-          <Select name="type" defaultValue={defaultValues?.type} required>
-            <SelectTrigger id="type" className="w-full">
-              <SelectValue>
-                {(value: string | null) =>
-                  value ? EVENT_TYPE_LABELS[value] : "Select type"
-                }
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(EVENT_TYPE_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="categoryId">Category</Label>
-          <Select
-            name="categoryId"
-            defaultValue={defaultValues?.categoryId}
-            required
-          >
-            <SelectTrigger id="categoryId" className="w-full">
-              <SelectValue>
-                {(value: string | null) =>
-                  categories.find((c) => c.id === value)?.name ??
-                  "Select category"
-                }
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {categories.length === 0 && (
-            <p className="text-xs text-muted-foreground">
-              No categories yet — add one first.
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="instructorId">Instructor</Label>
-          <Select
-            name="instructorId"
-            defaultValue={defaultValues?.instructorId}
-            required
-          >
-            <SelectTrigger id="instructorId" className="w-full">
-              <SelectValue>
-                {(value: string | null) =>
-                  instructors.find((i) => i.id === value)?.name ??
-                  "Select instructor"
-                }
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {instructors.map((instructor) => (
-                <SelectItem key={instructor.id} value={instructor.id}>
-                  {instructor.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {instructors.length === 0 && (
-            <p className="text-xs text-muted-foreground">
-              No instructors yet — add one first.
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="language">Language</Label>
-          <Select name="language" defaultValue={defaultValues?.language ?? "English"} required>
-            <SelectTrigger id="language" className="w-full">
-              <SelectValue>{(value: string | null) => value ?? "Select language"}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {EVENT_LANGUAGES.map((lang) => (
-                <SelectItem key={lang} value={lang}>
-                  {lang}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="classSchedule">Class schedule</Label>
-          <Input
-            id="classSchedule"
-            name="classSchedule"
-            placeholder="e.g., Mon, Wed, Fri at 9:00 PM"
-            defaultValue={defaultValues?.classSchedule ?? undefined}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="capacity">Capacity (blank = unlimited)</Label>
-          <Input
-            id="capacity"
-            name="capacity"
-            type="number"
-            min={1}
-            defaultValue={defaultValues?.capacity ?? undefined}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="priceBdt">Price (৳, 0 = free)</Label>
-          <Input
-            id="priceBdt"
-            name="priceBdt"
-            type="number"
-            min={0}
-            required
-            defaultValue={defaultValues?.priceBdt ?? 0}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="compareAtPriceBdt">Regular price (৳, blank = no discount shown)</Label>
-          <Input
-            id="compareAtPriceBdt"
-            name="compareAtPriceBdt"
-            type="number"
-            min={0}
-            defaultValue={defaultValues?.compareAtPriceBdt ?? undefined}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="minAttendanceSessions">
-            Minimum Sessions attended for certificate (blank = no requirement)
-          </Label>
-          <Input
-            id="minAttendanceSessions"
-            name="minAttendanceSessions"
-            type="number"
-            min={1}
-            defaultValue={defaultValues?.minAttendanceSessions ?? undefined}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="startAt">Event start</Label>
-          <Input
-            id="startAt"
-            name="startAt"
-            type="datetime-local"
-            required
-            defaultValue={
-              defaultValues && toDatetimeLocalValue(defaultValues.startAt)
-            }
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="endAt">Event end</Label>
-          <Input
-            id="endAt"
-            name="endAt"
-            type="datetime-local"
-            required
-            defaultValue={
-              defaultValues && toDatetimeLocalValue(defaultValues.endAt)
-            }
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="registrationOpensAt">Registration opens</Label>
-          <Input
-            id="registrationOpensAt"
-            name="registrationOpensAt"
-            type="datetime-local"
-            defaultValue={
-              defaultValues?.registrationOpensAt
-                ? toDatetimeLocalValue(defaultValues.registrationOpensAt)
-                : undefined
-            }
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="registrationClosesAt">Registration closes</Label>
-          <Input
-            id="registrationClosesAt"
-            name="registrationClosesAt"
-            type="datetime-local"
-            defaultValue={
-              defaultValues?.registrationClosesAt
-                ? toDatetimeLocalValue(defaultValues.registrationClosesAt)
-                : undefined
-            }
-          />
-        </div>
+  const stepCategory = (
+    <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="type">Event type</Label>
+        <Select name="type" defaultValue={defaultValues?.type} required>
+          <SelectTrigger id="type" className="w-full">
+            <SelectValue>
+              {(value: string | null) =>
+                value ? EVENT_TYPE_LABELS[value] : "Select type"
+              }
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(EVENT_TYPE_LABELS).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="categoryId">Category</Label>
+        <Select
+          name="categoryId"
+          defaultValue={defaultValues?.categoryId}
+          required
+        >
+          <SelectTrigger id="categoryId" className="w-full">
+            <SelectValue>
+              {(value: string | null) =>
+                categories.find((c) => c.id === value)?.name ??
+                "Select category"
+              }
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {categories.length === 0 && (
+          <p className="text-xs text-muted-foreground">
+            No categories yet — add one first.
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="instructorId">Instructor</Label>
+        <Select
+          name="instructorId"
+          defaultValue={defaultValues?.instructorId}
+          required
+        >
+          <SelectTrigger id="instructorId" className="w-full">
+            <SelectValue>
+              {(value: string | null) =>
+                instructors.find((i) => i.id === value)?.name ??
+                "Select instructor"
+              }
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {instructors.map((instructor) => (
+              <SelectItem key={instructor.id} value={instructor.id}>
+                {instructor.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {instructors.length === 0 && (
+          <p className="text-xs text-muted-foreground">
+            No instructors yet — add one first.
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="language">Language</Label>
+        <Select name="language" defaultValue={defaultValues?.language ?? "English"} required>
+          <SelectTrigger id="language" className="w-full">
+            <SelectValue>{(value: string | null) => value ?? "Select language"}</SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {EVENT_LANGUAGES.map((lang) => (
+              <SelectItem key={lang} value={lang}>
+                {lang}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="classSchedule">Class schedule</Label>
+        <Input
+          id="classSchedule"
+          name="classSchedule"
+          placeholder="e.g., Mon, Wed, Fri at 9:00 PM"
+          defaultValue={defaultValues?.classSchedule ?? undefined}
+        />
+      </div>
+    </div>
+  );
+
+  const stepPricing = (
+    <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="capacity">Capacity (blank = unlimited)</Label>
+        <Input
+          id="capacity"
+          name="capacity"
+          type="number"
+          min={1}
+          defaultValue={defaultValues?.capacity ?? undefined}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="priceBdt">Price (৳, 0 = free)</Label>
+        <Input
+          id="priceBdt"
+          name="priceBdt"
+          type="number"
+          min={0}
+          required
+          defaultValue={defaultValues?.priceBdt ?? 0}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="compareAtPriceBdt">Regular price (৳, blank = no discount shown)</Label>
+        <Input
+          id="compareAtPriceBdt"
+          name="compareAtPriceBdt"
+          type="number"
+          min={0}
+          defaultValue={defaultValues?.compareAtPriceBdt ?? undefined}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="minAttendanceSessions">
+          Minimum Sessions attended for certificate (blank = no requirement)
+        </Label>
+        <Input
+          id="minAttendanceSessions"
+          name="minAttendanceSessions"
+          type="number"
+          min={1}
+          defaultValue={defaultValues?.minAttendanceSessions ?? undefined}
+        />
+      </div>
+    </div>
+  );
+
+  const stepSchedule = (
+    <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="startAt">Event start</Label>
+        <Input
+          id="startAt"
+          name="startAt"
+          type="datetime-local"
+          required
+          defaultValue={
+            defaultValues && toDatetimeLocalValue(defaultValues.startAt)
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="endAt">Event end</Label>
+        <Input
+          id="endAt"
+          name="endAt"
+          type="datetime-local"
+          required
+          defaultValue={
+            defaultValues && toDatetimeLocalValue(defaultValues.endAt)
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="registrationOpensAt">Registration opens</Label>
+        <Input
+          id="registrationOpensAt"
+          name="registrationOpensAt"
+          type="datetime-local"
+          defaultValue={
+            defaultValues?.registrationOpensAt
+              ? toDatetimeLocalValue(defaultValues.registrationOpensAt)
+              : undefined
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="registrationClosesAt">Registration closes</Label>
+        <Input
+          id="registrationClosesAt"
+          name="registrationClosesAt"
+          type="datetime-local"
+          defaultValue={
+            defaultValues?.registrationClosesAt
+              ? toDatetimeLocalValue(defaultValues.registrationClosesAt)
+              : undefined
+          }
+        />
+      </div>
+    </div>
+  );
+
+  const stepContent = (
+    <>
       <div className="flex flex-col gap-2">
         <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
         <Input
@@ -376,6 +393,34 @@ export function EventForm({
         />
         <Label htmlFor="featured">Featured on homepage</Label>
       </div>
+    </>
+  );
+
+  if (mode === "wizard") {
+    return (
+      <FormWizard
+        action={formAction}
+        pending={pending}
+        submitLabel={submitLabel}
+        submitError={state?.ok === false ? state.error : undefined}
+        steps={[
+          { label: "Basics", content: stepBasics },
+          { label: "Category & Instructor", content: stepCategory },
+          { label: "Pricing & Capacity", content: stepPricing },
+          { label: "Schedule", content: stepSchedule },
+          { label: "Content & Media", content: stepContent },
+        ]}
+      />
+    );
+  }
+
+  return (
+    <form action={formAction} className="flex max-w-2xl flex-col gap-4">
+      {stepBasics}
+      {stepCategory}
+      {stepPricing}
+      {stepSchedule}
+      {stepContent}
 
       {state?.ok === false && (
         <p className="text-sm text-destructive">{state.error}</p>

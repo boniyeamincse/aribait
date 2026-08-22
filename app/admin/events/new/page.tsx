@@ -17,6 +17,7 @@ export default async function NewEventPage() {
         categories={categories}
         instructors={instructors}
         submitLabel="Create Event"
+        mode="wizard"
       />
     </div>
   );

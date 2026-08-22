@@ -26,7 +26,12 @@ export default async function NewInstructorEventPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Create Event</h1>
-      <InstructorEventForm action={createInstructorEvent} categories={categories} submitLabel="Create Event" />
+      <InstructorEventForm
+        action={createInstructorEvent}
+        categories={categories}
+        submitLabel="Create Event"
+        mode="wizard"
+      />
     </div>
   );
 }
