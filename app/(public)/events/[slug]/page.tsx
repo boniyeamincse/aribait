@@ -18,7 +18,7 @@ const TOPICS_PATTERN = /^Topics:\s*([\s\S]*?)\.\s*Expected outcome:\s*([\s\S]*)$
 function SessionAgenda({ description }: { description: string }) {
   const match = description.match(TOPICS_PATTERN);
   if (!match) {
-    return <p className="mt-3 whitespace-pre-line border-t pt-3 text-muted-foreground">{description}</p>;
+    return <MarkdownContent text={description} className="mt-3 border-t pt-3 text-muted-foreground" />;
   }
 
   const topics = match[1]
@@ -252,9 +252,7 @@ export default async function EventDetailPage({
             {event.learningObjectives && (
               <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">What you&apos;ll learn</h2>
-                <div className="prose prose-slate max-w-none text-slate-600">
-                  <p className="whitespace-pre-line leading-relaxed">{event.learningObjectives}</p>
-                </div>
+                <MarkdownContent text={event.learningObjectives} className="max-w-none text-slate-600" />
               </div>
             )}
 
@@ -316,9 +314,7 @@ export default async function EventDetailPage({
             {event.prerequisites && (
               <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">Prerequisites</h2>
-                <div className="prose prose-slate max-w-none text-slate-600">
-                  <p className="whitespace-pre-line leading-relaxed">{event.prerequisites}</p>
-                </div>
+                <MarkdownContent text={event.prerequisites} className="max-w-none text-slate-600" />
               </div>
             )}
             
@@ -426,7 +422,7 @@ export default async function EventDetailPage({
             {event.termsAndRefundPolicy && (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-sm">
                 <h3 className="font-semibold text-slate-900 mb-2">Terms & Refund Policy</h3>
-                <p className="text-slate-500 leading-relaxed whitespace-pre-line">{event.termsAndRefundPolicy}</p>
+                <MarkdownContent text={event.termsAndRefundPolicy} className="text-slate-500" />
               </div>
             )}
           </div>

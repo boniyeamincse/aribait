@@ -347,7 +347,7 @@ export function EventForm({
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="learningObjectives">Learning objectives</Label>
-        <Textarea
+        <RichTextarea
           id="learningObjectives"
           name="learningObjectives"
           rows={3}
@@ -367,7 +367,7 @@ export function EventForm({
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="prerequisites">Prerequisites</Label>
-        <Textarea
+        <RichTextarea
           id="prerequisites"
           name="prerequisites"
           rows={2}
@@ -377,7 +377,7 @@ export function EventForm({
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="termsAndRefundPolicy">Terms and refund policy</Label>
-        <Textarea
+        <RichTextarea
           id="termsAndRefundPolicy"
           name="termsAndRefundPolicy"
           rows={2}

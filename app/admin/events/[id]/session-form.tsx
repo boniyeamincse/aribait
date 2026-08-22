@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextarea } from "@/components/shared/rich-textarea";
 import { toDatetimeLocalValue } from "@/lib/utils";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -92,7 +92,7 @@ export function SessionForm({
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="session-description">Description / agenda</Label>
-        <Textarea
+        <RichTextarea
           id="session-description"
           name="description"
           rows={2}
