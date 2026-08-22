@@ -8,6 +8,7 @@ import { paymentProofSchema, rejectPaymentSchema } from "@/lib/validations/payme
 import { sendNotification } from "@/lib/notifications";
 import { formatBdt } from "@/lib/utils";
 import { writeAuditLog } from "@/lib/audit/log";
+import { createEarningForRegistration } from "@/lib/finance/earning-lifecycle";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -129,6 +130,7 @@ export async function approveManualPayment(transactionId: string) {
       where: { registrationId: transaction.payment.registrationId },
       data: { status: "CONFIRMED" },
     });
+    await createEarningForRegistration(tx, transaction.payment.registrationId);
   });
 
   await writeAuditLog({

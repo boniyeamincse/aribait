@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db/client";
 import { requireUser } from "@/lib/permissions";
 import { validateCoupon } from "@/lib/discounts/validate";
 import { sendNotification } from "@/lib/notifications";
+import { reverseEarningForRegistration } from "@/lib/finance/earning-lifecycle";
 
 type ActionResult =
   | { ok: true; waitlisted: boolean; registrationId: string }
@@ -267,6 +268,8 @@ export async function cancelRegistration(registrationId: string) {
     }
 
     if (registration.status === "CONFIRMED") {
+      await reverseEarningForRegistration(tx, registrationId);
+
       const nextInLine = await tx.registration.findFirst({
         where: { eventId: registration.eventId, status: "WAITLISTED" },
         orderBy: { createdAt: "asc" },

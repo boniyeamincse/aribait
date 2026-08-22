@@ -18,6 +18,7 @@ import {
   BarChart3,
   ShieldCheck,
   Settings,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -61,6 +62,12 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/admin/payments",  label: "Payments", icon: CreditCard, badge: "pendingPayments" },
       { href: "/admin/discounts", label: "Coupons",  icon: Ticket },
+    ],
+  },
+  {
+    label: "Finance",
+    items: [
+      { href: "/admin/instructor-payments", label: "Instructor Payments", icon: Wallet },
     ],
   },
   {

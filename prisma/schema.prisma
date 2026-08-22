@@ -64,6 +64,8 @@ model User {
   instructor           Instructor?
   createdEvents        Event[]              @relation("EventCreatedBy")
   approvedEvents       Event[]              @relation("EventApprovedBy")
+  recordedInstructorPayments InstructorPayment[] @relation("InstructorPaymentRecordedBy")
+  reversedInstructorPayments InstructorPayment[] @relation("InstructorPaymentReversedBy")
 
   @@map("users")
 }
@@ -126,6 +128,10 @@ model Settings {
   // Instructor self-serve Session scheduling bounds (docs/instactor.md §5).
   minSessionDurationMinutes Int @default(15)  @map("min_session_duration_minutes")
   maxSessionDurationMinutes Int @default(480) @map("max_session_duration_minutes")
+
+  // Instructor earnings split (docs/Payment.md) — snapshotted onto each
+  // InstructorEarning at creation time, not read live thereafter.
+  instructorCommissionPct Int @default(60) @map("instructor_commission_pct")
 
   // Contact and social — shown in the public footer/contact page.
   contactEmail   String? @map("contact_email")
@@ -223,6 +229,8 @@ model Instructor {
   events        Event[]
   eventSessions EventSession[]
   categories    InstructorCategory[]
+  earnings      InstructorEarning[]
+  payments      InstructorPayment[]
 
   @@map("instructors")
 }
@@ -349,6 +357,7 @@ model Event {
   notifications  Notification[]
   resources      EventResource[]
   reviews        Review[]
+  earnings       InstructorEarning[]
 
   @@index([status])
   @@index([categoryId])
@@ -444,6 +453,7 @@ model Registration {
   discountRedemption DiscountRedemption?
   attendances        SessionAttendance[]
   certificate        Certificate?
+  earning            InstructorEarning?
 
   @@unique([userId, eventId])
   @@index([eventId, status])
@@ -616,6 +626,93 @@ model PaymentTransaction {
 }
 
 // ---------------------------------------------------------------------------
+// Instructor Earnings & Manual Payment (docs/Payment.md)
+// Balance is always computed from this ledger (lib/finance/balances.ts),
+// never stored as an editable field. See lib/finance/earning-lifecycle.ts
+// for the three write-sites: approveManualPayment (creates PENDING),
+// completeEvent (PENDING -> AVAILABLE once attendance requirement is met),
+// cancelRegistration (-> CANCELLED). No earning-level PAID status — a
+// recorded InstructorPayment is a lump-sum debit against the AVAILABLE
+// pool, not tagged against specific earnings.
+// ---------------------------------------------------------------------------
+
+enum InstructorEarningStatus {
+  PENDING
+  AVAILABLE
+  CANCELLED
+  REVERSED
+
+  @@map("instructor_earning_status")
+}
+
+model InstructorEarning {
+  id                  String                  @id @default(cuid())
+  instructorId        String                  @map("instructor_id")
+  eventId             String                  @map("event_id")
+  registrationId      String                  @unique @map("registration_id")
+  grossAmountBdt      Int                     @map("gross_amount_bdt")
+  instructorPct       Int                     @map("instructor_pct")
+  instructorAmountBdt Int                     @map("instructor_amount_bdt")
+  platformAmountBdt   Int                     @map("platform_amount_bdt")
+  status              InstructorEarningStatus @default(PENDING)
+  availableAt         DateTime?               @map("available_at")
+  createdAt           DateTime                @default(now()) @map("created_at")
+  updatedAt           DateTime                @updatedAt @map("updated_at")
+
+  instructor   Instructor   @relation(fields: [instructorId], references: [id])
+  event        Event        @relation(fields: [eventId], references: [id])
+  registration Registration @relation(fields: [registrationId], references: [id])
+
+  @@index([instructorId, status])
+  @@map("instructor_earnings")
+}
+
+enum InstructorPayoutMethod {
+  CASH
+  BANK_TRANSFER
+  MOBILE_BANKING
+  BKASH
+  NAGAD
+  ROCKET
+  OTHER
+
+  @@map("instructor_payout_method")
+}
+
+enum InstructorPaymentStatus {
+  RECORDED
+  REVERSED
+
+  @@map("instructor_payment_status")
+}
+
+// Corrections use reversal, never edit/delete (docs/Payment.md "Important
+// Business Rules") — reverseInstructorPayment sets status+reason, the row
+// is kept forever.
+model InstructorPayment {
+  id              String                   @id @default(cuid())
+  instructorId    String                   @map("instructor_id")
+  amountBdt       Int                      @map("amount_bdt")
+  paymentDate     DateTime                 @map("payment_date")
+  method          InstructorPayoutMethod
+  referenceNumber String                   @map("reference_number")
+  note            String?                  @db.Text
+  recordedById    String                   @map("recorded_by_id")
+  status          InstructorPaymentStatus  @default(RECORDED)
+  reversedById    String?                  @map("reversed_by_id")
+  reversedAt      DateTime?                @map("reversed_at")
+  reverseReason   String?                  @db.Text @map("reverse_reason")
+  createdAt       DateTime                 @default(now()) @map("created_at")
+
+  instructor Instructor @relation(fields: [instructorId], references: [id])
+  recordedBy User       @relation("InstructorPaymentRecordedBy", fields: [recordedById], references: [id])
+  reversedBy User?      @relation("InstructorPaymentReversedBy", fields: [reversedById], references: [id])
+
+  @@index([instructorId, status])
+  @@map("instructor_payments")
+}
+
+// ---------------------------------------------------------------------------
 // Phase 4 — Live Delivery
 // Protected Session join, manual attendance, and the in-app + email
 // notification module (reminders, reschedule/cancel, announcements,
@@ -672,6 +769,7 @@ enum NotificationType {
   EVENT_CHANGES_REQUESTED
   EVENT_REJECTED
   EVENT_PUBLISHED_TO_INSTRUCTOR
+  INSTRUCTOR_PAYMENT_RECORDED
 
   @@map("notification_type")
 }

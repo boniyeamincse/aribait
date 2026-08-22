@@ -16,6 +16,7 @@ import {
   FolderOpen,
   Bell,
   UserCog,
+  Wallet,
 } from "lucide-react";
 
 type NavItem = {
@@ -52,6 +53,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/instructor/sessions", label: "Sessions", icon: MonitorPlay, exact: true },
       { href: "/instructor/students", label: "Students", icon: GraduationCap, exact: true },
       { href: "/instructor/attendance", label: "Attendance", icon: CheckSquare, exact: true },
+      { href: "/instructor/earnings", label: "Earnings", icon: Wallet, exact: true },
       { href: "/instructor/materials", label: "Materials", icon: FolderOpen, exact: true },
       { href: "/instructor/notifications", label: "Notifications", icon: Bell, exact: true },
       { href: "/instructor/profile", label: "Profile", icon: UserCog, exact: true },

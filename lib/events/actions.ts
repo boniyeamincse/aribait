@@ -10,6 +10,7 @@ import { announcementSchema } from "@/lib/validations/announcement";
 import { slugify } from "@/lib/utils";
 import { sendNotification } from "@/lib/notifications";
 import { writeAuditLog } from "@/lib/audit/log";
+import { settleEarningsForCompletedEvent } from "@/lib/finance/earning-lifecycle";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -246,9 +247,12 @@ export async function completeEvent(eventId: string) {
     where: { eventId, status: "CONFIRMED" },
     select: { id: true, userId: true },
   });
-  await prisma.registration.updateMany({
-    where: { id: { in: registrations.map((r) => r.id) } },
-    data: { status: "COMPLETED" },
+  await prisma.$transaction(async (tx) => {
+    await tx.registration.updateMany({
+      where: { id: { in: registrations.map((r) => r.id) } },
+      data: { status: "COMPLETED" },
+    });
+    await settleEarningsForCompletedEvent(tx, eventId, registrations.map((r) => r.id));
   });
 
   for (const registration of registrations) {
