@@ -4,31 +4,9 @@ This is the core repository for the Ariba IT web platform, an advanced system fo
 
 ## Test Accounts
 
-The following test accounts have been seeded into the database for testing and demonstration purposes. You can use these to explore both sides of the platform.
-
-### Admin Account
-
-Use this account to access the Admin Dashboard, create events, issue certificates, and manage students.
-
-* **Email:** `admin@aribait.com`
-* **Password:** `Admin@1234`
-* **Access URL:** `/admin`
-
-### Student Account
-
-Use this account to experience the platform as a student—registering for courses, viewing the student dashboard, and accessing learning materials.
-
-* **Email:** `student@aribait.com`
-* **Password:** `Student@1234`
-* **Access URL:** `/dashboard`
-
-### Instructor Account
-
-Use this account to sign in as an instructor. Created via the admin "Add New Instructor" form (`/admin/instructors`), which creates a login (role `INSTRUCTOR`) and profile together.
-
-* **Email:** `instructor@aribait.com`
-* **Password:** `Instructor@1234`
-* **Access URL:** `/dashboard`
+`prisma/seed.ts` only creates the `Settings` row — there are no pre-seeded
+Admin/Student/Instructor logins. Use the real accounts below, or create an
+Instructor via the admin "Add New Instructor" form (`/admin/instructors`).
 
 ### Personal Accounts (Your Credentials)
 
@@ -37,11 +15,14 @@ If you prefer to use your personal accounts for testing emails and actual use:
 **Admin:**
 * **Email:** `boniyeamin.cse@gmail.com`
 * **Password:** `bKwhu_apT-6e`
+* **Access URL:** `/admin`
 
 **Student:**
 * **Email:** `boni.ielts@gmail.com`
 * **Password:** *(Your personal password)*
+* **Access URL:** `/dashboard`
 
 **Instructor:**
 * **Email:** `boniyeamin.cse1@gmail.com`
 * **Password:** `BoniIT@2025`
+* **Access URL:** `/instructor`
