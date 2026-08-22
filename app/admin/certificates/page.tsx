@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/db/client";
 import { Badge } from "@/components/ui/badge";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { Award, CheckCircle, AlertCircle } from "lucide-react";
+import { AdminTable } from "@/components/admin/admin-table";
+import { Award, CheckCircle, AlertCircle, ShieldAlert, FileBadge, CheckCircle2 } from "lucide-react";
 
 import {
   IssueCertificateButton,
@@ -35,119 +36,196 @@ export default async function AdminCertificatesPage() {
     return { ...r, attendedCount, required, eligible };
   });
 
+  const totalIssued = certificates.length;
+  const activeCount = certificates.filter((c) => c.status === "ISSUED").length;
+  const revokedCount = certificates.filter((c) => c.status === "REVOKED").length;
+
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full">
       <AdminPageHeader
-        title="Certificates"
-        description="Manage and issue course completion certificates."
+        title="Certificate Management"
+        description="Issue, revoke, and manage course completion certificates for eligible students."
       />
 
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <Award className="h-5 w-5 text-indigo-500" />
-          <h2 className="text-lg font-semibold text-slate-900">Eligible for a certificate</h2>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-blue-500 opacity-90" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+            <FileBadge size={20} />
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Total Issued</p>
+            <p className="text-2xl font-black text-slate-900">{totalIssued}</p>
+          </div>
         </div>
         
-        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          {eligibleRegistrations.length === 0 ? (
-            <div className="flex items-center justify-center p-8 text-sm text-slate-500">
-              <CheckCircle className="mr-2 h-5 w-5 text-emerald-500" />
-              No completed registrations awaiting a certificate.
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {eligibleRegistrations.map((registration) => (
-                <div
-                  key={registration.id}
-                  className="flex items-center justify-between gap-4 p-5 text-sm transition-colors hover:bg-slate-50/50"
-                >
-                  <div className="flex flex-col gap-1">
-                    <p className="font-semibold text-slate-900">{registration.user.name}</p>
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <span className="font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">
-                        {registration.event.title}
-                      </span>
-                      {registration.required !== null && (
-                        <span className="text-xs">
-                          · attended {registration.attendedCount}/{registration.event._count.sessions}{" "}
-                          Session{registration.event._count.sessions === 1 ? "" : "s"} (requires{" "}
-                          {registration.required})
-                        </span>
-                      )}
-                    </div>
+        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-emerald-500 opacity-90" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
+            <CheckCircle2 size={20} />
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Active Valid</p>
+            <p className="text-2xl font-black text-slate-900">{activeCount}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-rose-500 opacity-90" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-600 border border-rose-100">
+            <ShieldAlert size={20} />
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Revoked / Void</p>
+            <p className="text-2xl font-black text-slate-900">{revokedCount}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Eligible Students */}
+      <section className="flex flex-col gap-4 mt-2">
+        <div className="flex items-center gap-2 px-1">
+          <Award className="h-5 w-5 text-indigo-500" />
+          <h2 className="text-lg font-bold text-slate-900">Pending Issuance</h2>
+        </div>
+        
+        <AdminTable
+          rowKey={(r) => r.id}
+          rows={eligibleRegistrations}
+          emptyMessage="No completed registrations awaiting a certificate."
+          columns={[
+            {
+              key: "student",
+              label: "Student",
+              render: (r) => (
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600 border border-slate-200">
+                    {(r.user.name || r.user.email).charAt(0).toUpperCase()}
                   </div>
-                  <div>
-                    {registration.eligible ? (
-                      <IssueCertificateButton registrationId={registration.id} />
-                    ) : (
-                      <Badge variant="destructive" className="bg-rose-50 text-rose-700 hover:bg-rose-100 border-none">
-                        Attendance not met
-                      </Badge>
-                    )}
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-slate-900">{r.user.name}</span>
+                    <span className="text-xs text-slate-500">{r.user.email}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              ),
+            },
+            {
+              key: "event",
+              label: "Completed Event",
+              render: (r) => (
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-slate-900 line-clamp-1">{r.event.title}</span>
+                  {r.required !== null && (
+                    <span className="text-[11px] font-medium text-slate-500">
+                      Attendance: {r.attendedCount}/{r.event._count.sessions} (Req: {r.required})
+                    </span>
+                  )}
+                </div>
+              ),
+            },
+            {
+              key: "status",
+              label: "Eligibility",
+              render: (r) => (
+                r.eligible ? (
+                  <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none shadow-none uppercase text-[10px] tracking-wide">
+                    Eligible
+                  </Badge>
+                ) : (
+                  <Badge variant="destructive" className="bg-rose-50 text-rose-700 hover:bg-rose-100 border-none shadow-none uppercase text-[10px] tracking-wide">
+                    Attendance Not Met
+                  </Badge>
+                )
+              ),
+            },
+            {
+              key: "action",
+              label: "",
+              render: (r) => (
+                <div className="flex justify-end">
+                  {r.eligible && <IssueCertificateButton registrationId={r.id} />}
+                </div>
+              ),
+            }
+          ]}
+        />
       </section>
 
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
+      {/* Issued Certificates */}
+      <section className="flex flex-col gap-4 mt-4">
+        <div className="flex items-center gap-2 px-1">
           <CheckCircle className="h-5 w-5 text-emerald-500" />
-          <h2 className="text-lg font-semibold text-slate-900">Issued Certificates</h2>
+          <h2 className="text-lg font-bold text-slate-900">Issued Directory</h2>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          {certificates.length === 0 ? (
-            <p className="p-8 text-center text-sm text-slate-500">
-              No certificates issued yet.
-            </p>
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {certificates.map((certificate) => (
-                <div
-                  key={certificate.id}
-                  className="flex items-center justify-between gap-4 p-5 text-sm transition-colors hover:bg-slate-50/50"
-                >
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-slate-900 font-mono tracking-tight">
-                        {certificate.certificateNumber}
-                      </p>
-                      {certificate.status === "REVOKED" && (
-                        <Badge variant="destructive" className="bg-rose-50 text-rose-700 hover:bg-rose-100 border-none text-[10px] uppercase h-5">
-                          Revoked
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-slate-500">
-                      <span className="font-semibold text-slate-700">{certificate.registration.user.name}</span>{" "}
-                      · {certificate.registration.event.title}
-                    </p>
-                    {certificate.status === "REVOKED" && certificate.revokeReason && (
-                      <p className="text-xs text-rose-600 flex items-center gap-1 mt-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Reason: {certificate.revokeReason}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {certificate.status === "ISSUED" ? (
-                      <>
-                        <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-none">
-                          Active
-                        </Badge>
-                        <RevokeCertificateButton certificateId={certificate.id} />
-                      </>
-                    ) : (
-                      <ReissueCertificateButton certificateId={certificate.id} />
-                    )}
-                  </div>
+        
+        <AdminTable
+          rowKey={(c) => c.id}
+          rows={certificates}
+          emptyMessage="No certificates have been issued yet."
+          columns={[
+            {
+              key: "cert_id",
+              label: "Certificate ID",
+              render: (c) => (
+                <div className="flex flex-col gap-1">
+                  <span className="font-mono text-sm font-bold tracking-tight text-slate-900">
+                    {c.certificateNumber}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    Issued: {c.issuedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              ),
+            },
+            {
+              key: "student",
+              label: "Recipient & Course",
+              render: (c) => (
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-slate-900">{c.registration.user.name}</span>
+                  <span className="text-xs font-medium text-indigo-600 line-clamp-1">{c.registration.event.title}</span>
+                </div>
+              ),
+            },
+            {
+              key: "status",
+              label: "Status",
+              render: (c) => (
+                <div className="flex flex-col gap-1">
+                  {c.status === "ISSUED" ? (
+                    <Badge className="w-fit bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200 uppercase text-[10px] tracking-wide shadow-none">
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge variant="destructive" className="w-fit bg-rose-50 text-rose-700 hover:bg-rose-100 border-none uppercase text-[10px] tracking-wide shadow-none">
+                      Revoked
+                    </Badge>
+                  )}
+                  {c.status === "REVOKED" && c.revokeReason && (
+                    <span className="text-[10px] text-rose-600 flex items-center gap-1 mt-0.5">
+                      <AlertCircle className="h-3 w-3" />
+                      {c.revokeReason}
+                    </span>
+                  )}
+                </div>
+              ),
+            },
+            {
+              key: "action",
+              label: "",
+              render: (c) => (
+                <div className="flex justify-end items-center gap-2">
+                  {c.status === "ISSUED" ? (
+                    <RevokeCertificateButton certificateId={c.id} />
+                  ) : (
+                    <ReissueCertificateButton certificateId={c.id} />
+                  )}
+                </div>
+              ),
+            }
+          ]}
+        />
       </section>
     </div>
   );
