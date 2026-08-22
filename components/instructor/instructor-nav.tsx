@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import {
   LayoutDashboard,
   CalendarDays,
+  Calendar,
   Plus,
   FileText,
   Send,
@@ -47,6 +48,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: null,
     items: [
+      { href: "/instructor/calendar", label: "Calendar", icon: Calendar, exact: true },
       { href: "/instructor/sessions", label: "Sessions", icon: MonitorPlay, exact: true },
       { href: "/instructor/students", label: "Students", icon: GraduationCap, exact: true },
       { href: "/instructor/attendance", label: "Attendance", icon: CheckSquare, exact: true },

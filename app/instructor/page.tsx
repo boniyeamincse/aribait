@@ -66,7 +66,12 @@ export default async function InstructorDashboardPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-slate-900">Upcoming Sessions</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">Upcoming Sessions</h2>
+          <Link href="/instructor/calendar" className="text-sm font-medium text-indigo-600 hover:underline">
+            See Calendar →
+          </Link>
+        </div>
         <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white">
           {upcomingSessions.length === 0 && (
             <p className="p-4 text-sm text-slate-500">No upcoming Sessions.</p>
