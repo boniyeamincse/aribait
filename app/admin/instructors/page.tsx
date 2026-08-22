@@ -5,7 +5,7 @@ import { AdminTable } from "@/components/admin/admin-table";
 import { prisma } from "@/lib/db/client";
 import { setInstructorVerification } from "@/lib/instructors/actions";
 
-import { InstructorForm } from "./instructor-form";
+import { AddInstructorDialog } from "./add-instructor-dialog";
 
 const VERIFICATION_COLORS: Record<string, string> = {
   UNVERIFIED: "bg-amber-500/15 text-amber-600 border-amber-500/30",
@@ -27,15 +27,16 @@ export default async function AdminInstructorsPage() {
       <AdminPageHeader
         title="Instructors"
         description="Create instructor accounts (login + profile) and manage contact info and social links."
+        actions={<AddInstructorDialog />}
       />
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="mb-4 text-sm font-semibold text-slate-900">Add New Instructor</h2>
-        <InstructorForm />
-      </section>
-
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-slate-900">Instructor Directory</h2>
+        <h2 className="text-lg font-semibold text-slate-900">
+          Instructor Directory{" "}
+          <span className="text-sm font-normal text-slate-500">
+            ({instructors.length})
+          </span>
+        </h2>
         <AdminTable
           rowKey={(i) => i.id}
           rows={instructors}
