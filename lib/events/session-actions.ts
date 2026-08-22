@@ -174,3 +174,34 @@ export async function cancelEventSession(sessionId: string) {
 
   revalidatePath(`/admin/events/${session.eventId}`);
 }
+
+export async function reactivateEventSession(sessionId: string) {
+  const admin = await requireAdmin();
+  const session = await prisma.eventSession.update({
+    where: { id: sessionId },
+    data: { status: "SCHEDULED" },
+    include: { event: true },
+  });
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "session.reactivate",
+    targetType: "EventSession",
+    targetId: sessionId,
+    summary: `Reactivated Session "${session.title}"`,
+  });
+
+  await notifyConfirmedRegistrants(session.eventId, (userId) => ({
+    userId,
+    type: "SESSION_RESCHEDULED",
+    title: `Session back on: ${session.title}`,
+    body: `${session.event.title} — "${session.title}" is back on as scheduled.`,
+    eventId: session.eventId,
+    eventSessionId: sessionId,
+    email: {
+      subject: `Session back on: ${session.title}`,
+      text: `${session.event.title} — "${session.title}" is back on as scheduled.`,
+    },
+  }));
+
+  revalidatePath(`/admin/events/${session.eventId}`);
+}

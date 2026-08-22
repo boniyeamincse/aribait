@@ -65,6 +65,13 @@ export function OverviewTab({
             </Button>
           </form>
         )}
+        {event.status === "CANCELLED" && (
+          <form action={publishEvent.bind(null, event.id)}>
+            <Button type="submit" size="sm">
+              Reactivate
+            </Button>
+          </form>
+        )}
         {event.status !== "CANCELLED" && event.status !== "ARCHIVED" && (
           <form action={cancelEvent.bind(null, event.id)}>
             <Button type="submit" size="sm" variant="destructive">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { createEventSession, cancelEventSession } from "@/lib/events/session-actions";
+import { createEventSession, cancelEventSession, reactivateEventSession } from "@/lib/events/session-actions";
 import type { Instructor, Prisma } from "@/lib/generated/prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,10 +43,16 @@ export function SessionsTab({
                 size="sm"
                 variant="outline"
               />
-              {session.status !== "CANCELLED" && (
+              {session.status !== "CANCELLED" ? (
                 <form action={cancelEventSession.bind(null, session.id)}>
                   <Button type="submit" size="sm" variant="destructive">
                     Cancel
+                  </Button>
+                </form>
+              ) : (
+                <form action={reactivateEventSession.bind(null, session.id)}>
+                  <Button type="submit" size="sm">
+                    Activate
                   </Button>
                 </form>
               )}
