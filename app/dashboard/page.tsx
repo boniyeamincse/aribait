@@ -138,10 +138,11 @@ export default async function DashboardOverviewPage() {
   return (
     <div className="flex flex-col gap-8">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 p-6 text-white shadow-lg shadow-indigo-500/20">
-        {/* Decorative circles */}
-        <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/5" />
-        <div className="pointer-events-none absolute -bottom-8 right-16 h-32 w-32 rounded-full bg-white/5" />
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 p-8 text-white shadow-2xl shadow-indigo-900/30">
+        {/* Decorative dynamic circles */}
+        <div className="absolute -left-20 -top-20 h-64 w-64 animate-pulse rounded-full bg-indigo-500/20 blur-3xl" />
+        <div className="absolute -bottom-32 -right-10 h-80 w-80 animate-pulse rounded-full bg-purple-500/20 blur-3xl delay-700" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
 
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -156,9 +157,10 @@ export default async function DashboardOverviewPage() {
           {nextSession ? (
             <Link
               href="/dashboard/sessions"
-              className="flex items-center gap-3 rounded-xl bg-white/15 px-4 py-3 backdrop-blur-sm hover:bg-white/20 transition-colors shrink-0"
+              className="group relative flex items-center gap-4 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-md transition-all hover:bg-white/20 hover:scale-[1.02] hover:shadow-xl shrink-0"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-indigo-100 shadow-inner group-hover:bg-white/30 transition-colors">
                 <MonitorPlay size={18} />
               </div>
               <div>
@@ -170,10 +172,10 @@ export default async function DashboardOverviewPage() {
           ) : (
             <Link
               href="/events"
-              className="flex items-center gap-2 rounded-xl bg-white text-indigo-700 px-5 py-2.5 text-sm font-bold hover:bg-indigo-50 transition-colors shadow-md shrink-0"
+              className="group flex items-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-indigo-900 shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] transition-all hover:scale-105 hover:bg-indigo-50 hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.7)] shrink-0"
             >
               Browse Courses
-              <ArrowRight size={16} />
+              <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
             </Link>
           )}
         </div>
@@ -187,9 +189,10 @@ export default async function DashboardOverviewPage() {
             <Link
               key={card.label}
               href={card.href}
-              className="group flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              className="group relative flex flex-col gap-3 rounded-[1.5rem] border border-white/40 bg-white/60 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 hover:bg-white/80 overflow-hidden"
             >
-              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.bg}`}>
+              <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br opacity-[0.05] group-hover:opacity-10 transition-opacity duration-300" style={{ backgroundImage: `var(--tw-gradient-stops)` }} />
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${card.bg} shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                 <Icon size={20} className={card.text} />
               </div>
               <div>
@@ -204,9 +207,9 @@ export default async function DashboardOverviewPage() {
 
       {/* Recent Courses */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <TrendingUp size={18} className="text-indigo-500" />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 flex items-center gap-2.5">
+            <TrendingUp size={22} className="text-indigo-600" />
             My Courses
           </h2>
           <Link
@@ -237,10 +240,10 @@ export default async function DashboardOverviewPage() {
               <Link
                 key={reg.id}
                 href={`/dashboard/events/${reg.event?.slug ?? ""}`}
-                className="group flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-indigo-200"
+                className="group flex items-center gap-5 rounded-[1.5rem] border border-white/50 bg-white/70 p-5 shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:bg-white hover:shadow-xl hover:shadow-indigo-500/5"
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm">
-                  <CalendarDays size={20} />
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-300">
+                  <CalendarDays size={24} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-slate-900 line-clamp-1">{reg.event?.title}</p>
@@ -266,10 +269,12 @@ export default async function DashboardOverviewPage() {
             <Link
               key={item.label}
               href={item.href}
-              className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              className="group flex flex-col items-center gap-3 rounded-[1.5rem] border border-white/40 bg-white/60 p-5 text-center shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-indigo-500/5"
             >
-              <Icon size={22} className={item.color} />
-              <span className="text-xs font-semibold text-slate-700">{item.label}</span>
+              <div className="rounded-2xl bg-slate-50 p-3 transition-colors group-hover:bg-slate-100">
+                <Icon size={26} className={`${item.color} group-hover:scale-110 transition-transform duration-300`} />
+              </div>
+              <span className="text-[13px] font-bold text-slate-700">{item.label}</span>
             </Link>
           );
         })}

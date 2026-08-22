@@ -39,11 +39,15 @@ export default async function DashboardLayout({
     .toUpperCase();
 
   return (
-    <div className="flex min-h-full flex-col bg-slate-50">
+    <div className="flex min-h-full flex-col bg-slate-50 relative overflow-hidden">
+      {/* Ambient Premium Background Orbs */}
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-400/10 blur-[100px]" />
+      <div className="pointer-events-none absolute top-40 -right-20 h-[400px] w-[400px] rounded-full bg-purple-400/10 blur-[100px]" />
+      
       <Toaster richColors position="top-right" />
       {/* Top header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur-md sm:px-6 shadow-sm">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-white/20 bg-white/70 px-4 py-3 backdrop-blur-xl sm:px-6 shadow-sm transition-all duration-300">
+        <Link href="/" className="flex items-center gap-2 shrink-0 group">
           <Image
             src={settings?.siteLogoUrl || "/logo.png"}
             alt={settings?.siteName || "Ariba IT"}

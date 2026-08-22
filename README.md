@@ -1,5 +1,7 @@
 # Ariba IT Platform
 
+**Live URL:** [https://ariba-it.vercel.app](https://ariba-it.vercel.app)
+
 This is the core repository for the Ariba IT web platform, an advanced system for managing technology training programs, event registrations, user dashboards, and secure certification tracking.
 
 ## Test Accounts
@@ -26,3 +28,6 @@ If you prefer to use your personal accounts for testing emails and actual use:
 * **Email:** `boniyeamin.cse1@gmail.com`
 * **Password:** `BoniIT@2025`
 * **Access URL:** `/instructor`
+
+
+আমি Azmarry Akter (nurse.azmarry@gmail.com) এর পাসওয়ার্ড সফলভাবে BoniIT@2025 তে পরিবর্তন করে দিয়েছি।
