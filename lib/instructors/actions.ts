@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db/client";
 import { requireAdmin } from "@/lib/permissions";
-import { instructorSchema } from "@/lib/validations/instructor";
+import { instructorSchema, instructorProfileSchema } from "@/lib/validations/instructor";
+import { z } from "zod";
 import { hashPassword } from "@/lib/security/password";
 import { slugify } from "@/lib/utils";
 import { writeAuditLog } from "@/lib/audit/log";
@@ -132,4 +133,62 @@ export async function setInstructorAccountStatus(userId: string, newStatus: User
   });
 
   revalidatePath("/admin/instructors");
+}
+
+// Admin edit — unlike the self-serve profile form (instructorProfileSchema),
+// admins may also correct the public contact email (Instructor.email). This
+// is deliberately separate from the login email (User.email), which stays
+// out of scope here — changing a login identity needs its own dedicated flow.
+const instructorAdminEditSchema = instructorProfileSchema.extend({
+  email: z.string().email().max(150).optional(),
+});
+
+export async function updateInstructorProfileAdmin(
+  instructorId: string,
+  _prevState: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const admin = await requireAdmin();
+
+  const getStr = (key: string) => {
+    const val = formData.get(key)?.toString().trim();
+    return val ? val : undefined;
+  };
+
+  const parsed = instructorAdminEditSchema.safeParse({
+    name: formData.get("name"),
+    email: getStr("email"),
+    title: getStr("title"),
+    bio: getStr("bio"),
+    company: getStr("company"),
+    phone: getStr("phone"),
+    website: getStr("website"),
+    twitterUrl: getStr("twitterUrl"),
+    linkedinUrl: getStr("linkedinUrl"),
+    githubUrl: getStr("githubUrl"),
+  });
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Please check the form for errors.",
+    };
+  }
+
+  const instructor = await prisma.instructor.update({
+    where: { id: instructorId },
+    data: parsed.data,
+  });
+
+  await writeAuditLog({
+    actorId: admin.id,
+    action: "instructor.profile_edit",
+    targetType: "Instructor",
+    targetId: instructorId,
+    summary: `Edited profile of "${instructor.name}"`,
+  });
+
+  revalidatePath("/admin/instructors");
+  revalidatePath(`/admin/instructors/${instructorId}`);
+  revalidatePath(`/instructors/${instructor.slug}`);
+  return { ok: true };
 }
