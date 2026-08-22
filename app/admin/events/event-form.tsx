@@ -29,6 +29,8 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   SEMINAR: "Seminar",
 };
 
+const EVENT_LANGUAGES = ["English", "Bangla", "Hindi", "Urdu"];
+
 export function EventForm({
   action,
   categories,
@@ -189,11 +191,18 @@ export function EventForm({
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="language">Language</Label>
-          <Input
-            id="language"
-            name="language"
-            defaultValue={defaultValues?.language ?? "English"}
-          />
+          <Select name="language" defaultValue={defaultValues?.language ?? "English"} required>
+            <SelectTrigger id="language" className="w-full">
+              <SelectValue>{(value: string | null) => value ?? "Select language"}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {EVENT_LANGUAGES.map((lang) => (
+                <SelectItem key={lang} value={lang}>
+                  {lang}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-2">
