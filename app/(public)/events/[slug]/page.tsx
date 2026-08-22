@@ -7,6 +7,7 @@ import { getPublishedEventBySlug } from "@/lib/events/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { MarkdownContent } from "@/components/shared/markdown-content";
 import { formatBdt } from "@/lib/utils";
 
 import { RegisterButton } from "./register-button";
@@ -244,9 +245,7 @@ export default async function EventDetailPage({
             {/* About Section */}
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">About this Event</h2>
-              <div className="prose prose-slate max-w-none text-slate-600">
-                <p className="whitespace-pre-line leading-relaxed">{event.description}</p>
-              </div>
+              <MarkdownContent text={event.description} className="max-w-none text-slate-600" />
             </div>
 
             {/* What you'll learn */}

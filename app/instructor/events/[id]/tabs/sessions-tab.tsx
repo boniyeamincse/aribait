@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 import { createInstructorEventSession } from "@/lib/instructors/session-actions";
 import type { Event, EventSession, Instructor } from "@/lib/generated/prisma/client";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import { SessionForm } from "@/app/admin/events/[id]/session-form";
 
@@ -36,7 +39,17 @@ export function SessionsTab({
                 {session.platform}
               </p>
             </div>
-            <Badge variant="secondary">{session.status}</Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">{session.status}</Badge>
+              {editable && (
+                <Button
+                  render={<Link href={`/instructor/events/${event.id}/sessions/${session.id}`}>Edit</Link>}
+                  nativeButton={false}
+                  size="sm"
+                  variant="outline"
+                />
+              )}
+            </div>
           </div>
         ))}
       </div>

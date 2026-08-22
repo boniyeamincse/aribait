@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextarea } from "@/components/shared/rich-textarea";
 import { toDatetimeLocalValue } from "@/lib/utils";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -98,7 +99,7 @@ export function EventForm({
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="description">Full description</Label>
-        <Textarea
+        <RichTextarea
           id="description"
           name="description"
           rows={6}
