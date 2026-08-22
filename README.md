@@ -41,3 +41,7 @@ If you prefer to use your personal accounts for testing emails and actual use:
 **Student:**
 * **Email:** `boni.ielts@gmail.com`
 * **Password:** *(Your personal password)*
+
+**Instructor:**
+* **Email:** `boniyeamin.cse1@gmail.com`
+* **Password:** `BoniIT@2025`
