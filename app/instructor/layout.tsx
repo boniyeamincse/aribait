@@ -3,9 +3,11 @@ import Image from "next/image";
 
 import { requireInstructor } from "@/lib/permissions";
 import { logout } from "@/lib/auth/logout-action";
+import { prisma } from "@/lib/db/client";
 import { Button } from "@/components/ui/button";
 import { InstructorNav } from "@/components/instructor/instructor-nav";
 import { AvatarBadge } from "@/components/shared/avatar-badge";
+import { TopBarNotifications } from "@/components/instructor/top-bar-notifications";
 
 export default async function InstructorLayout({
   children,
@@ -13,6 +15,10 @@ export default async function InstructorLayout({
   children: React.ReactNode;
 }) {
   const { user, instructor } = await requireInstructor();
+
+  const unreadCount = await prisma.notification.count({
+    where: { userId: user.id, readAt: null },
+  });
 
   const initials = (user.name ?? user.email ?? "I")
     .split(" ")
@@ -29,6 +35,7 @@ export default async function InstructorLayout({
         </Link>
 
         <div className="flex items-center gap-3">
+          <TopBarNotifications unreadCount={unreadCount} />
           <div className="hidden flex-col items-end sm:flex">
             <span className="text-sm font-medium text-slate-900 leading-tight">{user.name ?? "Instructor"}</span>
             <span className="text-xs text-slate-500 leading-tight">{user.email}</span>
