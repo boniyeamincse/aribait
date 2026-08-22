@@ -58,6 +58,7 @@ export function SessionsTab({
         <div className="rounded-lg border border-slate-200 p-4">
           <h3 className="mb-3 text-sm font-medium text-slate-900">Add Session</h3>
           <SessionForm
+            key={nextSequence}
             action={createInstructorEventSession.bind(null, event.id)}
             instructors={hostOptions}
             nextSequence={nextSequence}
